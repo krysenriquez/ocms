@@ -1,0 +1,18 @@
+<div class="page-header">
+    <div class="page-title">
+        <h3 ncy-breadcrumb-last></h3>
+    </div>
+    <nav class="breadcrumb-one" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li
+                class="breadcrumb-item"
+                ng-repeat="step in steps"
+                ng-class="{active: $last}"
+                ng-switch="$last || !!step.abstract"
+            >
+                <a ng-switch-when="false" href="{{step.ncyBreadcrumbLink}}">{{step.ncyBreadcrumbLabel}}</a>
+                <span ng-switch-when="true">{{step.ncyBreadcrumbLabel}}</span>
+            </li>
+        </ol>
+    </nav>
+</div>
