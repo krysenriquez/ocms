@@ -4,11 +4,10 @@ body {
     height: 100%;
     font-size: 0.875rem;
     background: #ebedf2;
-    background: #fafafa;
     overflow-x: hidden;
     overflow-y: auto;
     letter-spacing: 0.0312rem;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Raleway', sans-serif;
     max-width: 1600px;
     margin: 0 auto;
 }

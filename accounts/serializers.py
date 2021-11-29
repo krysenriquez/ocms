@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from django.utils import timezone
 from .models import *
+import string, random
 
 
 class PersonalInfoSerializer(ModelSerializer):
@@ -191,3 +192,105 @@ class AccountSerializer(ModelSerializer):
             for avatar in instance.avatar_info.all():
                 if avatar.id not in keep_avatar_info:
                     avatar.delete()
+
+
+class AvatarDirectorySerializer(ModelSerializer):
+    class Meta:
+        model = AvatarInfo
+        fields = ["file_attachment"]
+
+
+class AccountAvatarSerializer(ModelSerializer):
+    avatar_info = AvatarDirectorySerializer(many=True, required=False)
+
+    class Meta:
+        model = Account
+        fields = ["account_id", "first_name", "avatar_info"]
+
+
+class GenealogyAvatarSerializer(ModelSerializer):
+    class Meta:
+        model = AvatarInfo
+        fields = ["file_attachment"]
+
+
+class GenealogySubChildAccountSerializer(ModelSerializer):
+    avatar_info = GenealogyAvatarSerializer(many=True, required=False)
+    account_name = serializers.CharField(read_only=True)
+    account_number = serializers.SerializerMethodField()
+
+    def get_account_number(self, obj):
+        return "{:0>5d}".format(obj.id)
+
+    class Meta:
+        model = Account
+        fields = ["account_id", "account_name", "account_number", "avatar_info", "parent_side"]
+
+
+class GenealogyChildAccountSerializer(ModelSerializer):
+    children = GenealogySubChildAccountSerializer(many=True, required=False)
+    avatar_info = GenealogyAvatarSerializer(many=True, required=False)
+    account_name = serializers.CharField(read_only=True)
+    account_number = serializers.SerializerMethodField()
+
+    def get_account_number(self, obj):
+        return "{:0>5d}".format(obj.id)
+
+    class Meta:
+        model = Account
+        fields = [
+            "account_id",
+            "account_name",
+            "account_number",
+            "avatar_info",
+            "children",
+            "parent_side",
+        ]
+
+
+class GenealogyAccountSerializer(ModelSerializer):
+    children = GenealogyChildAccountSerializer(many=True, required=False)
+    avatar_info = GenealogyAvatarSerializer(many=True, required=False)
+    account_name = serializers.CharField(read_only=True)
+    account_number = serializers.SerializerMethodField()
+
+    def get_account_number(self, obj):
+        return "{:0>5d}".format(obj.id)
+
+    class Meta:
+        model = Account
+        fields = ["account_id", "account_name", "account_number", "avatar_info", "children"]
+
+
+def code_generator(size=8, chars=string.ascii_uppercase + string.digits):
+    return "".join(random.choice(chars) for _ in range(size))
+
+
+class GenerateCodeSerializer(ModelSerializer):
+    quantity = serializers.CharField()
+
+    class Meta:
+        model = Code
+        fields = "__all__"
+
+    def create(self, validated_data):
+        quantity = validated_data.pop("quantity")
+
+        if quantity:
+            for i in range(int(quantity)):
+                code = Code.objects.create(**validated_data)
+                code.code = code_generator()
+                code.save()
+
+            return code
+
+
+class CodeSerializer(ModelSerializer):
+    account_number = serializers.SerializerMethodField()
+
+    def get_account_number(self, obj):
+        return str(obj.account.id).zfill(5)
+
+    class Meta:
+        model = Code
+        fields = ["code", "code_type", "account_number", "account"]

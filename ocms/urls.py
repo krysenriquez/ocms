@@ -22,17 +22,39 @@ from django.conf import settings
 from django.shortcuts import redirect
 
 urlpatterns = [
-    path("dev-admin/", admin.site.urls),
+    path("developers-admin/", admin.site.urls),
+    # Oc-Admin
+    path("oc-admin", lambda request: redirect("oc-admin/login", permanent=False)),
+    path("oc-admin/login", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))),
+    path(
+        "oc-admin/dashboard", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))
+    ),
+    # Member
+    path("", lambda request: redirect("member/login", permanent=False)),
+    path("login", lambda request: redirect("member/login", permanent=False)),
     path("member", lambda request: redirect("member/login", permanent=False)),
     path("member/login", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))),
+    path(
+        "member/dashboard", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))
+    ),
+    path(
+        "member/genealogy", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))
+    ),
+    path("member/earn", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))),
+    path(
+        "member/referral-link",
+        ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html")),
+    ),
     # APIs
     path("webapi/users/", include("users.urls"), name="users"),
     path("webapi/auth/", include("auth.urls"), name="auth"),
+    path("webapi/accounts/", include("accounts.urls"), name="accounts"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = "One Creations Marketing Admin"
 admin.site.site_title = "One Creations Marketing"
 admin.site.index_title = "Welcome to One Creations Marketing Admin"
+admin.autodiscover()
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL)

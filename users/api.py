@@ -6,6 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from .serializers import *
 from .models import *
+from accounts.models import Account, AvatarInfo
 from django.db.models import Q, Prefetch, F, Value as V
 from django.db.models.functions import Concat
 from difflib import SequenceMatcher
@@ -180,6 +181,22 @@ class PasswordValidation(views.APIView):
                 data={"message": "The password is too similar to the email.", "similar": True},
                 status=status.HTTP_403_FORBIDDEN,
             )
+
+
+# class UserAccountView(views.APIView):
+#     # @method_decorator(csrf_protect)
+#     def post(self, request, *args, **kwargs):
+#         if request.user.is_authenticated and request.user.id:
+#             account = Account.objects.get(user=request.user.id)
+#             avatar = AvatarInfo.objects.get(account=account.id)
+#             return Response(
+#                 data={
+#                     "user": request.user.user_id,
+#                     "account": account.account_id,
+#                     "avatar": avatar.file_attachment,
+#                 },
+#                 status=status.HTTP_201_CREATED,
+#             )
 
 
 class UserViewSet(ModelViewSet):

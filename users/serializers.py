@@ -3,6 +3,7 @@ from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 from django.utils import timezone
 from .models import *
+from accounts.models import Account, AvatarInfo
 
 
 class ResetPasswordSerializer(serializers.Serializer):
@@ -92,3 +93,17 @@ class UserSerializer(ModelSerializer):
             "user_type",
             "is_active",
         ]
+
+
+class AvatarInfoSerializer(ModelSerializer):
+    class Meta:
+        model = AvatarInfo
+        fields = ["file_attachment", "file_name"]
+
+
+class AccountSerializer(ModelSerializer):
+    avatar_info = AvatarInfoSerializer(many=True, required=False)
+
+    class Meta:
+        model = Account
+        fields = ["account_id", "first_name", "avatar_info"]

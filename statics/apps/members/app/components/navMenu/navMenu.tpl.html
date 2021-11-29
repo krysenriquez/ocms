@@ -1,0 +1,152 @@
+<div class="topbar-nav header navbar" role="banner">
+    <nav id="topbar">
+        <ul class="navbar-nav theme-brand flex-row text-center">
+            <li class="nav-item theme-logo">
+                <a ui-sref="members.dashboard">
+                    <img src="{{ vm.appLogo }}" class="navbar-logo" alt="logo" />
+                </a>
+            </li>
+            <li class="nav-item theme-text">
+                <a ui-sref="members.dashboard" class="nav-link">{{ vm.appName }}</a>
+            </li>
+        </ul>
+        <ul class="list-unstyled menu-categories" id="topAccordion">
+            <li class="menu single-menu">
+                <a
+                    ui-sref="members.dashboard"
+                    data-toggle="collapse"
+                    aria-expanded="false"
+                    class="dropdown-toggle autodroprown"
+                >
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-home"
+                        >
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Dashboard</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu single-menu">
+                <a
+                    ui-sref="members.genealogy"
+                    data-toggle="collapse"
+                    aria-expanded="false"
+                    class="dropdown-toggle autodroprown"
+                >
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-git-merge"
+                        >
+                            <circle cx="18" cy="18" r="3"></circle>
+                            <circle cx="6" cy="6" r="3"></circle>
+                            <path d="M6 21V9a9 9 0 0 0 9 9"></path>
+                        </svg>
+                        <span>Genealogy</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu single-menu">
+                <a
+                    ui-sref="members.earn"
+                    data-toggle="collapse"
+                    aria-expanded="false"
+                    class="dropdown-toggle autodroprown"
+                >
+                    <div class="">
+                        <svg
+                            viewBox="0 0 24 24"
+                            width="24"
+                            height="24"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="css-i6dzq1"
+                        >
+                            <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                        </svg>
+                        <span>Watch and Earn</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu single-menu">
+                <a
+                    ui-sref="members.link"
+                    data-toggle="collapse"
+                    aria-expanded="false"
+                    class="dropdown-toggle autodroprown"
+                >
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-link"
+                        >
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                        </svg>
+                        <span>Referral Link</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu single-menu">
+                <a
+                    ui-sref="members.withdrawal"
+                    data-toggle="collapse"
+                    aria-expanded="false"
+                    class="dropdown-toggle autodroprown"
+                >
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-shopping-cart"
+                        >
+                            <circle cx="9" cy="21" r="1"></circle>
+                            <circle cx="20" cy="21" r="1"></circle>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                        </svg>
+                        <span>Withdrawal</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

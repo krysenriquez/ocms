@@ -31,3 +31,9 @@ class CodeType(models.TextChoices):
     ACTIVATION = "ACTIVATION", _("Activation")
     REACTIVATION = "REACTIVATION", _("Reactivation")
     FREE_SLOT = "FREE_SLOT", _("Free Slot")
+
+
+class BinaryType(models.TextChoices):
+    PAIRING = "PAIRING", _("Pairing")
+    SALES_MATCH = "SALES_MATCH", _("Sales Match")
+    FLUSHED_OUT = "FLUSHED_OUT", _("Flushed Out")

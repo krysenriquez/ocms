@@ -1,4 +1,14 @@
-define(['coreModule', 'componentsModule', 'factoryModule', 'sharedModule', 'servicesModule'], function () {
+define(['ngRoute'], function () {
     'use strict';
-    angular.module('app', ['core.module', 'components.module', 'factories.module', 'shared.module', 'services.module']);
+    angular.module('appMember', [
+        'ui.router',
+        'oc.lazyLoad',
+        'ncy-angular-breadcrumb',
+        'lodash',
+        'com.2fdevs.videogular',
+        'com.2fdevs.videogular.plugins.controls',
+        'com.2fdevs.videogular.plugins.overlayplay',
+        'com.2fdevs.videogular.plugins.poster',
+        'com.2fdevs.videogular.plugins.imaads',
+    ]);
 });

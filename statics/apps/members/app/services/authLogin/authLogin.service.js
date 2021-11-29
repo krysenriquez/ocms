@@ -1,87 +1,59 @@
-define(['urlFactory', 'identityFactory'], function () {
+define(['urlService', 'identityFactory', 'statusService'], function () {
     'use strict';
 
-    angular.module('auth.login', ['url.module', 'identity.module']).service('authLoginService', AuthLoginService);
+    angular
+        .module('appMember')
+        .service(
+            'authLoginService',
+            function ($http, $location, $window, $timeout, $state, $q, urlService, identityFactory, statusService) {
+                this.login = login;
+                this.isLoggedIn = isLoggedIn;
+                this.logout = logout;
 
-    AuthLoginService.$inject = ['urlFactory', 'identityFactory'];
+                function login(credentials) {
+                    return $http.post(urlService.AUTH_MEMBER, credentials).then(
+                        function (response) {
+                            return response.status == statusService.OK;
+                            // return appFactory.getCurrentUserInfo().then(function (data) {
+                            //     if (data.accountUser.length > 0) {
+                            //         var selectedMemberAccount = {
+                            //             accountId: data.accountUser[0].accountId,
+                            //         };
+                            //         localStorage.selectedMemberAccount = JSON.stringify(selectedMemberAccount);
+                            //         defer.resolve(true);
+                            //     } else {
+                            //         defer.resolve(false);
+                            //     }
+                            //     return defer.promise;
+                            // });
+                        },
+                        function (error) {
+                            return false;
+                        }
+                    );
+                }
 
-    function AuthLoginService($http, $location, $window, $timeout, $state, $q, UrlFactory, IdentityFactory) {
-        this.login = login;
-        // this.isLoggedIn = isLoggedIn;
-        // this.logout = logout;
-        // this.redirectIfNotLoggedIn = redirectIfNotLoggedIn;
-        // this.setTitle = setTitle;
-        function login(credentials) {
-            console.log(IdentityFactory);
-            return $http.post(UrlFactory.AUTH_MEMBER, credentials).then(function (response) {
-                // localStorage.currentUserMember = JSON.stringify(response.data);
-                console.log(IdentityFactory.getWhoAmI);
-                var defer = $q.defer();
-                // return appFactory.getCurrentUserInfo().then(function (data) {
-                //     if (data.accountUser.length > 0) {
-                //         var selectedMemberAccount = {
-                //             accountId: data.accountUser[0].accountId,
-                //         };
-                //         localStorage.selectedMemberAccount = JSON.stringify(selectedMemberAccount);
-                //         defer.resolve(true);
-                //     } else {
-                //         defer.resolve(false);
-                //     }
-                //     return defer.promise;
-                // });
-            });
-        }
+                function isLoggedIn() {
+                    return identityFactory.getNewWhoAmI().then(
+                        function (response) {
+                            return response.status == statusService.OK;
+                        },
+                        function (error) {
+                            return false;
+                        }
+                    );
+                }
 
-        // function isLoggedIn() {
-        //     return !!localStorage.currentUserMember && !!localStorage.selectedMemberAccount;
-        // }
-
-        // function logout() {
-        //     var user = JSON.parse(localStorage.getItem('currentUserMember'));
-        //     var now = new Date();
-        //     var userLogs = {
-        //         user: user['id'],
-        //         action_type: 'Logged Out',
-        //         content_type: '',
-        //         object_id: user['id'],
-        //         object_type: 'User Account',
-        //         apiLink: '/api/users/users',
-        //         valueToDisplay: 'fullName',
-        //         logDetails: [
-        //             {
-        //                 action: 'Logged out by ' + now,
-        //             },
-        //         ],
-        //     };
-        //     return appFactory.getContentTypeId('customuser').then(function (data) {
-        //         userLogs.content_type = data;
-        //         return $http.post('/api/users/userlogs/', userLogs).then(
-        //             function () {
-        //                 var baseUrl = new $window.URL($location.absUrl()).origin;
-        //                 delete localStorage.currentUserMember;
-        //                 delete localStorage.selectedMemberAccount;
-        //                 $http.get(baseUrl + '/api/auth/logout/').then(function () {
-        //                     $state.go('simple.login');
-        //                 });
-        //             },
-        //             function (error) {
-        //                 toastr.error(
-        //                     'Error ' + error.status + ' ' + error.statusText,
-        //                     'Could not record logs.  Please contact System Administrator'
-        //                 );
-        //             }
-        //         );
-        //     });
-        // }
-
-        // function redirectIfNotLoggedIn() {
-        //     if (!isLoggedIn()) {
-        //         $state.go('simple.login');
-        //     }
-        // }
-
-        // function setTitle(newTitle) {
-        //     $window.document.title = newTitle;
-        // }
-    }
+                function logout() {
+                    return $http.post(urlService.AUTH_LOGOUT).then(
+                        function (response) {
+                            return response.status == statusService.OK;
+                        },
+                        function (error) {
+                            return false;
+                        }
+                    );
+                }
+            }
+        );
 });

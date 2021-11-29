@@ -1,7 +1,7 @@
 import uuid
 from django.db import models
 from django.db.models.enums import Choices
-from .enums import AccountStatus, CodeStatus, CodeType, Gender, ParentSide
+from .enums import AccountStatus, CodeStatus, CodeType, Gender, ParentSide, BinaryType
 
 
 def account_avatar_directory(instance, filename):
@@ -67,11 +67,11 @@ class Account(models.Model):
     class Meta:
         ordering = ["-created", "-id"]
 
-    def __str__(self):
-        return "%s" % (self.full_name,)
+    def get_full_name(self):
+        return "%s %s %s" % (self.first_name, self.middle_name, self.last_name)
 
-    def full_name(self):
-        return "%s %s %s" % (self.firstname, self.middlename, self.lastname)
+    def __str__(self):
+        return "%s" % (self.get_full_name())
 
 
 class PersonalInfo(models.Model):
@@ -149,7 +149,7 @@ class AvatarInfo(models.Model):
 
 class Code(models.Model):
     code = models.CharField(max_length=8, null=True, blank=True)
-    code_type = models.CharField(max_length=32, choices=CodeType.choices)
+    code_type = models.CharField(max_length=32, choices=CodeType.choices, default=CodeType.ACTIVATION)
     status = models.CharField(max_length=32, choices=CodeStatus.choices, default=CodeStatus.ACTIVE)
     account = models.ForeignKey(
         Account, on_delete=models.CASCADE, null=True, blank=True, related_name="codes"
@@ -162,6 +162,67 @@ class Code(models.Model):
     )
     description = models.TextField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+    deleted = models.DateTimeField(blank=True, null=True)
+    is_deleted = models.BooleanField(
+        default=False,
+    )
+    quantity = None
+
+    def __str__(self):
+        return "%s - %s : %s - %s" % (
+            self.account,
+            self.code,
+            self.code_type,
+            self.status,
+        )
+
+    # def time_since_created(self):
+    #     general_settings = apps.get_model("settings", "GeneralSetting")
+    #     general_setting = general_settings.objects.all().first()
+    #     code_expiration_seconds = (
+    #         general_setting.code_expiration * 60 * 60
+    #     )  # Convert Code Expiration Hours to Seconds
+    #     now = datetime.now()
+    #     time_since_insertion = timedelta.total_seconds(
+    #         (datetime.now(timezone.utc) + timedelta(hours=8)) - (self.updated_at + timedelta(hours=8))
+    #     )
+    #     seconds = code_expiration_seconds - time_since_insertion
+
+    #     if seconds <= 0:
+    #         if self.status == "Active":
+    #             self.status = "Deactivated"
+    #             self.save()
+
+    #         return "Expired"
+
+    #     return convert(seconds)
+
+
+class Binary(models.Model):
+    parent = models.ForeignKey(
+        Account,
+        related_name="binary",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    left_side = models.ForeignKey(
+        Account,
+        related_name="left_side",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    right_side = models.ForeignKey(
+        Account,
+        related_name="right_side",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    binary_type = models.CharField(max_length=32, choices=BinaryType.choices, default=BinaryType.PAIRING)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     deleted = models.DateTimeField(blank=True, null=True)

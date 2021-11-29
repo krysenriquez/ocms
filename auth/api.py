@@ -13,18 +13,24 @@ class AdminLoginView(views.APIView):
 
         if user is None or not user.is_active:
             return Response(
-                {"status": "Unauthorized", "message": "Username or Password is Incorrect"},
+                {
+                    "response_id": status.HTTP_401_UNAUTHORIZED,
+                    "message": "Username or Password is Incorrect",
+                },
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
         if not user.is_staff:
             return Response(
-                {"status": "Unauthorized", "message": "Unauthorized Access"},
-                status=status.HTTP_401_UNAUTHORIZED,
+                {"response_id": status.HTTP_403_FORBIDDEN, "message": "Unauthorized Access"},
+                status=status.HTTP_403_FORBIDDEN,
             )
 
         login(request, user)
-        return Response(UserSerializer(user).data)
+        return Response(
+            data={"response_id": status.HTTP_200_OK},
+            status=status.HTTP_200_OK,
+        )
 
 
 class MemberLoginView(views.APIView):
@@ -34,26 +40,33 @@ class MemberLoginView(views.APIView):
 
         if user is None or not user.is_active:
             return Response(
-                {"status": "Unauthorized", "message": "Username or Password is Incorrect"},
+                {
+                    "response_id": status.HTTP_401_UNAUTHORIZED,
+                    "message": "Username or Password is Incorrect",
+                },
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
         login(request, user)
-        return Response(UserSerializer(user).data)
+        return Response(
+            data={"response_id": status.HTTP_200_OK},
+            status=status.HTTP_200_OK,
+        )
 
 
 class LogoutView(views.APIView):
-    def get(self, request):
+    def post(self, request):
         logout(request)
-        return Response({}, status=status.HTTP_204_NO_CONTENT)
+        return Response({}, status=status.HTTP_200_OK)
 
 
 class WhoAmIView(views.APIView):
+    @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.id:
             return Response(
-                data={"response_id": status.HTTP_202_ACCEPTED},
-                status=status.HTTP_202_ACCEPTED,
+                data={"response_id": status.HTTP_200_OK},
+                status=status.HTTP_200_OK,
             )
         else:
             return Response(
