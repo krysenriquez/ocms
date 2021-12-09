@@ -1,7 +1,9 @@
 define(['appMember'], function () {
     'use strict';
 
-    angular.module('appMember').directive('infoWidget', function (DIRECTORY) {
+    angular.module('appMember').directive('infoWidget', infoWidget);
+
+    function infoWidget(DIRECTORY) {
         var directive = {
             bindToController: true,
             replace: true,
@@ -24,5 +26,5 @@ define(['appMember'], function () {
         }
 
         function link() {}
-    });
+    }
 });

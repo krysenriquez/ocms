@@ -11,7 +11,6 @@ define([], function () {
         this.AUTH_WHOAMI = BASE_AUTH + 'whoami/';
         this.AUTH_LOGOUT = BASE_AUTH + 'logout/';
 
-        this.ACCOUNT_AVATAR = ACCOUNTS_ROOT + 'accountavatar/';
         this.GENEALOGY = ACCOUNTS_ROOT + 'genealogy/';
     });
 });

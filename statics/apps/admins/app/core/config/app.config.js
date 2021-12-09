@@ -23,7 +23,7 @@ define(['appAdmin', 'templateProvider'], function () {
                     abstract: true,
                     secure: false,
                     url: '/oc-admin',
-                    templateUrl: templateProvider.getShared('simple'),
+                    templateUrl: template.getShared('simple'),
                     resolve: {
                         loadCSS: [
                             '$ocLazyLoad',
@@ -58,7 +58,7 @@ define(['appAdmin', 'templateProvider'], function () {
                 .state('simple.login', {
                     secure: false,
                     url: '/login',
-                    templateUrl: templateProvider.getComponent('login'),
+                    templateUrl: template.getComponent('login'),
                     data: {
                         pageTitle: 'One Creations | Login',
                     },
@@ -78,7 +78,7 @@ define(['appAdmin', 'templateProvider'], function () {
                     secure: true,
                     abstract: true,
                     url: '/oc-admin',
-                    templateUrl: templateProvider.getShared('full'),
+                    templateUrl: template.getShared('full'),
                     resolve: {
                         loadCSS: [
                             '$ocLazyLoad',
@@ -130,7 +130,7 @@ define(['appAdmin', 'templateProvider'], function () {
                 .state('admin.dashboard', {
                     secure: true,
                     url: '/dashboard',
-                    templateUrl: templateProvider.getComponent('dashboard'),
+                    templateUrl: template.getComponent('dashboard'),
                     data: {
                         pageTitle: 'One Creations | My Dashboard',
                     },

@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
+from django.conf import settings
 from rest_framework import status, views, permissions
 from rest_framework.response import Response
 from .serializers import UserSerializer
@@ -14,7 +15,6 @@ class AdminLoginView(views.APIView):
         if user is None or not user.is_active:
             return Response(
                 {
-                    "response_id": status.HTTP_401_UNAUTHORIZED,
                     "message": "Username or Password is Incorrect",
                 },
                 status=status.HTTP_401_UNAUTHORIZED,
@@ -22,13 +22,15 @@ class AdminLoginView(views.APIView):
 
         if not user.is_staff:
             return Response(
-                {"response_id": status.HTTP_403_FORBIDDEN, "message": "Unauthorized Access"},
+                {"message": "Unauthorized Access"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
         login(request, user)
         return Response(
-            data={"response_id": status.HTTP_200_OK},
+            data={
+                "message": "Login Successful",
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -41,7 +43,6 @@ class MemberLoginView(views.APIView):
         if user is None or not user.is_active:
             return Response(
                 {
-                    "response_id": status.HTTP_401_UNAUTHORIZED,
                     "message": "Username or Password is Incorrect",
                 },
                 status=status.HTTP_401_UNAUTHORIZED,
@@ -49,7 +50,9 @@ class MemberLoginView(views.APIView):
 
         login(request, user)
         return Response(
-            data={"response_id": status.HTTP_200_OK},
+            data={
+                "message": "Login Successful",
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -57,7 +60,12 @@ class MemberLoginView(views.APIView):
 class LogoutView(views.APIView):
     def post(self, request):
         logout(request)
-        return Response({}, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "message": "Logout Successful",
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class WhoAmIView(views.APIView):
@@ -65,10 +73,20 @@ class WhoAmIView(views.APIView):
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.id:
             return Response(
-                data={"response_id": status.HTTP_200_OK},
+                data={},
                 status=status.HTTP_200_OK,
             )
         else:
+            return Response(data={}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class GetCryptoKey(views.APIView):
+    @method_decorator(csrf_protect)
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.id:
             return Response(
-                data={"response_id": status.HTTP_401_UNAUTHORIZED}, status=status.HTTP_401_UNAUTHORIZED
+                data={"response": settings.CRYPTO_KEY},
+                status=status.HTTP_200_OK,
             )
+        else:
+            return Response(data={}, status=status.HTTP_401_UNAUTHORIZED)

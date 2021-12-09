@@ -255,7 +255,7 @@ class GenealogyAccountSerializer(ModelSerializer):
     account_number = serializers.SerializerMethodField()
 
     def get_account_number(self, obj):
-        return "{:0>5d}".format(obj.id)
+        return str(obj.id).zfill(5)
 
     class Meta:
         model = Account

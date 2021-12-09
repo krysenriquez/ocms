@@ -1,7 +1,9 @@
 define(['appMember'], function () {
     'use strict';
 
-    angular.module('appMember').directive('googleAds', function ($timeout) {
+    angular.module('appMember').directive('googleAds', googleAds);
+
+    function googleAds($timeout) {
         return {
             restrict: 'A',
             link: function (scope, elem, attrs) {
@@ -15,5 +17,5 @@ define(['appMember'], function () {
                 });
             },
         };
-    });
+    }
 });

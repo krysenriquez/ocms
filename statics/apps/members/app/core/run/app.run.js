@@ -1,46 +1,39 @@
 define(['authLoginService', ''], function () {
     'use strict';
 
-    angular.module('appMember').run([
-        '$http',
-        '$rootScope',
-        '$location',
-        '$transitions',
-        '$state',
-        'authLoginService',
-        'statusService',
-        function ($http, $rootScope, $location, $transitions, $state, authLoginService, statusService) {
-            $http.defaults.xsrfHeaderName = 'X-CSRFToken';
-            $http.defaults.xsrfCookieName = 'csrftoken';
+    angular.module('appMember').run(run);
 
-            $transitions.onBefore({}, function (transition) {
-                if (transition.to().secure) {
-                    return authLoginService.isLoggedIn().then(function (response) {
-                        if (!response) {
-                            return transition.router.stateService.target('simple.login');
-                        }
-                    });
-                }
-                if (!transition.to().secure) {
-                    return authLoginService.isLoggedIn().then(function (response) {
-                        if (response) {
-                            return transition.router.stateService.target('members.dashboard');
-                        }
-                    });
-                }
-            });
+    function run($http, $rootScope, $location, $transitions, $state, authLoginService, statusFactory) {
+        $http.defaults.xsrfHeaderName = 'X-CSRFToken';
+        $http.defaults.xsrfCookieName = 'csrftoken';
 
-            $transitions.onError({}, function (transition) {
-                if (transition.error() && transition.error().detail) {
-                    if (transition.error().detail.status == statusService.UNAUTHORIZED) {
+        $transitions.onBefore({}, function (transition) {
+            if (transition.to().secure) {
+                return authLoginService.isLoggedIn().then(function (response) {
+                    if (!response) {
                         return transition.router.stateService.target('simple.login');
                     }
-                }
-            });
+                });
+            }
+            if (!transition.to().secure) {
+                return authLoginService.isLoggedIn().then(function (response) {
+                    if (response) {
+                        return transition.router.stateService.target('members.dashboard');
+                    }
+                });
+            }
+        });
 
-            $transitions.onSuccess({}, function (transition) {
-                $rootScope.pageTitle = transition.to().data.pageTitle;
-            });
-        },
-    ]);
+        $transitions.onError({}, function (transition) {
+            if (transition.error() && transition.error().detail) {
+                if (transition.error().detail.status == statusFactory.UNAUTHORIZED) {
+                    return transition.router.stateService.target('simple.login');
+                }
+            }
+        });
+
+        $transitions.onSuccess({}, function (transition) {
+            $rootScope.pageTitle = transition.to().data.pageTitle;
+        });
+    }
 });

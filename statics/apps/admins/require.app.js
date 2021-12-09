@@ -21,7 +21,6 @@ require.config({
         ngRoute: libs + 'angular/angular-ui-router',
         ngSanitize: libs + 'angular/angular-sanitize.min',
         ngLodash: libs + 'angular/angular-lodash',
-        raphael: libs + 'treant/raphael',
         // UI Libs
         ngAnimate: libs + 'angular/angular-animate.min',
         ngBootstrap: libs + 'angular/angular-ui-bootstrap-tpls.min',
@@ -43,7 +42,7 @@ require.config({
         authLoginService: services + 'authLogin/authLogin.service',
         humpsFactory: services + 'humps/humps.factory',
         identityFactory: services + 'identity/identity.factory',
-        statusService: services + 'status/status.service',
+        statusFactory: services + 'status/status.factory',
         templateProvider: services + 'template/template.provider',
         urlService: services + 'url/url.service',
     },
@@ -114,9 +113,6 @@ require.config({
         },
         appRun: {
             deps: ['appAdmin'],
-        },
-        raphael: {
-            exports: 'Raphael',
         },
     },
 });

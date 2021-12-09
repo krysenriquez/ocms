@@ -1,7 +1,9 @@
 define(['appMember'], function () {
     'use strict';
 
-    angular.module('appMember').directive('navMenu', function (DIRECTORY) {
+    angular.module('appMember').directive('navMenu', navMenu);
+
+    function navMenu(DIRECTORY) {
         var directive = {
             bindToController: true,
             replace: true,
@@ -27,5 +29,5 @@ define(['appMember'], function () {
         }
 
         function link() {}
-    });
+    }
 });

@@ -7,6 +7,8 @@ router.register(r"user", UserViewSet)
 router.register(r"userlogs", UserLogsViewSet)
 router.register(r"contenttype", ContentTypeViewSet)
 
+router.register(r"getuseraccounts", UserAccountViewSet)
+
 urlpatterns = [
     path("checkusername/", CheckUsernameView.as_view()),
     path("changeusername/", ChangeUsernameView.as_view()),

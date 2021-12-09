@@ -98,12 +98,27 @@ class UserSerializer(ModelSerializer):
 class AvatarInfoSerializer(ModelSerializer):
     class Meta:
         model = AvatarInfo
-        fields = ["file_attachment", "file_name"]
+        fields = ["file_attachment"]
 
 
 class AccountSerializer(ModelSerializer):
     avatar_info = AvatarInfoSerializer(many=True, required=False)
+    account_name = serializers.CharField(read_only=True)
+    account_number = serializers.SerializerMethodField()
+
+    def get_account_number(self, obj):
+        return "{:0>5d}".format(obj.id)
 
     class Meta:
         model = Account
-        fields = ["account_id", "first_name", "avatar_info"]
+        fields = ["account_id", "account_name", "account_number", "avatar_info"]
+
+
+class UserAccountSerializer(ModelSerializer):
+    account_user = AccountSerializer(many=True, required=False)
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            "account_user",
+        ]

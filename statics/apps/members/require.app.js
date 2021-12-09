@@ -11,6 +11,7 @@ require.config({
     waitSeconds: 200,
     paths: {
         jquery: libs + 'jquery/jquery.min',
+        crypto: libs + 'crypto/crypto',
         popper: libs + 'bootstrap/js/popper.min',
         moment: libs + 'moment/moment',
         bootstrap: libs + 'bootstrap/js/bootstrap.bundle.min',
@@ -21,17 +22,18 @@ require.config({
         ngRoute: libs + 'angular/angular-ui-router',
         ngSanitize: libs + 'angular/angular-sanitize.min',
         ngLodash: libs + 'angular/angular-lodash',
-        raphael: libs + 'treant/raphael',
         // UI Libs
         ngAnimate: libs + 'angular/angular-animate.min',
         ngBootstrap: libs + 'angular/angular-ui-bootstrap-tpls.min',
         ngBreadcrumb: libs + 'ngBreadcrumb/angular-breadcrumb.min',
         ngLoadingbar: libs + 'angular/angular-loading-bar.min',
         ngTable: libs + 'ngTable/ng-table',
+        ngBlock: libs + 'ngBlock/angular-block-ui.min',
+
         ngToastr: libs + 'toastr/dist/js/angular-toastr.tpls.min',
         ngSweetalert: libs + 'sweetalert/SweetAlert',
         sweetalert: libs + 'sweetalert/sweetalert.min',
-        ngBlock: libs + 'ngBlock/angular-block-ui.min',
+        orgChart: libs + 'orgChart/orgChart',
         // Videogular
         vgModule: libs + 'videogular/videogular',
         vgControls: libs + 'videogular/controls/vg-controls',
@@ -44,14 +46,22 @@ require.config({
         appConfig: core + 'config/app.config',
         appRun: core + 'run/app.run',
         appConstant: core + 'constant/app.constant',
-        // Factories, Providers
+        // Factories, Services
         accountFactory: services + 'account/account.factory',
         authLoginService: services + 'authLogin/authLogin.service',
+        codesFactory: services + 'codes/codes.factory',
         humpsFactory: services + 'humps/humps.factory',
         identityFactory: services + 'identity/identity.factory',
-        statusService: services + 'status/status.service',
-        templateProvider: services + 'template/template.provider',
+        localStorageFactory: services + 'localStorage/localStorage.factory',
+        statusFactory: services + 'status/status.factory',
         urlService: services + 'url/url.service',
+        userFactory: services + 'user/user.factory',
+        // Providers
+        cryptoProvider: services + 'crypto/crypto.provider',
+        templateProvider: services + 'template/template.provider',
+        // Validators
+        messageValidator: components + 'validator/message/messageValidator.directive',
+        inputValidator: components + 'validator/input/inputValidator.directive',
     },
     shim: {
         angular: {
@@ -119,10 +129,14 @@ require.config({
                 'ngAnimate',
                 'ngSanitize',
                 'ngRoute',
-                'ngLoadingbar',
                 'ngLodash',
                 'ocLazyLoad',
                 'ngBreadcrumb',
+                'ngBootstrap',
+                'ngLoadingbar',
+                'ngBlock',
+                'ngToastr',
+                'ngSweetalert',
                 'vgModule',
                 'vgControls',
                 'vgOverlayPlay',
@@ -135,9 +149,6 @@ require.config({
         },
         appRun: {
             deps: ['appMember'],
-        },
-        raphael: {
-            exports: 'Raphael',
         },
     },
 });

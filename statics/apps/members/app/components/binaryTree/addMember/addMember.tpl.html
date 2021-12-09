@@ -1,0 +1,232 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="modal-title">Add Member</h5>
+    <button type="button" class="close" aria-label="Close" ng-click="vm.cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="col-md-12 mx-0">
+        <form class="horizontal-wizard">
+            <ul class="progressbar">
+                <li class="binary" ng-class="{'active':vm.step == 1}"><strong>Binary</strong></li>
+                <li class="account" ng-class="{'active':vm.step == 2}"><strong>Account</strong></li>
+                <li class="finish" ng-class="{'active':vm.step == 3}"><strong>Finish</strong></li>
+            </ul>
+        </form>
+    </div>
+    <div ng-switch="vm.step">
+        <form ng-switch-when="1" name="binaryForm" class="">
+            <div class="form-row">
+                <div class="col-md-6 mb-2">
+                    <label for="firstName">First name</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="firstName"
+                        ng-model="vm.new.firstName"
+                        placeholder="First Name"
+                        input-validator="vm.new.firstName"
+                        required
+                    />
+                    <div class="valid-feedback">{{ vm.validation.firstName.message }}</div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="lastName">Last name</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="lastName"
+                        ng-model="vm.new.lastName"
+                        placeholder="Last Name"
+                        input-validator="vm.new.lastName"
+                        required
+                    />
+                    <div class="valid-feedback">{{ vm.validation.lastName.message }}</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6 mb-2">
+                    <label for="activationCode">Activation Code</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="activationCode"
+                        ng-model="vm.new.activationCode"
+                        ng-change="vm.validateActivationCode()"
+                        ng-model-options="{ debounce: 1000 }"
+                        placeholder="Activation Code"
+                        input-validator="vm.validation.activationCode"
+                        required
+                    />
+                    <message-validator validator="vm.validation.activationCode"></message-validator>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="sponsorAccountId">Sponsor ID</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="sponsorAccountId"
+                        ng-model="vm.new.sponsorAccountId"
+                        placeholder="Sponsor ID"
+                        disabled
+                    />
+                    <div class="valid-feedback">{{ vm.validation.sponsorAccountId.message }}</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12 mb-2">
+                    <label for="sponsorName">Sponsor Name</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="sponsorName"
+                        ng-model="vm.new.sponsorName"
+                        placeholder="Sponsor Name"
+                        disabled
+                    />
+                    <div class="valid-feedback">{{ vm.validation.sponsorName.message }}</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-6 mb-2">
+                    <label for="parentSide">Upline Side</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="parentSide"
+                        ng-model="vm.new.parentSide"
+                        placeholder="Upline Side"
+                        disabled
+                    />
+                    <div class="valid-feedback">{{ vm.validation.parentSide.message }}</div>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label for="parentAccountId">Upline ID</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="parentAccountId"
+                        ng-model="vm.new.parentAccountId"
+                        placeholder="Upline ID"
+                        disabled
+                    />
+                    <div class="valid-feedback">{{ vm.validation.parentAccountId.message }}</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-12 mb-2">
+                    <label for="parentName">Upline Name</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="parentName"
+                        ng-model="vm.new.parentName"
+                        placeholder="Upline Name"
+                        disabled
+                    />
+                    <div class="valid-feedback">{{ vm.validation.parentName.message }}</div>
+                </div>
+            </div>
+        </form>
+        <form ng-switch-when="2" name="userForm">
+            <div class="form-group mb-4">
+                <div class="custom-control custom-checkbox checkbox-info">
+                    <input
+                        type="checkbox"
+                        class="custom-control-input"
+                        id="newUserAccount"
+                        ng-model="vm.newUserAccount"
+                    />
+                    <label class="custom-control-label" for="newUserAccount">Connect to this User Account</label>
+                </div>
+            </div>
+            <div class="table-responsive" ng-if="vm.newUserAccount">
+                <table class="table table-bordered mb-0">
+                    <thead class="table-active">
+                        <tr>
+                            <th>
+                                <div class="text-center px-2">
+                                    <span class="text-dark-75 text-uppercase font-size-lg">Account ID</span>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="text-center px-2">
+                                    <span class="text-dark-75 text-uppercase font-size-lg">Account Name</span>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="text-center px-2">
+                                    <span class="text-dark-75 font-weight-bolder font-size-lg">
+                                        {{ member.accountNumber}}Test
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="text-center px-2">
+                                    <span class="text-dark-75 font-weight-bolder font-size-lg">
+                                        {{ member.accountName}}Test
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody ng-if="userError.error">
+                        <tr>
+                            <td class="py-4" colspan="13" align="center">
+                                <span class="text-danger">{{ userError.errorMessage }}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div ng-if="!vm.newUserAccount">
+                <div class="form-row">
+                    <div class="col-md-12 mb-2">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Username" required />
+                        <div class="valid-feedback">{{ username.validation }}</div>
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="emailAddress">Email Address</label>
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="emailAddress"
+                            placeholder="Email Address"
+                            required
+                        />
+                        <div class="valid-feedback">{{ emailAddress.validation }}</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-md-12 mb-2">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Password" required />
+                        <div class="valid-feedback">{{ password.validation }}</div>
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="repeatPassword">Repeat Password</label>
+                        <input
+                            type="password"
+                            class="form-control"
+                            id="repeatPassword"
+                            placeholder="Repeat Password"
+                            required
+                        />
+                        <div class="valid-feedback">{{ repeatPassword.validation }}</div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn mr-auto" ng-click="vm.cancel()">Cancel</button>
+    <button type="button" class="btn mr-auto" ng-show="vm.step == 2" ng-click="vm.previous()">Previous</button>
+    <button type="button" class="btn btn-primary" ng-show="vm.step == 1" ng-click="vm.next()">Next Step</button>
+    <button type="button" class="btn btn-primary" ng-show="vm.step == 2" ng-click="vm.save()">Save</button>
+</div>

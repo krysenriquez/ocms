@@ -15,7 +15,8 @@
                 id : '@',
                 zcValues : '=',
                 zcJson : '=',
-                zcRender : '='
+                zcRender : '=',
+		zcLicense : '='
             },
             controller : ['$scope', '$element', '$attrs', function($scope, $element, $attrs){
                 var id;
@@ -61,6 +62,16 @@
                         }
                     }
                 });
+
+                $scope.$watch('zcLicense', function(newValue, oldValue, scope) {
+                    if(initializing.license){
+                        initializing.license = !initializing.license;
+                        return;
+                    }
+
+                    ZC.LICENSE = scope.zcLicense;
+                    scope.zcLicense = newValue;
+                },true);
 
                 $scope.$watch('zcJson', function(){
                     if(initializing.json){
@@ -110,7 +121,7 @@
                         width : 600,
                         height: 400
                     };
-
+			
                     //Add render object.
                     if($scope.zcRender){
                         mergeObject($scope.zcRender, _json);
@@ -139,6 +150,7 @@
                     if(_json.height === "100%" && !$element.css('height')){
                         $element.css('height', '100%');
                     }
+		    ZC.LICENSE = $scope.zcLicense;
                     zingchart.render(_json);
                 }
                 

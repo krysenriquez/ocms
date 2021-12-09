@@ -70,6 +70,12 @@ class Account(models.Model):
     def get_full_name(self):
         return "%s %s %s" % (self.first_name, self.middle_name, self.last_name)
 
+    def get_all_children(self, children):
+        for account in self.children.all():
+            children.append(account)
+            account.get_all_children(children)
+        return children
+
     def __str__(self):
         return "%s" % (self.get_full_name())
 
@@ -177,6 +183,13 @@ class Code(models.Model):
             self.code_type,
             self.status,
         )
+
+    def update_status(self):
+        account = Account.objects.filter(activation_code=self)
+        if account:
+            if self.status == CodeStatus.ACTIVE:
+                self.status = CodeStatus.USED
+                self.save()
 
     # def time_since_created(self):
     #     general_settings = apps.get_model("settings", "GeneralSetting")

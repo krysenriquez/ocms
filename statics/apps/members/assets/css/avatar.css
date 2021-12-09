@@ -30,9 +30,9 @@
 .avatar--group .avatar .avatar-title { border: 2px solid #ffffff; }
 
 .avatar-xl {
-    width: 5.125rem;
-    height: 5.125rem;
-    font-size: 1.70833rem;
+    width: 8rem;
+    height: 8rem;
+    font-size: 1rem;
 }
 .avatar-lg {
     width: 4rem;
@@ -44,10 +44,6 @@
     height: 2.5rem;
     font-size: .83333rem;
 }
-
-/*
-	Indicators
-*/
 
 .avatar-indicators:before {
     content: "";

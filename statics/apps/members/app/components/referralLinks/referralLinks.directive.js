@@ -1,7 +1,9 @@
-define(['appMember', 'ngTable'], function () {
+define(['appMember', 'ngTable', 'accountFactory'], function () {
     'use strict';
 
-    angular.module('appMember').directive('referralLinks', function (DIRECTORY) {
+    angular.module('appMember').directive('referralLinks', referralLinks);
+
+    function referralLinks(DIRECTORY) {
         var directive = {
             bindToController: true,
             replace: true,
@@ -22,72 +24,67 @@ define(['appMember', 'ngTable'], function () {
             accountFactory,
             urlService,
             humpsFactory,
-            NgTableParams
+            NgTableParams,
+            toastr
         ) {
             var vm = this;
-
+            var accountId;
             init();
 
             function init() {
                 $scope.$watch(
                     function () {
-                        return accountFactory.getAccountId();
+                        return accountFactory.getSelectedAccount().accountId;
                     },
                     function (newValue, oldValue) {
                         if (newValue !== oldValue) {
-                            vm.accountId = newValue;
+                            accountId = newValue;
                         } else {
-                            vm.accountId = oldValue;
+                            accountId = oldValue;
                         }
                         loadTable();
                     }
                 );
+            }
 
-                function loadTable() {
-                    vm.tableReferrals = new NgTableParams(
-                        {
-                            page: 1,
-                            count: 20,
+            function loadTable() {
+                vm.tableReferrals = new NgTableParams(
+                    {
+                        page: 1,
+                        count: 20,
+                    },
+                    {
+                        counts: [10, 20, 30, 50, 100],
+                        getData: function (params) {
+                            return accountFactory
+                                .getAccountCodes(accountId)
+                                .then(function (response) {
+                                    var filteredData = params.filter()
+                                        ? $filter('filter')(response, params.filter())
+                                        : response;
+                                    var orderedData = params.sorting()
+                                        ? $filter('orderBy')(filteredData, params.orderBy())
+                                        : filteredData;
+                                    var page = orderedData.slice(
+                                        (params.page() - 1) * params.count(),
+                                        params.page() * params.count()
+                                    );
+                                    params.total(response.length);
+                                    var page = orderedData.slice(
+                                        (params.page() - 1) * params.count(),
+                                        params.page() * params.count()
+                                    );
+                                    return page;
+                                })
+                                .catch(function (error) {
+                                    toastr.error(error);
+                                });
                         },
-                        {
-                            counts: [10, 20, 30, 50, 100],
-                            getData: function (params) {
-                                return $http({
-                                    url: urlService.CODES,
-                                    method: 'GET',
-                                    params: { account_id: vm.accountId },
-                                }).then(
-                                    function (response) {
-                                        var obj = humpsFactory.camelizeKeys(response.data);
-                                        var filteredData = params.filter()
-                                            ? $filter('filter')(obj, params.filter())
-                                            : obj;
-                                        var orderedData = params.sorting()
-                                            ? $filter('orderBy')(filteredData, params.orderBy())
-                                            : filteredData;
-                                        var page = orderedData.slice(
-                                            (params.page() - 1) * params.count(),
-                                            params.page() * params.count()
-                                        );
-                                        params.total(obj.length);
-                                        var page = orderedData.slice(
-                                            (params.page() - 1) * params.count(),
-                                            params.page() * params.count()
-                                        );
-                                        console.log(page);
-                                        return page;
-                                    },
-                                    function (error) {
-                                        console.log(error);
-                                    }
-                                );
-                            },
-                        }
-                    );
-                }
+                    }
+                );
             }
         }
 
         function link(scope, elem, attrs) {}
-    });
+    }
 });

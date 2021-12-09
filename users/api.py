@@ -10,6 +10,7 @@ from accounts.models import Account, AvatarInfo
 from django.db.models import Q, Prefetch, F, Value as V
 from django.db.models.functions import Concat
 from difflib import SequenceMatcher
+from accounts.enums import AccountStatus
 
 
 class CheckUsernameView(views.APIView):
@@ -183,20 +184,32 @@ class PasswordValidation(views.APIView):
             )
 
 
-# class UserAccountView(views.APIView):
-#     # @method_decorator(csrf_protect)
-#     def post(self, request, *args, **kwargs):
-#         if request.user.is_authenticated and request.user.id:
-#             account = Account.objects.get(user=request.user.id)
-#             avatar = AvatarInfo.objects.get(account=account.id)
-#             return Response(
-#                 data={
-#                     "user": request.user.user_id,
-#                     "account": account.account_id,
-#                     "avatar": avatar.file_attachment,
-#                 },
-#                 status=status.HTTP_201_CREATED,
-#             )
+class UserAccountViewSet(ModelViewSet):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserAccountSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get_queryset(self):
+        queryset = CustomUser.objects.exclude(is_active=False)
+        user = self.request.user.id
+
+        if user is not None:
+            queryset = (
+                queryset.prefetch_related(
+                    Prefetch(
+                        "account_user",
+                        queryset=Account.objects.annotate(
+                            account_name=Concat(F("first_name"), V(" "), F("last_name"))
+                        )
+                        .filter(is_deleted=False, account_status=AccountStatus.ACTIVE)
+                        .order_by("id"),
+                    )
+                )
+                .filter(id=user)
+                .exclude(is_active=False)
+            )
+
+            return queryset
 
 
 class UserViewSet(ModelViewSet):

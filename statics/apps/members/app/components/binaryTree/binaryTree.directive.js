@@ -1,7 +1,9 @@
-define(['raphael'], function () {
+define(['orgChart'], function () {
     'use strict';
 
-    angular.module('appMember').directive('binaryTree', function (DIRECTORY) {
+    angular.module('appMember').directive('binaryTree', binaryTree);
+
+    function binaryTree(DIRECTORY, $compile) {
         var directive = {
             bindToController: true,
             controller: binaryTreeController,
@@ -18,70 +20,67 @@ define(['raphael'], function () {
 
         function binaryTreeController(
             $scope,
-            $timeout,
             $http,
-            $compile,
             accountFactory,
             urlService,
             humpsFactory,
-            DIRECTORY
+            $uibModal,
+            _,
+            blockUI,
+            toastr
         ) {
             var vm = this;
+            var jsonTree = [];
 
             init();
 
             function init() {
                 $scope.$watch(
                     function () {
-                        return accountFactory.getAccountId();
+                        return accountFactory.getSelectedAccount().accountId;
                     },
                     function (newValue, oldValue) {
                         if (newValue !== oldValue) {
+                            jsonTree = [];
                             vm.accountId = newValue;
                         } else {
                             vm.accountId = oldValue;
                         }
-                        loadGenealogy();
+                        loadGenealogy(vm.accountId);
                     }
                 );
-
-                var config = {
-                    container: '#binary-tree',
-                    animateOnInit: true,
-                    connectors: {
-                        type: 'straight',
-                    },
-                    node: {
-                        collapsable: false,
-                    },
-                    animation: {
-                        nodeAnimation: 'easeOutBounce',
-                        nodeSpeed: 700,
-                        connectorsAnimation: 'bounce',
-                        connectorsSpeed: 700,
-                    },
-                };
-
-                vm.jsonTree = [config];
             }
 
-            function loadGenealogy() {
-                $http({
-                    url: urlService.GENEALOGY,
-                    method: 'GET',
-                    params: { account_id: vm.accountId },
-                }).then(
-                    function (response) {
-                        var obj = humpsFactory.camelizeKeys(response.data[0]);
-                        if (obj) {
-                            fourthGenJSON(obj);
-                            setUpTree(vm.jsonTree);
+            function loadGenealogy(accountId) {
+                blockUI.start('Generating Genealogy ...');
+                accountFactory
+                    .getAccountGenealogy(accountId)
+                    .then(function (response) {
+                        if (response) {
+                            fourthGenJSON(response);
+                            loadBinary(jsonTree);
                         }
-                    },
-                    function (error) {
-                        console.log(error.status);
-                    }
-                );
+                    })
+                    .catch(function (error) {
+                        blockUI.stop();
+                        toastr.error(error);
+                    });
+                // $http({
+                //     url: urlService.GENEALOGY,
+                //     method: 'GET',
+                //     params: { account_id: accountId },
+                // }).then(
+                //     function (response) {
+                //         var obj = humpsFactory.camelizeKeys(response.data[0]);
+                //         if (obj) {
+                //             fourthGenJSON(obj);
+                //             loadBinary(jsonTree);
+                //         }
+                //     },
+                //     function (error) {
+                //         console.log(error.status);
+                //     }
+                // );
             }
 
             function fourthGenJSON(object) {
@@ -96,46 +95,27 @@ define(['raphael'], function () {
                 // End Condition for Avatar if it exists
                 // Start Parent Object
                 var parent = {
-                    text: { name: object.accountName },
                     id: object.accountId,
-                    innerHTML:
-                        '<div class="text-center">' +
-                        '<div class="avatar avatar-xl">' +
-                        '<img src="' +
-                        avatar +
-                        '" alt="image" />' +
-                        '</div>' +
-                        '</div>' +
-                        '<div class="mt-2 text-center">' +
-                        '<a href="" ng-click="viewMember(' +
-                        object.accountNumber +
-                        ')" class="text-dark font-weight-bold text-hover-primary font-size-h5">' +
-                        object.accountName +
-                        '</a>' +
-                        '</div>' +
-                        '<div class="text-center">' +
-                        '<span class="text-dark font-weight-bold font-size-h6">' +
-                        object.accountNumber +
-                        '</span>' +
-                        '</div>',
+                    accountNumber: object.accountNumber,
+                    name: object.accountName,
+                    avatar: avatar,
                 };
-                vm.jsonTree.push(parent);
+                jsonTree.push(parent);
                 // End Parent Object
                 // Start Recursive for Children of Parent
-                fourthGenJSONRecursive(object.children, parent, object);
+                fourthGenJSONRecursive(object.children, object);
             }
 
-            function fourthGenJSONRecursive(children, parent, parentObject) {
+            function fourthGenJSONRecursive(children, parentObject) {
                 // Check if Children object exists or has length
                 var blankAvatar = DIRECTORY.MEDIA + '/img/blank.png';
+                var addMember2;
+                var addMember1;
+                var childMember;
                 if (children && children.length > 0) {
                     // Loop through children object
                     angular.forEach(children, function (child) {
                         // Start Condition for Avatar if it exists
-                        var addMember2;
-                        var addMember1;
-                        var childMember;
-
                         var avatar;
                         if (child.avatarInfo.length > 1 && !!!child.avatarInfo[0].fileAttachment) {
                             avatar = child.avatarInfo[0].fileAttachment;
@@ -146,172 +126,181 @@ define(['raphael'], function () {
                         // Condition if Child order is 1st slot, and No Member on 2nd slot
                         if (child.parentSide == 'LEFT' && children.length == 1) {
                             childMember = {
-                                parent: parent,
-                                innerHTML:
-                                    '<div class="text-center">' +
-                                    '<div class="avatar avatar-xl">' +
-                                    '<img src="' +
-                                    avatar +
-                                    '" alt="image" />' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '<div class="mt-2 text-center">' +
-                                    '<a href="" ng-click="viewMember(' +
-                                    child.accountNumber +
-                                    ')" class="text-dark font-weight-bold text-hover-primary font-size-h5">' +
-                                    child.accountName +
-                                    '</a>' +
-                                    '</div>' +
-                                    '<div class="text-center">' +
-                                    '<span class="text-dark font-weight-bold font-size-h6">' +
-                                    child.accountNumber +
-                                    '</span>' +
-                                    '</div>',
+                                id: child.accountId,
+                                accountNumber: child.accountNumber,
+                                name: child.accountName,
+                                avatar: avatar,
+                                pid: parentObject.accountId,
+                                parentAccountNumber: parentObject.accountNumber,
+                                parentName: parentObject.accountName,
                             };
                             addMember2 = {
-                                parent: parent,
-                                innerHTML:
-                                    '<div class="text-center">' +
-                                    '<div class="avatar avatar-xl">' +
-                                    '<img src="' +
-                                    blankAvatar +
-                                    '" alt="image" />' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '<div class="my-2 text-center">' +
-                                    '<a href="" ng-click="addMember(' +
-                                    parentObject.accountNumber +
-                                    ',2)" class="text-dark font-weight-bold text-hover-primary font-size-h5">' +
-                                    '<i class="fas fa-plus mr-2 text-dark"></i>Add Member' +
-                                    '</a>' +
-                                    '</div>',
+                                tags: ['addMember'],
+                                id: 'add_right_' + parentObject.accountId,
+                                name: 'Add Member',
+                                avatar: blankAvatar,
+                                pid: parentObject.accountId,
+                                parentAccountNumber: parentObject.accountNumber,
+                                parentName: parentObject.accountName,
+                                parentSide: 'RIGHT',
+                                activationCode: '',
+                                referrer: '',
+                                firstName: '',
+                                lastName: '',
                             };
-                            $scope.json.push(childMember, addMember2);
+                            jsonTree.push(childMember, addMember2);
                         }
                         // End Condition if Child order is 1st slot, and No Member on 2nd slot
                         // Condition if Child order is 2nd slot, and No Member on 1st slot
                         else if (child.parentSide == 'RIGHT' && children.length == 1) {
                             addMember1 = {
-                                parent: parent,
-                                innerHTML:
-                                    '<div class="text-center">' +
-                                    '<div class="avatar avatar-xl">' +
-                                    '<img src="' +
-                                    blankAvatar +
-                                    '" alt="image" />' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '<div class="my-2 text-center">' +
-                                    '<a href="" ng-click="addMember(' +
-                                    parentObject.accountNumber +
-                                    ',1)" class="text-dark font-weight-bold text-hover-primary font-size-h5">' +
-                                    '<i class="fas fa-plus mr-2 text-dark"></i>Add Member' +
-                                    '</a>' +
-                                    '</div>',
+                                tags: ['addMember'],
+                                id: 'add_left_' + parentObject.accountId,
+                                name: 'Add Member',
+                                avatar: blankAvatar,
+                                pid: parentObject.accountId,
+                                parentAccountNumber: parentObject.accountNumber,
+                                parentName: parentObject.accountName,
+                                parentSide: 'LEFT',
+                                activationCode: '',
+                                referrer: '',
+                                firstName: '',
+                                lastName: '',
                             };
                             childMember = {
-                                parent: parent,
-                                innerHTML:
-                                    '<div class="text-center">' +
-                                    '<div class="avatar avatar-xl">' +
-                                    '<img src="' +
-                                    avatar +
-                                    '" alt="image" />' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '<div class="mt-2 text-center">' +
-                                    '<a href="" ng-click="viewMember(' +
-                                    child.accountNumber +
-                                    ')" class="text-dark font-weight-bold text-hover-primary font-size-h5">' +
-                                    child.accountName +
-                                    '</a>' +
-                                    '</div>' +
-                                    '<div class="text-center">' +
-                                    '<span class="text-dark font-weight-bold font-size-h6">' +
-                                    child.accountNumber +
-                                    '</span>' +
-                                    '</div>',
+                                id: child.accountId,
+                                accountNumber: child.accountNumber,
+                                name: child.accountName,
+                                avatar: avatar,
+                                pid: parentObject.accountNumber,
+                                parentAccountNumber: parentObject.accountNumber,
+                                parentName: parentObject.accountName,
                             };
-                            vm.jsonTree.push(addMember1, childMember);
+                            jsonTree.push(addMember1, childMember);
                         }
                         // End Condition if Child order is 2nd slot, and No Member on 1st slot
                         // Condition if there are 2 children
                         else {
                             childMember = {
-                                parent: parent,
-                                innerHTML:
-                                    '<div class="text-center">' +
-                                    '<div class="avatar avatar-xl">' +
-                                    '<img src="' +
-                                    avatar +
-                                    '" alt="image" />' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '<div class="mt-2 text-center">' +
-                                    '<a href="" ng-click="viewMember(' +
-                                    child.accountNumber +
-                                    ')" class="text-dark font-weight-bold text-hover-primary font-size-h5">' +
-                                    child.accountName +
-                                    '</a>' +
-                                    '</div>' +
-                                    '<div class="text-center">' +
-                                    '<span class="text-dark font-weight-bold font-size-h6">' +
-                                    child.accountNumber +
-                                    '</span>' +
-                                    '</div>',
+                                id: child.accountId,
+                                accountNumber: child.accountNumber,
+                                name: child.accountName,
+                                avatar: avatar,
+                                pid: parentObject.accountId,
+                                parentAccountNumber: parentObject.accountNumber,
+                                parentName: parentObject.accountName,
                             };
-                            vm.jsonTree.push(childMember);
+                            jsonTree.push(childMember);
                         }
                         // End Condition if there are 2 children
-                        fourthGenJSONRecursive(child.children, childMember, child);
+                        fourthGenJSONRecursive(child.children, child);
                     });
                 } else if (children && children.length == 0) {
-                    var addMember1 = {
-                        parent: parent,
-                        innerHTML:
-                            '<div class="text-center">' +
-                            '<div class="avatar avatar-xl">' +
-                            '<img src="' +
-                            blankAvatar +
-                            '" alt="image" />' +
-                            '</div>' +
-                            '</div>' +
-                            '<div class="my-2 text-center">' +
-                            '<a href="" ng-click="addMember(' +
-                            parentObject.accountNumber +
-                            ',1)" class="text-dark font-weight-bold text-hover-primary font-size-h5">' +
-                            '<i class="fas fa-plus mr-2 text-dark"></i>Add Member' +
-                            '</a>' +
-                            '</div>',
+                    addMember1 = {
+                        tags: ['addMember'],
+                        id: 'add_left_' + parentObject.accountId,
+                        name: 'Add Member',
+                        avatar: blankAvatar,
+                        pid: parentObject.accountId,
+                        parentAccountNumber: parentObject.accountNumber,
+                        parentName: parentObject.accountName,
+                        parentSide: 'LEFT',
+                        activationCode: '',
+                        referrer: '',
+                        firstName: '',
+                        lastName: '',
                     };
-                    var addMember2 = {
-                        parent: parent,
-                        innerHTML:
-                            '<div class="text-center">' +
-                            '<div class="avatar avatar-xl">' +
-                            '<img src="' +
-                            blankAvatar +
-                            '" alt="image" />' +
-                            '</div>' +
-                            '</div>' +
-                            '<div class="my-2 text-center">' +
-                            '<a href="" ng-click="addMember(' +
-                            parentObject.accountNumber +
-                            ',2)" class="text-dark font-weight-bold text-hover-primary font-size-h5">' +
-                            '<i class="fas fa-plus mr-2 text-dark"></i>Add Member' +
-                            '</a>' +
-                            '</div>',
+                    addMember2 = {
+                        tags: ['addMember'],
+                        id: 'add_right_' + parentObject.accountId,
+                        name: 'Add Member',
+                        avatar: blankAvatar,
+                        pid: parentObject.accountId,
+                        parentAccountNumber: parentObject.accountNumber,
+                        parentName: parentObject.accountName,
+                        parentSide: 'RIGHT',
+                        activationCode: '',
+                        referrer: '',
+                        firstName: '',
+                        lastName: '',
                     };
-                    vm.jsonTree.push(addMember1, addMember2);
+                    jsonTree.push(addMember1, addMember2);
                 }
             }
 
-            function setUpTree(object) {
+            function openAddMemberModal(nodeObject) {
+                $uibModal.open({
+                    animation: true,
+                    templateUrl: DIRECTORY.COMPONENTS + '/binaryTree/addMember/addMember.tpl.html',
+                    size: 'xl',
+                    controller: 'AddMemberController',
+                    controllerAs: 'vm',
+                    bindToController: true,
+                    resolve: {
+                        loadController: function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'AddMemberController',
+                                    files: [DIRECTORY.COMPONENTS + '/binaryTree/addMember/addMember.controller.js'],
+                                },
+                            ]);
+                        },
+                        nodeObject: function () {
+                            return nodeObject;
+                        },
+                    },
+                });
+            }
+
+            function returnNodeObject(nodeId) {
+                return $scope.chart.get(nodeId);
+            }
+
+            function setUpTree() {
+                const tree = document.getElementById('binary-tree');
+                if (tree) {
+                    return new OrgChart(tree, {
+                        align: OrgChart.ORIENTATION,
+                        template: 'diva',
+                        enableSearch: false,
+                        scaleInitial: OrgChart.match.boundary,
+                        mouseScrool: OrgChart.action.none,
+                        nodeMouseClick: OrgChart.action.none,
+                        nodeBinding: {
+                            field_0: 'name',
+                            field_1: 'accountNumber',
+                            img_0: 'avatar',
+                        },
+                        editForm: {
+                            buttons: {
+                                edit: null,
+                                share: null,
+                                pdf: null,
+                                remove: null,
+                            },
+                            generateElementsFromFields: false,
+                            elements: [
+                                { type: 'textbox', label: 'Full Name', binding: 'name' },
+                                { type: 'textbox', label: 'Account Number', binding: 'accountNumber' },
+                            ],
+                        },
+                    });
+                }
+            }
+
+            function loadBinary(object) {
+                $scope.chart = setUpTree();
                 $scope.data = object;
-                $timeout(function () {
-                    var element = $('#binary-tree');
-                    $compile(element)($scope);
-                    console.log('Loaded');
+                blockUI.stop();
+
+                $scope.chart.on('click', function (sender, args) {
+                    if (_.includes(args.node.tags, 'addMember')) {
+                        openAddMemberModal(returnNodeObject(args.node.id));
+                    } else {
+                        sender.editUI.show(args.node.id, true);
+                    }
+                    return false;
                 });
             }
         }
@@ -319,16 +308,19 @@ define(['raphael'], function () {
         function link(scope, elem, attrs) {
             scope.$watch(
                 'data',
-                function (newVal) {
-                    if (newVal) {
-                        var tree = new Treant(scope.data);
+                function (newValue, oldValue) {
+                    if (newValue) {
+                        scope.chart.load(newValue);
+                        var element = $('#binary-chart');
+                        $compile(element)(scope);
                     }
                 },
                 true
             );
+
             scope.$on('$destroy', function () {
                 scope.$destroy;
             });
         }
-    });
+    }
 });

@@ -1,7 +1,9 @@
 define(['urlService'], function () {
     'use strict';
 
-    angular.module('appMember').factory('identityFactory', function ($http, urlService) {
+    angular.module('appMember').factory('identityFactory', identityFactory);
+
+    function identityFactory($http, urlService) {
         var promises = {};
         var whoAmI = {};
         return {
@@ -25,8 +27,7 @@ define(['urlService'], function () {
             if (angular.isUndefined(promises.getWhoAmI)) {
                 promises.getWhoAmI = getNewWhoAmI();
             }
-            console.log(promises);
             return promises.getWhoAmI;
         }
-    });
+    }
 });

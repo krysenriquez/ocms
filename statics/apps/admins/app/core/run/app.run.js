@@ -8,8 +8,8 @@ define(['authLoginService', ''], function () {
         '$transitions',
         '$state',
         'authLoginService',
-        'statusService',
-        function ($http, $rootScope, $location, $transitions, $state, authLoginService, statusService) {
+        'statusFactory',
+        function ($http, $rootScope, $location, $transitions, $state, authLoginService, statusFactory) {
             $http.defaults.xsrfHeaderName = 'X-CSRFToken';
             $http.defaults.xsrfCookieName = 'csrftoken';
 
@@ -32,7 +32,7 @@ define(['authLoginService', ''], function () {
 
             $transitions.onError({}, function (transition) {
                 if (transition.error() && transition.error().detail) {
-                    if (transition.error().detail.status == statusService.UNAUTHORIZED) {
+                    if (transition.error().detail.status == statusFactory.UNAUTHORIZED) {
                         return transition.router.stateService.target('simple.login');
                     }
                 }

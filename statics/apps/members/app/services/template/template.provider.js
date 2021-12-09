@@ -1,7 +1,9 @@
 define(['appMember'], function () {
     'use strict';
 
-    angular.module('appMember').provider('template', function (DIRECTORY) {
+    angular.module('appMember').provider('$template', TemplateProvider);
+
+    function TemplateProvider(DIRECTORY) {
         this.$get = function () {
             return {};
         };
@@ -13,5 +15,5 @@ define(['appMember'], function () {
         this.getShared = function (name) {
             return DIRECTORY.SHARED + '/' + name + '/' + name + '.tpl.html';
         };
-    });
+    }
 });

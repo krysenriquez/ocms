@@ -1,7 +1,9 @@
 define([], function () {
     'use strict';
 
-    angular.module('appMember').service('urlService', function () {
+    angular.module('appMember').service('urlService', urlService);
+
+    function urlService() {
         var BASE_URL = '/webapi/';
         var BASE_AUTH = BASE_URL + 'auth/';
         var USERS_ROOT = BASE_URL + 'users/';
@@ -9,10 +11,13 @@ define([], function () {
 
         this.AUTH_MEMBER = BASE_AUTH + 'member/';
         this.AUTH_WHOAMI = BASE_AUTH + 'whoami/';
+        this.AUTH_GET = BASE_AUTH + 'get/';
         this.AUTH_LOGOUT = BASE_AUTH + 'logout/';
 
-        this.ACCOUNT_AVATAR = ACCOUNTS_ROOT + 'accountavatar/';
         this.GENEALOGY = ACCOUNTS_ROOT + 'genealogy/';
-        this.CODES = ACCOUNTS_ROOT + 'codes/';
-    });
+        this.GET_ACCOUNT_CODES = ACCOUNTS_ROOT + 'getaccountcodes/';
+        this.VERIFY_SPONSOR_CODE = ACCOUNTS_ROOT + 'verifysponsorcode/';
+
+        this.GET_USER_ACCOUNTS = USERS_ROOT + 'getuseraccounts/';
+    }
 });

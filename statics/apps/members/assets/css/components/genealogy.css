@@ -1,0 +1,54 @@
+#binary-tree {
+    font-family: 'Readex Pro', sans-serif !important;
+}
+
+.edit-form-title, .ba-input > label, .ba-input > input {
+    font-family: 'Readex Pro', sans-serif !important;
+}
+
+.edit-form-title {
+    font-size: 20px !important;
+}
+
+.ba-input > label {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.edit-form-avatar > svg {
+    height: 140px !important;
+    width: 140px !important;
+}
+
+.edit-form-header {
+    background-color: #191e3a !important;
+}
+
+.edit-form-instruments {
+    min-height: 20px !important;
+}
+
+[data-n-id] rect {
+    fill: #191e3a;
+}
+
+
+[data-n-id] circle {
+    stroke: #191e3a;
+}
+
+
+.node.addMember rect {
+    fill: #eb1821;
+}
+
+
+.node.addMember circle {
+    stroke: #eb1821;
+}
+
+[data-n-id] rect:hover {
+    filter: drop-shadow( 4px 5px 5px #aeaeae);
+ }
+
+

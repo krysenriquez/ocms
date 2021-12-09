@@ -7,20 +7,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from .serializers import *
 from .models import *
-
-
-class AccountAvatar(ModelViewSet):
-    queryset = Account.objects.all()
-    serializer_class = AccountAvatarSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get_queryset(self):
-        queryset = Account.objects.exclude(is_deleted=True)
-        user_id = self.request.user.id
-        if user_id is not None:
-            queryset = queryset.filter(user=user_id)
-
-            return queryset
+from .enums import *
 
 
 class AccountViewSet(ModelViewSet):
@@ -37,6 +24,21 @@ class AccountViewSet(ModelViewSet):
         else:
             return Response(
                 data={"message": "Account not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+class CreateAccountView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = AccountSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                data={"response_id": status.HTTP_201_CREATED}, status=status.HTTP_201_CREATED
+            )
+        else:
+            return Response(
+                data={"response_id": status.HTTP_404_NOT_FOUND},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -87,7 +89,6 @@ class GenealogyAccountViewSet(ModelViewSet):
         )
 
         account_id = self.request.query_params.get("account_id", None)
-        # accountNumber = self.request.query_params.get("accountNumber", None)
 
         if account_id is not None:
             queryset = queryset.filter(account_id=account_id)
@@ -136,3 +137,76 @@ class CodeViewSet(ModelViewSet):
             queryset = queryset.filter(account__account_id=account_id)
 
             return queryset
+
+
+class VerifySponsorCodeView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        # Parent of the Add Member, account is the ID of the sponsor
+        code_type = request.data.get("code_type")
+        code = request.data.get("code")
+        parent = request.data.get("parent")
+
+        try:
+            activation_code = Code.objects.get(code_type=code_type, code=code)
+            activation_code.update_status = activation_code.update_status()
+        except Code.DoesNotExist:
+            return Response(
+                data={"message": code_type.title() + " Code does not exist."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            upline = Account.objects.get(id=parent)
+        except Account.DoesNotExist:
+            return Response(
+                data={"message": "Upline Account Does Not Exist."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if activation_code.account:
+            try:
+                sponsor = Account.objects.get(pk=activation_code.account.pk)
+                children = []
+                sponsor.get_all_children(children)
+            except Account.DoesNotExist:
+                return Response(
+                    data={"message": "Sponsor Account Does Not Exist."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+        else:
+            return Response(
+                data={"message": code_type.title() + " Code " + code + " not linked to any Account."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        if upline in children or sponsor == upline:
+            if activation_code.status == CodeStatus.DEACTIVATED:
+                return Response(
+                    data={
+                        "message": code_type.title() + " Code already expired.",
+                    },
+                    status=status.HTTP_410_GONE,
+                )
+            elif activation_code.status == CodeStatus.USED:
+                return Response(
+                    data={
+                        "message": code_type.title() + " Code already been used.",
+                    },
+                    status=status.HTTP_409_CONFLICT,
+                )
+            else:
+                return Response(
+                    data={
+                        "message": code_type.title() + " Code valid.",
+                        "sponsor": str(sponsor.id).zfill(5),
+                        "sponsor_name": sponsor.first_name + " " + sponsor.last_name,
+                    },
+                    status=status.HTTP_200_OK,
+                )
+        else:
+            return Response(
+                data={
+                    "message": code_type.title() + " Code could only be used on Direct Downlines.",
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )

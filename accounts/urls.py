@@ -3,10 +3,13 @@ from .api import *
 from django.urls import path
 
 router = DefaultRouter()
-router.register(r"accountavatar", AccountAvatar)
 router.register(r"genealogy", GenealogyAccountViewSet)
-router.register(r"codes", CodeViewSet)
+router.register(r"getaccountcodes", CodeViewSet)
 
-urlpatterns = [path("generatecode/", GenerateCodeView.as_view())]
+urlpatterns = [
+    path("create/", CreateAccountView.as_view()),
+    path("generatecode/", GenerateCodeView.as_view()),
+    path("verifysponsorcode/", VerifySponsorCodeView.as_view()),
+]
 
 urlpatterns += router.urls

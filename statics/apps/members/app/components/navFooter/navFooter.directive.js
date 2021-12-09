@@ -1,7 +1,9 @@
 define(['appMember'], function () {
     'use strict';
 
-    angular.module('appMember').directive('navFooter', function (DIRECTORY) {
+    angular.module('appMember').directive('navFooter', navFooter);
+
+    function navFooter(DIRECTORY) {
         var directive = {
             bindToController: true,
             controller: navFooterController,
@@ -26,5 +28,5 @@ define(['appMember'], function () {
         }
 
         function link() {}
-    });
+    }
 });

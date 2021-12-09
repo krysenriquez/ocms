@@ -1,7 +1,7 @@
 define([], function () {
     'use strict';
 
-    angular.module('appAdmin').service('statusService', function () {
+    angular.module('appAdmin').service('statusFactory', function () {
         this.OK = 200;
         this.CREATED = 201;
         this.ACCEPTED = 202;

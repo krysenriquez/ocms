@@ -1,0 +1,48 @@
+<li class="nav-item dropdown account-dropdown hide" ng-click="shouldShowDropdown()">
+    <a
+        href="javascript:void(0);"
+        class="nav-link dropdown-toggle"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded="true"
+    >
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-users"
+        >
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+    </a>
+    <div class="dropdown-menu p-0 position-absolute animated fadeInUp" aria-labelledby="messageDropdown">
+        <div class="dropdown-window">
+            <a class="dropdown-item" ng-repeat="account in vm.userAccounts" ng-click="vm.selectAccount(account)">
+                <div>
+                    <div class="media">
+                        <div class="user-img align-middle">
+                            <div class="avatar avatar-xl">
+                                <img alt="avatar" src="{{ account.avatar }}" class="rounded-circle" />
+                            </div>
+                        </div>
+                        <div class="media-body align-middle">
+                            <div class="">
+                                <h5 class="usr-name">{{ account.accountName }}</h5>
+                                <p class="msg-title">{{ account.accountNumber }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</li>

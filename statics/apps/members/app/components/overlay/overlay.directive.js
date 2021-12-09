@@ -1,7 +1,9 @@
 define(['appMember', 'humpsFactory'], function () {
     'use strict';
 
-    angular.module('appMember').directive('overlayClick', function (DIRECTORY) {
+    angular.module('appMember').directive('overlayClick', overlayClick);
+
+    function overlayClick() {
         return {
             restrict: 'A',
             link: function (scope, elem, attrs) {
@@ -15,5 +17,5 @@ define(['appMember', 'humpsFactory'], function () {
                 });
             },
         };
-    });
+    }
 });

@@ -1,11 +1,11 @@
-define(['urlService', 'identityFactory', 'statusService'], function () {
+define(['urlService', 'identityFactory', 'statusFactory'], function () {
     'use strict';
 
     angular
         .module('appAdmin')
         .service(
             'authLoginService',
-            function ($http, $location, $window, $timeout, $state, $q, urlService, identityFactory, statusService) {
+            function ($http, $location, $window, $timeout, $state, $q, urlService, identityFactory, statusFactory) {
                 this.login = login;
                 this.isLoggedIn = isLoggedIn;
                 this.logout = logout;
@@ -13,7 +13,7 @@ define(['urlService', 'identityFactory', 'statusService'], function () {
                 function login(credentials) {
                     return $http.post(urlService.AUTH_ADMIN, credentials).then(
                         function (response) {
-                            return response.status == statusService.OK;
+                            return response.status == statusFactory.OK;
                         },
                         function (error) {
                             return false;
@@ -24,7 +24,7 @@ define(['urlService', 'identityFactory', 'statusService'], function () {
                 function isLoggedIn() {
                     return identityFactory.getNewWhoAmI().then(
                         function (response) {
-                            return response.status == statusService.OK;
+                            return response.status == statusFactory.OK;
                         },
                         function (error) {
                             return false;
@@ -35,7 +35,7 @@ define(['urlService', 'identityFactory', 'statusService'], function () {
                 function logout() {
                     return $http.post(urlService.AUTH_LOGOUT).then(
                         function (response) {
-                            return response.status == statusService.OK;
+                            return response.status == statusFactory.OK;
                         },
                         function (error) {
                             return false;
