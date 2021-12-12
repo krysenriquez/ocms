@@ -1,6 +1,12 @@
 import uuid
 from django.db import models
-from django.db.models.enums import Choices
+from django.db.models.functions.datetime import TruncTime
+from django.utils import timezone
+from django.db.models.functions import TruncDate
+import datetime
+import pytz
+from tzlocal import get_localzone
+from dateutil.relativedelta import relativedelta
 from .enums import AccountStatus, CodeStatus, CodeType, Gender, ParentSide, BinaryType
 
 
@@ -70,11 +76,67 @@ class Account(models.Model):
     def get_full_name(self):
         return "%s %s %s" % (self.first_name, self.middle_name, self.last_name)
 
-    def get_all_children(self, children):
+    def get_all_children_side(self, children=None, parent_side=None):
+        if children is None:
+            children = []
+        for account in self.children.all():
+            if account.parent_side == parent_side:
+                children.append(account)
+                account.get_all_children(children)
+        return children
+
+    def get_all_children(self, children=None):
+        if children is None:
+            children = []
         for account in self.children.all():
             children.append(account)
             account.get_all_children(children)
         return children
+
+    def get_all_parents(self, parents=None):
+        if parents is None:
+            parents = []
+        if self.parent:
+            parents.append(self.parent)
+            self.parent.get_all_parents(parents)
+        return parents
+
+    def get_all_parents_with_side(self, parents=None, level=None):
+        if parents is None:
+            parents = []
+            level = 0
+        if self.parent:
+            level = level + 1
+            parents.append({"account": self.parent, "side": self.parent_side, "level": level})
+            self.parent.get_all_parents_with_side(parents, level)
+        return parents
+
+    def get_all_direct_referral_month(self):
+        local_tz = get_localzone()
+        nth_of_the_month = self.created.astimezone(local_tz).day
+
+        current_month_date = timezone.localtime().date() + relativedelta(day=int(nth_of_the_month))
+        previous_month_date = current_month_date - relativedelta(months=1, day=int(nth_of_the_month))
+        next_month_date = current_month_date + relativedelta(months=1, day=int(nth_of_the_month))
+
+        if int(nth_of_the_month) < int(timezone.localtime().day):
+            return (
+                self.referrals.annotate(created_local_tz=TruncDate("created", tzinfo=local_tz))
+                .filter(
+                    created_local_tz__gte=current_month_date,
+                    created_local_tz__lte=next_month_date,
+                )
+                .all()
+            )
+        else:
+            return (
+                self.referrals.annotate(created_local_tz=TruncDate("created", tzinfo=local_tz))
+                .filter(
+                    created_local_tz__gte=previous_month_date,
+                    created_local_tz__lte=current_month_date,
+                )
+                .all()
+            )
 
     def __str__(self):
         return "%s" % (self.get_full_name())
@@ -242,3 +304,9 @@ class Binary(models.Model):
     is_deleted = models.BooleanField(
         default=False,
     )
+
+    class Meta:
+        verbose_name_plural = "Binaries"
+
+    def __str__(self):
+        return "%s -, %s : %s" % (self.parent, self.left_side, self.right_side)

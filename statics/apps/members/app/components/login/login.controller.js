@@ -16,7 +16,7 @@ define(['authLoginService'], function () {
                 .then(function (response) {
                     blockUI.stop();
                     toastr.success(response.data.message);
-                    // $state.go('members.dashboard');
+                    $state.go('members.dashboard');
                 })
                 .catch(function (error) {
                     blockUI.stop();

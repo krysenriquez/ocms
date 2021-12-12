@@ -10,6 +10,7 @@ urlpatterns = [
     path("create/", CreateAccountView.as_view()),
     path("generatecode/", GenerateCodeView.as_view()),
     path("verifysponsorcode/", VerifySponsorCodeView.as_view()),
+    path("test/", TestView.as_view()),
 ]
 
 urlpatterns += router.urls

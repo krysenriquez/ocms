@@ -7,7 +7,7 @@ class AccountStatus(models.TextChoices):
     PENDING = "PENDING", _("Pending")
     ACTIVE = "ACTIVE", _("Active")
     DEACTIVATED = "DEACTIVATED", _("Deactivated")
-    CLOSED = "CLOSED", _("CLOSED")
+    CLOSED = "CLOSED", _("Closed")
 
 
 class ParentSide(models.TextChoices):

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "users",
     "accounts",
+    "activities",
     "settings",
 ]
 
@@ -112,7 +113,7 @@ if DEBUG:
             "USER": "postgres",
             "PASSWORD": "P@ss1w0rd",
             "HOST": "localhost",
-            "PORT": "5433",
+            "PORT": "5434",
         }
     }
 

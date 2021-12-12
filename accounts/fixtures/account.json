@@ -1,0 +1,212 @@
+[
+    {
+        "model": "accounts.account",
+        "pk": 1,
+        "fields": {
+            "account_id": "8de47d9d-b78d-48c5-9e3e-5d516d5a16b7",
+            "parent": null,
+            "parent_side": null,
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Developer",
+            "account_status": "ACTIVE",
+            "user": 1,
+            "created_by": 1,
+            "created": "2021-12-09T13:22:14.264Z",
+            "modified": "2021-12-09T13:22:14.264Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 2,
+        "fields": {
+            "account_id": "40409204-1a8a-4afc-bdf3-cd4efbbb6cde",
+            "parent": 1,
+            "parent_side": "LEFT",
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Dev 1",
+            "account_status": "ACTIVE",
+            "user": 1,
+            "created_by": 1,
+            "created": "2021-12-10T08:16:14.306Z",
+            "modified": "2021-12-10T08:24:34.773Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 3,
+        "fields": {
+            "account_id": "d267c49c-170c-4cf8-83ee-f23ff18b9adf",
+            "parent": 1,
+            "parent_side": "RIGHT",
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Dev 2",
+            "account_status": "ACTIVE",
+            "user": null,
+            "created_by": 1,
+            "created": "2021-12-10T08:16:31.739Z",
+            "modified": "2021-12-10T08:16:31.739Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 4,
+        "fields": {
+            "account_id": "47c50498-0fae-49d0-88a6-5c220ddecc80",
+            "parent": 2,
+            "parent_side": "LEFT",
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Member 4",
+            "account_status": "ACTIVE",
+            "user": null,
+            "created_by": 1,
+            "created": "2021-12-10T08:16:47.751Z",
+            "modified": "2021-12-10T08:21:56.987Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 5,
+        "fields": {
+            "account_id": "fbc4703b-c72d-4403-9548-75d9f4d62cee",
+            "parent": 2,
+            "parent_side": "RIGHT",
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Member 5",
+            "account_status": "ACTIVE",
+            "user": null,
+            "created_by": 1,
+            "created": "2021-12-10T08:17:10.839Z",
+            "modified": "2021-12-10T08:21:53.642Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 6,
+        "fields": {
+            "account_id": "1efaac02-3aae-4647-b54b-76587926d8a1",
+            "parent": 3,
+            "parent_side": "LEFT",
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Member 6",
+            "account_status": "ACTIVE",
+            "user": null,
+            "created_by": 1,
+            "created": "2021-12-10T08:17:29.710Z",
+            "modified": "2021-12-10T10:20:17.991Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 7,
+        "fields": {
+            "account_id": "c780efb2-f62f-4d34-b1a9-38d20d2f1dfa",
+            "parent": 3,
+            "parent_side": "RIGHT",
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Member 7",
+            "account_status": "ACTIVE",
+            "user": null,
+            "created_by": 1,
+            "created": "2021-12-10T08:18:59.182Z",
+            "modified": "2021-12-10T08:21:44.471Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 8,
+        "fields": {
+            "account_id": "59932b4e-210c-4b1b-9775-22fa5fd05b1d",
+            "parent": 4,
+            "parent_side": "LEFT",
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Member 8",
+            "account_status": "ACTIVE",
+            "user": null,
+            "created_by": 1,
+            "created": "2021-12-10T08:25:52.169Z",
+            "modified": "2021-12-10T08:25:52.169Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 9,
+        "fields": {
+            "account_id": "b83f0a25-dd1f-4075-9410-248d3ba6d599",
+            "parent": 5,
+            "parent_side": "RIGHT",
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Member 9",
+            "account_status": "ACTIVE",
+            "user": null,
+            "created_by": 1,
+            "created": "2021-12-10T08:26:54.490Z",
+            "modified": "2021-12-10T08:27:30.115Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    },
+    {
+        "model": "accounts.account",
+        "pk": 10,
+        "fields": {
+            "account_id": "98c0e3cd-d796-4fb0-b1ce-5b9baae75e4c",
+            "parent": 8,
+            "parent_side": "RIGHT",
+            "activation_code": null,
+            "referrer": null,
+            "first_name": "OCM",
+            "middle_name": null,
+            "last_name": "Member 10",
+            "account_status": "ACTIVE",
+            "user": null,
+            "created_by": 1,
+            "created": "2021-12-10T10:07:11.532Z",
+            "modified": "2021-12-10T10:07:11.532Z",
+            "deleted": null,
+            "is_deleted": false
+        }
+    }
+]

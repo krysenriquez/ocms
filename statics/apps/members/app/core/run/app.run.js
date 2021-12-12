@@ -1,9 +1,9 @@
-define(['authLoginService', ''], function () {
+define(['authLoginService'], function () {
     'use strict';
 
     angular.module('appMember').run(run);
 
-    function run($http, $rootScope, $location, $transitions, $state, authLoginService, statusFactory) {
+    function run($http, $rootScope, $location, $transitions, $state, authLoginService, statusFactory, toastr) {
         $http.defaults.xsrfHeaderName = 'X-CSRFToken';
         $http.defaults.xsrfCookieName = 'csrftoken';
 
@@ -18,6 +18,7 @@ define(['authLoginService', ''], function () {
             if (!transition.to().secure) {
                 return authLoginService.isLoggedIn().then(function (response) {
                     if (response) {
+                        toastr.info('Resuming Session');
                         return transition.router.stateService.target('members.dashboard');
                     }
                 });

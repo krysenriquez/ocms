@@ -27,6 +27,7 @@ class AccountViewSet(ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
+
 class CreateAccountView(views.APIView):
     def post(self, request, *args, **kwargs):
         serializer = AccountSerializer(data=request.data)
@@ -56,27 +57,8 @@ class GenealogyAccountViewSet(ModelViewSet):
                     queryset=Account.objects.prefetch_related(
                         Prefetch(
                             "children",
-                            queryset=Account.objects.annotate(
-                                accountName=Concat(
-                                    F("first_name"),
-                                    V(" "),
-                                    F("middle_name"),
-                                    V(" "),
-                                    F("last_name"),
-                                ),
-                            )
-                            .order_by("parent_side")
-                            .all(),
+                            queryset=Account.objects.order_by("parent_side").all(),
                         )
-                    )
-                    .annotate(
-                        account_name=Concat(
-                            F("first_name"),
-                            V(" "),
-                            F("middle_name"),
-                            V(" "),
-                            F("last_name"),
-                        ),
                     )
                     .order_by("parent_side")
                     .all(),
@@ -93,17 +75,13 @@ class GenealogyAccountViewSet(ModelViewSet):
         if account_id is not None:
             queryset = queryset.filter(account_id=account_id)
 
-            # if accountNumber is not None:
-            #     accountNumbers = []
-            #     for member in queryset:
-            #         member.accountNumber = member.f_pk()
-            #         if member.accountNumber == accountNumber:
-            #             accountNumbers.append(member.pk)
-            #     queryset = queryset.filter(accountId__in=accountNumbers)
-
-            # for member in queryset:
-            #     member.all_children_left_count = member.get_all_children_left_count()
-            #     member.all_children_right_count = member.get_all_children_right_count()
+            for member in queryset:
+                member.all_left_children_count = len(
+                    member.get_all_children_side(parent_side=ParentSide.LEFT)
+                )
+                member.all_right_children_count = len(
+                    member.get_all_children_side(parent_side=ParentSide.RIGHT)
+                )
 
             return queryset
 
@@ -166,8 +144,7 @@ class VerifySponsorCodeView(views.APIView):
         if activation_code.account:
             try:
                 sponsor = Account.objects.get(pk=activation_code.account.pk)
-                children = []
-                sponsor.get_all_children(children)
+                children = sponsor.get_all_children()
             except Account.DoesNotExist:
                 return Response(
                     data={"message": "Sponsor Account Does Not Exist."},
@@ -209,4 +186,27 @@ class VerifySponsorCodeView(views.APIView):
                     "message": code_type.title() + " Code could only be used on Direct Downlines.",
                 },
                 status=status.HTTP_403_FORBIDDEN,
+            )
+
+
+# Test
+from .services import *
+from django.shortcuts import get_object_or_404
+
+
+class TestView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        account = request.data.get("account", None)
+        if account is not None:
+            new_member = get_object_or_404(Account, id=account)
+            create_unli_ten_activity(request, new_member)
+            # create_referral_activity(request, new_member.referrer, new_member)
+            return Response(
+                data={"response": status.HTTP_200_OK},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                data={"response_id": status.HTTP_404_NOT_FOUND},
+                status=status.HTTP_404_NOT_FOUND,
             )

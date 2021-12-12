@@ -62,32 +62,19 @@ define(['orgChart'], function () {
                         }
                     })
                     .catch(function (error) {
+                        console.log(error);
                         blockUI.stop();
                         toastr.error(error);
                     });
-                // $http({
-                //     url: urlService.GENEALOGY,
-                //     method: 'GET',
-                //     params: { account_id: accountId },
-                // }).then(
-                //     function (response) {
-                //         var obj = humpsFactory.camelizeKeys(response.data[0]);
-                //         if (obj) {
-                //             fourthGenJSON(obj);
-                //             loadBinary(jsonTree);
-                //         }
-                //     },
-                //     function (error) {
-                //         console.log(error.status);
-                //     }
-                // );
             }
 
             function fourthGenJSON(object) {
                 // Start Condition for Avatar if it exists
                 var avatar;
                 var blankAvatar = DIRECTORY.MEDIA + '/img/blank.png';
-                if (object.avatarInfo.length > 1 && !!!object.avatarInfo[0].fileAttachment) {
+                console.log(object.avatarInfo.length > 1);
+                console.log(!!object.avatarInfo[0].fileAttachment);
+                if (object.avatarInfo.length > 1 && !!object.avatarInfo[0].fileAttachment) {
                     avatar = object.avatarInfo[0].fileAttachment;
                 } else {
                     avatar = blankAvatar;
@@ -103,6 +90,7 @@ define(['orgChart'], function () {
                 jsonTree.push(parent);
                 // End Parent Object
                 // Start Recursive for Children of Parent
+                console.log(object);
                 fourthGenJSONRecursive(object.children, object);
             }
 
@@ -133,6 +121,8 @@ define(['orgChart'], function () {
                                 pid: parentObject.accountId,
                                 parentAccountNumber: parentObject.accountNumber,
                                 parentName: parentObject.accountName,
+                                parentSide: child.parentSide,
+                                count: parentObject.allLeftChildrenCount ? parentObject.allLeftChildrenCount : '',
                             };
                             addMember2 = {
                                 tags: ['addMember'],
@@ -147,6 +137,7 @@ define(['orgChart'], function () {
                                 referrer: '',
                                 firstName: '',
                                 lastName: '',
+                                count: parentObject.allRightChildrenCount ? parentObject.allRightChildrenCount : '',
                             };
                             jsonTree.push(childMember, addMember2);
                         }
@@ -166,15 +157,18 @@ define(['orgChart'], function () {
                                 referrer: '',
                                 firstName: '',
                                 lastName: '',
+                                count: parentObject.allLeftChildrenCount ? parentObject.allLeftChildrenCount : '',
                             };
                             childMember = {
                                 id: child.accountId,
                                 accountNumber: child.accountNumber,
                                 name: child.accountName,
                                 avatar: avatar,
-                                pid: parentObject.accountNumber,
+                                pid: parentObject.accountId,
                                 parentAccountNumber: parentObject.accountNumber,
                                 parentName: parentObject.accountName,
+                                parentSide: child.parentSide,
+                                count: parentObject.allRightChildrenCount ? parentObject.allRightChildrenCount : '',
                             };
                             jsonTree.push(addMember1, childMember);
                         }
@@ -189,6 +183,11 @@ define(['orgChart'], function () {
                                 pid: parentObject.accountId,
                                 parentAccountNumber: parentObject.accountNumber,
                                 parentName: parentObject.accountName,
+                                parentSide: child.parentSide,
+                                count:
+                                    child.parentSide == 'LEFT'
+                                        ? parentObject.allLeftChildrenCount
+                                        : parentObject.allRightChildrenCount,
                             };
                             jsonTree.push(childMember);
                         }
@@ -209,6 +208,7 @@ define(['orgChart'], function () {
                         referrer: '',
                         firstName: '',
                         lastName: '',
+                        count: parentObject.allLeftChildrenCount ? parentObject.allLeftChildrenCount : '',
                     };
                     addMember2 = {
                         tags: ['addMember'],
@@ -223,6 +223,7 @@ define(['orgChart'], function () {
                         referrer: '',
                         firstName: '',
                         lastName: '',
+                        count: parentObject.allRightChildrenCount ? parentObject.allRightChildrenCount : '',
                     };
                     jsonTree.push(addMember1, addMember2);
                 }
@@ -265,12 +266,15 @@ define(['orgChart'], function () {
                         template: 'diva',
                         enableSearch: false,
                         scaleInitial: OrgChart.match.boundary,
-                        mouseScrool: OrgChart.action.none,
+                        mouseScrool: OrgChart.action.ctrlZoom,
                         nodeMouseClick: OrgChart.action.none,
                         nodeBinding: {
                             field_0: 'name',
                             field_1: 'accountNumber',
                             img_0: 'avatar',
+                        },
+                        linkBinding: {
+                            link_field_0: 'count',
                         },
                         editForm: {
                             buttons: {

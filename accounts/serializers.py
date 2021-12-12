@@ -2,6 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from django.utils import timezone
 from .models import *
+from .services import update_binary
 import string, random
 
 
@@ -214,27 +215,59 @@ class GenealogyAvatarSerializer(ModelSerializer):
         fields = ["file_attachment"]
 
 
-class GenealogySubChildAccountSerializer(ModelSerializer):
+class RecursiveField(serializers.BaseSerializer):
+    def to_representation(self, value):
+        parent = self.parent
+        if isinstance(parent, serializers.ListSerializer):
+            parent = parent.parent
+
+        depth = getattr(parent, "depth", 1)
+        ParentSerializer = self.parent.parent.__class__
+        serializer = ParentSerializer(value, context=self.context)
+        serializer.depth = depth + 1
+        return serializer.data
+
+    def to_internal_value(self, data):
+        ParentSerializer = self.parent.parent.__class__
+        try:
+            instance = Account.objects.get(pk=data)
+        except Account.DoesNotExist:
+            raise serializers.ValidationError(
+                "Account {0} does not exists".format(Account().__class__.__name__)
+            )
+        return instance
+
+
+class GenealogyAccountSerializer(ModelSerializer):
+    # children = GenealogyChildAccountSerializer(many=True, required=False)
     avatar_info = GenealogyAvatarSerializer(many=True, required=False)
-    account_name = serializers.CharField(read_only=True)
+    account_name = serializers.SerializerMethodField()
     account_number = serializers.SerializerMethodField()
+    all_left_children_count = serializers.CharField(read_only=True)
+    all_right_children_count = serializers.CharField(read_only=True)
+    depth = serializers.SerializerMethodField()
+
+    def __init__(self, *args, depth=0, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.depth = depth
+
+    def get_account_name(self, obj):
+        return "{} {}".format(obj.first_name, obj.last_name)
 
     def get_account_number(self, obj):
-        return "{:0>5d}".format(obj.id)
+        return str(obj.id).zfill(5)
 
-    class Meta:
-        model = Account
-        fields = ["account_id", "account_name", "account_number", "avatar_info", "parent_side"]
+    def get_depth(self, obj):
+        return self.depth
 
+    def get_fields(self):
+        fields = super().get_fields()
+        if self.depth < 5:
+            fields["children"] = RecursiveField(many=True, required=False)
+        else:
+            del fields["children"]
 
-class GenealogyChildAccountSerializer(ModelSerializer):
-    children = GenealogySubChildAccountSerializer(many=True, required=False)
-    avatar_info = GenealogyAvatarSerializer(many=True, required=False)
-    account_name = serializers.CharField(read_only=True)
-    account_number = serializers.SerializerMethodField()
-
-    def get_account_number(self, obj):
-        return "{:0>5d}".format(obj.id)
+        return fields
 
     class Meta:
         model = Account
@@ -242,24 +275,13 @@ class GenealogyChildAccountSerializer(ModelSerializer):
             "account_id",
             "account_name",
             "account_number",
+            "parent_side",
+            "depth",
             "avatar_info",
             "children",
-            "parent_side",
+            "all_left_children_count",
+            "all_right_children_count",
         ]
-
-
-class GenealogyAccountSerializer(ModelSerializer):
-    children = GenealogyChildAccountSerializer(many=True, required=False)
-    avatar_info = GenealogyAvatarSerializer(many=True, required=False)
-    account_name = serializers.CharField(read_only=True)
-    account_number = serializers.SerializerMethodField()
-
-    def get_account_number(self, obj):
-        return str(obj.id).zfill(5)
-
-    class Meta:
-        model = Account
-        fields = ["account_id", "account_name", "account_number", "avatar_info", "children"]
 
 
 def code_generator(size=8, chars=string.ascii_uppercase + string.digits):
