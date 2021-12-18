@@ -48,20 +48,26 @@ require.config({
         appConstant: core + 'constant/app.constant',
         // Factories, Services
         accountFactory: services + 'account/account.factory',
+        activityFactory: services + 'activity/activity.factory',
         authLoginService: services + 'authLogin/authLogin.service',
         codesFactory: services + 'codes/codes.factory',
         humpsFactory: services + 'humps/humps.factory',
         identityFactory: services + 'identity/identity.factory',
         localStorageFactory: services + 'localStorage/localStorage.factory',
         statusFactory: services + 'status/status.factory',
+        settingsFactory: services + 'settings/settings.factory',
         urlService: services + 'url/url.service',
         userFactory: services + 'user/user.factory',
+        verifyFactory: services + 'verify/verify.factory',
+        walletFactory: services + 'wallet/wallet.factory',
         // Providers
         cryptoProvider: services + 'crypto/crypto.provider',
         templateProvider: services + 'template/template.provider',
-        // Validators
-        messageValidator: components + 'validator/message/messageValidator.directive',
-        inputValidator: components + 'validator/input/inputValidator.directive',
+        // Shared
+        messageValidator: shared + 'validators/message/messageValidator.directive',
+        inputValidator: shared + 'validators/input/inputValidator.directive',
+        formValidator: shared + 'validators/form/formValidator.directive',
+        translate: shared + 'translate/translate.directive',
     },
     shim: {
         angular: {
@@ -137,6 +143,7 @@ require.config({
                 'ngBlock',
                 'ngToastr',
                 'ngSweetalert',
+                'ngTable',
                 'vgModule',
                 'vgControls',
                 'vgOverlayPlay',

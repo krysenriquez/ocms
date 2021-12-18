@@ -3,9 +3,31 @@ define(['authLoginService'], function () {
 
     angular.module('appMember').run(run);
 
-    function run($http, $rootScope, $location, $transitions, $state, authLoginService, statusFactory, toastr) {
+    function run(
+        $http,
+        $rootScope,
+        $location,
+        $transitions,
+        $state,
+        authLoginService,
+        statusFactory,
+        toastr,
+        $templateCache,
+        DIRECTORY
+    ) {
         $http.defaults.xsrfHeaderName = 'X-CSRFToken';
         $http.defaults.xsrfCookieName = 'csrftoken';
+
+        $http({
+            url: DIRECTORY.SHARED + '/table/pagination/pagination.tpl.html',
+            method: 'GET',
+        })
+            .then(function (response) {
+                $templateCache.put('pagination.tpl.html', response.data);
+            })
+            .catch(function (error) {
+                toastr.error('Unable to load Pagination Template');
+            });
 
         $transitions.onBefore({}, function (transition) {
             if (transition.to().secure) {

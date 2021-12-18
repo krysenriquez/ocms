@@ -29,18 +29,22 @@ class AccountViewSet(ModelViewSet):
 
 
 class CreateAccountView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request, *args, **kwargs):
-        serializer = AccountSerializer(data=request.data)
+        processed_request, code = process_create_account_request(request)
+        serializer = AccountSerializer(data=processed_request)
 
         if serializer.is_valid():
-            serializer.save()
-            return Response(
-                data={"response_id": status.HTTP_201_CREATED}, status=status.HTTP_201_CREATED
-            )
+            new_member = serializer.save()
+            code.update_status()
+            comp_plan(request, new_member)
+            return Response(data={"message": "Account created."}, status=status.HTTP_201_CREATED)
         else:
+            print(serializer.errors)
             return Response(
-                data={"response_id": status.HTTP_404_NOT_FOUND},
-                status=status.HTTP_404_NOT_FOUND,
+                data={"message": "Unable to create Account."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
 
@@ -57,7 +61,21 @@ class GenealogyAccountViewSet(ModelViewSet):
                     queryset=Account.objects.prefetch_related(
                         Prefetch(
                             "children",
-                            queryset=Account.objects.order_by("parent_side").all(),
+                            queryset=Account.objects.prefetch_related(
+                                Prefetch(
+                                    "children",
+                                    queryset=Account.objects.prefetch_related(
+                                        Prefetch(
+                                            "children",
+                                            queryset=Account.objects.order_by("parent_side").all(),
+                                        )
+                                    )
+                                    .order_by("parent_side")
+                                    .all(),
+                                )
+                            )
+                            .order_by("parent_side")
+                            .all(),
                         )
                     )
                     .order_by("parent_side")
@@ -87,17 +105,18 @@ class GenealogyAccountViewSet(ModelViewSet):
 
 
 class GenerateCodeView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request, *args, **kwargs):
+        request.data["created_by"] = request.user.pk
         serializer = GenerateCodeSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()
-            return Response(
-                data={"response_id": status.HTTP_201_CREATED}, status=status.HTTP_201_CREATED
-            )
+            return Response(data={"message": "Code generated."}, status=status.HTTP_201_CREATED)
         else:
             return Response(
-                data={"response_id": status.HTTP_404_NOT_FOUND},
+                data={"message": "Unable to generate code."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -112,12 +131,14 @@ class CodeViewSet(ModelViewSet):
         account_id = self.request.query_params.get("account_id", None)
 
         if account_id is not None:
-            queryset = queryset.filter(account__account_id=account_id)
+            queryset = queryset.filter(account__account_id=account_id).order_by("status")
 
             return queryset
 
 
 class VerifySponsorCodeView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
     def post(self, request, *args, **kwargs):
         # Parent of the Add Member, account is the ID of the sponsor
         code_type = request.data.get("code_type")
@@ -126,7 +147,7 @@ class VerifySponsorCodeView(views.APIView):
 
         try:
             activation_code = Code.objects.get(code_type=code_type, code=code)
-            activation_code.update_status = activation_code.update_status()
+            activation_code.update_status()
         except Code.DoesNotExist:
             return Response(
                 data={"message": code_type.title() + " Code does not exist."},
@@ -137,7 +158,7 @@ class VerifySponsorCodeView(views.APIView):
             upline = Account.objects.get(id=parent)
         except Account.DoesNotExist:
             return Response(
-                data={"message": "Upline Account Does Not Exist."},
+                data={"message": "Upline Account does Not Exist."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -147,7 +168,7 @@ class VerifySponsorCodeView(views.APIView):
                 children = sponsor.get_all_children()
             except Account.DoesNotExist:
                 return Response(
-                    data={"message": "Sponsor Account Does Not Exist."},
+                    data={"message": "Sponsor Account does Not Exist."},
                     status=status.HTTP_404_NOT_FOUND,
                 )
         else:
@@ -189,6 +210,7 @@ class VerifySponsorCodeView(views.APIView):
             )
 
 
+# NOTE REMOVED THIS TEST API
 # Test
 from .services import *
 from django.shortcuts import get_object_or_404
@@ -199,7 +221,7 @@ class TestView(views.APIView):
         account = request.data.get("account", None)
         if account is not None:
             new_member = get_object_or_404(Account, id=account)
-            create_unli_ten_activity(request, new_member)
+            comp_plan(request, new_member)
             # create_referral_activity(request, new_member.referrer, new_member)
             return Response(
                 data={"response": status.HTTP_200_OK},

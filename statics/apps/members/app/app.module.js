@@ -11,6 +11,7 @@ define(['ngRoute'], function () {
         'blockUI',
         'toastr',
         'oitozero.ngSweetAlert',
+        'ngTable',
         'com.2fdevs.videogular',
         'com.2fdevs.videogular.plugins.controls',
         'com.2fdevs.videogular.plugins.overlayplay',

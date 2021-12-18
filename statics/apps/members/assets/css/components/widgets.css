@@ -22,6 +22,81 @@
     margin-bottom: 0;
     color: #515365;
 }
+
+/*
+    =====================
+        Wallet
+    =====================
+*/
+.widget-wallet {
+    background: #fff;
+    height: 100%;
+}
+.widget-wallet .widget-heading{
+    display: flex;
+    justify-content: space-between;
+}
+.widget-wallet .widget-heading .header-body {
+    align-self: center;
+}
+.widget-wallet .widget-heading .task-action {
+    display: flex;
+}
+.widget-wallet .widget-heading .task-action .dropdown.custom-dropdown {
+    align-self: center;
+}
+.widget-wallet .widget-heading .task-action .dropdown.custom-dropdown a.dropdown-toggle svg {
+    color: #888ea8;
+}
+.widget-wallet .widget-heading .task-action .dropdown.custom-dropdown .dropdown-menu {
+    padding: 8px 8px;
+    min-width: 10rem;
+    border-radius: 6px;
+    top: 5px !important;
+}
+.widget-wallet .wallet-content .wallet-info{
+	padding: 0 0;
+    margin-bottom: 1rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px dashed #bfc9d4;
+}
+.widget-wallet .wallet-content .wallet-info h6 {
+    font-weight: 600;
+    margin-bottom: 0;
+    color: #0e1726;
+    font-size: 23px;
+    letter-spacing: 0;
+}
+.widget-wallet .wallet-content .wallet-info p {
+    font-weight: 600;
+    margin-bottom: 0;
+    color: #5c1ac3;
+    font-size: 16px;
+}
+.widget-wallet .wallet-content .wallet-detail {
+    margin-bottom: 3rem;
+    border-bottom: 1px dashed #bfc9d4;
+}
+.widget-wallet .wallet-content .wallet-detail .info-detail {
+    display: flex;
+    justify-content: space-between;
+}
+.widget-wallet .wallet-content .wallet-detail .info-detail p {
+    margin-bottom: 13px;
+    font-weight: 700;
+    font-size: 14px;
+}
+.wallet-action {
+	text-align: center;
+	display: flex;
+	justify-content: space-around;
+}
+.card-footer.wallet-action {
+	background-color: transparent !important;
+	border: transparent !important;
+}
+
+
 /*
     ==================
         Transaction
@@ -128,71 +203,6 @@
 }
 .widget-transactions .transactions-list .t-item .t-rate.rate-dec svg {
     color: #e7515a;
-}
-/*
-    =====================
-        Account Info
-    =====================
-*/
-.widget-balance .invoice-box .acc-total-info {
-    padding: 0 0;
-    margin-bottom: 18px;
-    padding-bottom: 18px;
-    border-bottom: 1px dashed #bfc9d4;
-}
-.widget-balance .invoice-box h5 {
-    text-align: center;
-    font-size: 20px;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-    color: #1b55e2;
-}
-.widget-balance .invoice-box .acc-amount {
-    text-align: center;
-    font-size: 23px;
-    font-weight: 700;
-    margin-bottom: 0;
-    color: #009688;
-}
-.widget-balance .invoice-box .inv-detail {
-    margin-bottom: 18px;
-    padding-bottom: 18px;
-    border-bottom: 1px dashed #bfc9d4;
-}
-.widget-balance .invoice-box [class*="info-detail-"]:not(.info-sub) {
-    display: flex;
-    justify-content: space-between;
-}
-.widget-balance .invoice-box [class*="info-detail-"]:not(.info-sub) p {
-    margin-bottom: 13px;
-    font-weight: 700;
-    font-size: 14px;
-}
-.widget-balance .invoice-box [class*="info-detail-"].info-sub .info-detail {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0;
-    font-weight: 700;
-    font-size: 14px;
-}
-.widget-balance .invoice-box [class*="info-detail-"].info-sub .info-detail p {
-    margin-bottom: 0;
-}
-.widget-balance .invoice-box [class*="info-detail-"].info-sub .info-detail-sub {
-    margin-left: 9px;
-}
-.widget-balance .invoice-box [class*="info-detail-"].info-sub .info-detail-sub p {
-    color: #888ea8;
-    margin-bottom: 2px;
-    font-weight: 600;
-}
-.widget-balance .invoice-box .inv-action {
-    text-align: center;
-    display: flex;
-    justify-content: space-around;
-}
-.widget-balance .invoice-box .inv-action a {
-    transform: none;
 }
 /*
     ========================
@@ -452,4 +462,6 @@
     IMA SDK PLayer
 ===================
 */
+
+
 

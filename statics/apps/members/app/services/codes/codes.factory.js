@@ -8,12 +8,11 @@ define(['urlService', 'humpsFactory'], function () {
             verifyCode: verifyCode,
         };
 
-        function verifyCode(params) {
-            var data = humpsFactory.decamelizeKeys(params);
+        function verifyCode(data) {
             return $http({
                 url: urlService.VERIFY_SPONSOR_CODE,
                 method: 'POST',
-                data: data,
+                data: humpsFactory.decamelizeKeys(data),
             })
                 .then(function (response) {
                     var responseData = humpsFactory.camelizeKeys(response);

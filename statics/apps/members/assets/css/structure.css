@@ -1347,8 +1347,6 @@ code { color: #e7515a; }
     .topbar-nav.header nav#topbar ul.menu-categories li.menu .submenu li {
         position: relative;
     }
-    #sidebar ul.menu-categories ul.submenu > li.active a {
-    }
     .topbar-nav.header nav#topbar ul.menu-categories li.menu .submenu li.active a { color: #304aca; }
     .topbar-nav.header nav#topbar ul.menu-categories li.menu.active a[aria-expanded="false"] > div svg:not(.feather-chevron-down), 
     .topbar-nav.header nav#topbar ul.menu-categories li.menu.active a[aria-expanded="true"] > div svg:not(.feather-chevron-down) {

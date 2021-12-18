@@ -17,42 +17,18 @@ define(['appMember', 'humpsFactory', 'accountFactory', 'userFactory', 'localStor
 
         return directive;
 
-        function selectAccountDropdownController(
-            userFactory,
-            humpsFactory,
-            toastr,
-            _,
-            localStorageFactory,
-            accountFactory
-        ) {
+        function selectAccountDropdownController(userFactory, humpsFactory, toastr, _, accountFactory) {
             var vm = this;
             vm.selectAccount = selectAccount;
             init();
 
             function init() {
-                var blankAvatar = DIRECTORY.MEDIA + '/img/blank.png';
-                userFactory
-                    .getUserAccounts()
-                    .then(function (response) {
-                        var responseData = humpsFactory.camelizeKeys(response.data[0]);
-                        vm.userAccounts = [];
-                        _.map(responseData.accountUser, function (account) {
-                            vm.userAccounts.push({
-                                accountId: account.accountId,
-                                accountName: account.accountName,
-                                accountNumber: account.accountNumber,
-                                avatar:
-                                    account.avatarInfo.length > 0 ? account.avatarInfo[0].fileAttachment : blankAvatar,
-                            });
-                        });
-                    })
-                    .catch(function (error) {
-                        toastr.error(error.data.message);
-                    });
+                userFactory.getUserAccounts().then(function (response) {
+                    vm.userAccounts = response;
+                });
             }
 
             function selectAccount(account) {
-                localStorageFactory.put('selectedAccount', account);
                 accountFactory.setSelectedAccount(account);
             }
         }

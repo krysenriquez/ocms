@@ -1,13 +1,13 @@
 import uuid
 from django.db import models
-from django.db.models.functions.datetime import TruncTime
 from django.utils import timezone
 from django.db.models.functions import TruncDate
 import datetime
-import pytz
 from tzlocal import get_localzone
 from dateutil.relativedelta import relativedelta
 from .enums import AccountStatus, CodeStatus, CodeType, Gender, ParentSide, BinaryType
+from settings.services import get_setting
+from settings.enums import Property
 
 
 def account_avatar_directory(instance, filename):
@@ -75,6 +75,12 @@ class Account(models.Model):
 
     def get_full_name(self):
         return "%s %s %s" % (self.first_name, self.middle_name, self.last_name)
+
+    def get_account_name(self):
+        return "%s %s" % (self.first_name, self.last_name)
+
+    def get_account_number(self):
+        return str(self.id).zfill(5)
 
     def get_all_children_side(self, children=None, parent_side=None):
         if children is None:
@@ -194,7 +200,7 @@ class AddressInfo(models.Model):
         verbose_name_plural = "Addresses"
 
     def __str__(self):
-        return "%s : %s" % (self.account, self.full_address)
+        return "%s" % (self.account)
 
     def full_address(self):
         return "%s %s %s" % (self.street, self.city, self.state)
@@ -247,32 +253,35 @@ class Code(models.Model):
         )
 
     def update_status(self):
-        account = Account.objects.filter(activation_code=self)
+        account = Account.objects.filter(activation_code=self).first()
         if account:
             if self.status == CodeStatus.ACTIVE:
                 self.status = CodeStatus.USED
                 self.save()
 
-    # def time_since_created(self):
-    #     general_settings = apps.get_model("settings", "GeneralSetting")
-    #     general_setting = general_settings.objects.all().first()
-    #     code_expiration_seconds = (
-    #         general_setting.code_expiration * 60 * 60
-    #     )  # Convert Code Expiration Hours to Seconds
-    #     now = datetime.now()
-    #     time_since_insertion = timedelta.total_seconds(
-    #         (datetime.now(timezone.utc) + timedelta(hours=8)) - (self.updated_at + timedelta(hours=8))
-    #     )
-    #     seconds = code_expiration_seconds - time_since_insertion
-
-    #     if seconds <= 0:
-    #         if self.status == "Active":
-    #             self.status = "Deactivated"
-    #             self.save()
-
-    #         return "Expired"
-
-    #     return convert(seconds)
+    def get_expiration(self):
+        if self.status == CodeStatus.ACTIVE:
+            code_expiration = int(get_setting(Property.CODE_EXPIRATION))
+            local_tz = get_localzone()
+            modified = self.modified.astimezone(local_tz)
+            expiry = modified + datetime.timedelta(hours=code_expiration)
+            if timezone.localtime() > expiry:
+                self.status = CodeStatus.EXPIRED
+                self.save()
+                return CodeStatus.EXPIRED
+            else:
+                # return datetime.datetime.strptime(expiry, "%H:%M:%S") - datetime.strptime(
+                #     modified, "%H:%M:%S"
+                # )
+                time_diff = expiry - timezone.localtime()
+                td = datetime.timedelta(seconds=time_diff.total_seconds())
+                return "%02d:%02d:%02d" % (
+                    td.days * 24 + td.seconds // 3600,
+                    (td.seconds // 60) % 60,
+                    td.seconds % 60,
+                )
+        else:
+            return "00:00:00"
 
 
 class Binary(models.Model):

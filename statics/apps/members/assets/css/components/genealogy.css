@@ -37,14 +37,20 @@
     stroke: #191e3a;
 }
 
-
 .node.addMember rect {
     fill: #eb1821;
 }
 
-
 .node.addMember circle {
     stroke: #eb1821;
+}
+
+.node.DRAFT rect {
+    fill: #fd7e14;
+}
+
+.node.DRAFT circle {
+    stroke: #fd7e14;
 }
 
 [data-n-id] rect:hover {

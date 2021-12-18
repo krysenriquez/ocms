@@ -12,21 +12,11 @@ define(['appMember', 'ngTable', 'accountFactory'], function () {
             link: link,
             restrict: 'E',
             templateUrl: DIRECTORY.COMPONENTS + '/referralLinks/referralLinks.tpl.html',
-            scope: {},
         };
 
         return directive;
 
-        function referralLinksController(
-            $scope,
-            $http,
-            $filter,
-            accountFactory,
-            urlService,
-            humpsFactory,
-            NgTableParams,
-            toastr
-        ) {
+        function referralLinksController($scope, $filter, accountFactory, NgTableParams, toastr) {
             var vm = this;
             var accountId;
             init();
@@ -42,19 +32,19 @@ define(['appMember', 'ngTable', 'accountFactory'], function () {
                         } else {
                             accountId = oldValue;
                         }
-                        loadTable();
+                        loadReferralLinksTable();
                     }
                 );
             }
 
-            function loadTable() {
-                vm.tableReferrals = new NgTableParams(
+            function loadReferralLinksTable() {
+                vm.referralLinksTable = new NgTableParams(
                     {
                         page: 1,
-                        count: 20,
+                        count: 5,
                     },
                     {
-                        counts: [10, 20, 30, 50, 100],
+                        counts: [5, 10, 20, 30, 50, 100],
                         getData: function (params) {
                             return accountFactory
                                 .getAccountCodes(accountId)

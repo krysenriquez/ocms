@@ -1,4 +1,11 @@
-define(['appMember', 'templateProvider', 'cryptoProvider', 'localStorageFactory', 'accountFactory'], function () {
+define([
+    'appMember',
+    'templateProvider',
+    'cryptoProvider',
+    'localStorageFactory',
+    'userFactory',
+    'accountFactory',
+], function () {
     'use strict';
 
     angular.module('appMember').config(config);
@@ -160,18 +167,22 @@ define(['appMember', 'templateProvider', 'cryptoProvider', 'localStorageFactory'
                                         DIRECTORY.COMPONENTS + '/navFooter/navFooter.directive.js',
                                         DIRECTORY.COMPONENTS + '/overlay/overlay.directive.js',
                                         DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
+                                        DIRECTORY.SHARED + '/translate/translate.directive.js',
                                         // '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
                                     ],
                                 },
                             ]);
                         },
                     ],
-                    setUpSelectedAccount: function (localStorageFactory, accountFactory, toastr) {
+                    setUpSelectedAccount: function (userFactory, localStorageFactory, accountFactory, toastr, _) {
                         var selectedAccount = localStorageFactory.get('selectedAccount');
                         if (selectedAccount) {
                             accountFactory.setSelectedAccount(selectedAccount);
                         } else {
-                            toastr.error('No Selected Account');
+                            toastr.info('No Selected Account. Defaulting to Primary Account.');
+                            userFactory.getUserAccounts().then(function (response) {
+                                accountFactory.setSelectedAccount(_.head(response));
+                            });
                         }
                     },
                 },
@@ -209,11 +220,10 @@ define(['appMember', 'templateProvider', 'cryptoProvider', 'localStorageFactory'
                                     serie: true,
                                     name: 'Widgets Directives',
                                     files: [
-                                        DIRECTORY.COMPONENTS + '/dashboard/dashboard.controller.js',
                                         DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
-                                        DIRECTORY.COMPONENTS + '/widgets/balance/balance.directive.js',
                                         DIRECTORY.COMPONENTS + '/widgets/transactions/transactions.directive.js',
                                         DIRECTORY.COMPONENTS + '/widgets/info/info.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/wallets/wallets.directive.js',
                                     ],
                                 },
                             ]);
@@ -258,16 +268,6 @@ define(['appMember', 'templateProvider', 'cryptoProvider', 'localStorageFactory'
                             ]);
                         },
                     ],
-                    // setUpBinaryTree: [
-                    //     'localStorageFactory',
-                    //     'accountFactory',
-                    //     function (localStorageFactory, accountFactory) {
-                    //         var selectedAccount = localStorageFactory.get('selectedAccount');
-                    //         if (selectedAccount) {
-                    //             accountFactory.setSelectedAccount(selectedAccount);
-                    //         }
-                    //     },
-                    // ],
                 },
             })
             .state('members.earn', {
@@ -322,7 +322,7 @@ define(['appMember', 'templateProvider', 'cryptoProvider', 'localStorageFactory'
                     pageTitle: 'One Creations | Referral Links',
                 },
                 ncyBreadcrumb: {
-                    label: 'Referral Link',
+                    label: 'Referral Links',
                 },
                 resolve: {
                     loadCSS: [
@@ -332,8 +332,8 @@ define(['appMember', 'templateProvider', 'cryptoProvider', 'localStorageFactory'
                             return $ocLazyLoad.load([
                                 {
                                     serie: true,
-                                    name: '',
-                                    files: [],
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
                                 },
                             ]);
                         },
@@ -347,6 +347,45 @@ define(['appMember', 'templateProvider', 'cryptoProvider', 'localStorageFactory'
                                     serie: true,
                                     name: 'Referral Link Directive',
                                     files: [DIRECTORY.COMPONENTS + '/referralLinks/referralLinks.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('members.cashout', {
+                secure: true,
+                url: '/cashout',
+                templateUrl: $templateProvider.getComponent('cashout'),
+                data: {
+                    pageTitle: 'One Creations | Cashouts',
+                },
+                ncyBreadcrumb: {
+                    label: 'Cash Outs',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Referral Link Directive',
+                                    files: [DIRECTORY.COMPONENTS + '/cashouts/cashouts.directive.js'],
                                 },
                             ]);
                         },

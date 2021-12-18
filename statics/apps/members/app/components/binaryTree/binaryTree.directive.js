@@ -18,17 +18,7 @@ define(['orgChart'], function () {
 
         return directive;
 
-        function binaryTreeController(
-            $scope,
-            $http,
-            accountFactory,
-            urlService,
-            humpsFactory,
-            $uibModal,
-            _,
-            blockUI,
-            toastr
-        ) {
+        function binaryTreeController($scope, $http, accountFactory, $uibModal, _, blockUI, toastr) {
             var vm = this;
             var jsonTree = [];
 
@@ -46,12 +36,12 @@ define(['orgChart'], function () {
                         } else {
                             vm.accountId = oldValue;
                         }
-                        loadGenealogy(vm.accountId);
+                        getGenealogy(vm.accountId);
                     }
                 );
             }
 
-            function loadGenealogy(accountId) {
+            function getGenealogy(accountId) {
                 blockUI.start('Generating Genealogy ...');
                 accountFactory
                     .getAccountGenealogy(accountId)
@@ -62,7 +52,6 @@ define(['orgChart'], function () {
                         }
                     })
                     .catch(function (error) {
-                        console.log(error);
                         blockUI.stop();
                         toastr.error(error);
                     });
@@ -72,9 +61,7 @@ define(['orgChart'], function () {
                 // Start Condition for Avatar if it exists
                 var avatar;
                 var blankAvatar = DIRECTORY.MEDIA + '/img/blank.png';
-                console.log(object.avatarInfo.length > 1);
-                console.log(!!object.avatarInfo[0].fileAttachment);
-                if (object.avatarInfo.length > 1 && !!object.avatarInfo[0].fileAttachment) {
+                if (object.avatarInfo.length > 0 && !!object.avatarInfo[0].fileAttachment) {
                     avatar = object.avatarInfo[0].fileAttachment;
                 } else {
                     avatar = blankAvatar;
@@ -90,7 +77,6 @@ define(['orgChart'], function () {
                 jsonTree.push(parent);
                 // End Parent Object
                 // Start Recursive for Children of Parent
-                console.log(object);
                 fourthGenJSONRecursive(object.children, object);
             }
 
@@ -114,6 +100,7 @@ define(['orgChart'], function () {
                         // Condition if Child order is 1st slot, and No Member on 2nd slot
                         if (child.parentSide == 'LEFT' && children.length == 1) {
                             childMember = {
+                                tags: [child.accountStatus],
                                 id: child.accountId,
                                 accountNumber: child.accountNumber,
                                 name: child.accountName,
@@ -160,6 +147,7 @@ define(['orgChart'], function () {
                                 count: parentObject.allLeftChildrenCount ? parentObject.allLeftChildrenCount : '',
                             };
                             childMember = {
+                                tags: [child.accountStatus],
                                 id: child.accountId,
                                 accountNumber: child.accountNumber,
                                 name: child.accountName,
@@ -176,6 +164,7 @@ define(['orgChart'], function () {
                         // Condition if there are 2 children
                         else {
                             childMember = {
+                                tags: [child.accountStatus],
                                 id: child.accountId,
                                 accountNumber: child.accountNumber,
                                 name: child.accountName,
@@ -232,6 +221,7 @@ define(['orgChart'], function () {
             function openAddMemberModal(nodeObject) {
                 $uibModal.open({
                     animation: true,
+                    backdrop: false,
                     templateUrl: DIRECTORY.COMPONENTS + '/binaryTree/addMember/addMember.tpl.html',
                     size: 'xl',
                     controller: 'AddMemberController',
@@ -297,7 +287,6 @@ define(['orgChart'], function () {
                 $scope.chart = setUpTree();
                 $scope.data = object;
                 blockUI.stop();
-
                 $scope.chart.on('click', function (sender, args) {
                     if (_.includes(args.node.tags, 'addMember')) {
                         openAddMemberModal(returnNodeObject(args.node.id));

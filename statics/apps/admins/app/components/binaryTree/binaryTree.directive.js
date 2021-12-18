@@ -41,7 +41,7 @@ define(['raphael'], function () {
                         } else {
                             vm.accountId = oldValue;
                         }
-                        loadGenealogy();
+                        getGenealogy();
                     }
                 );
 
@@ -65,7 +65,7 @@ define(['raphael'], function () {
                 vm.jsonTree = [config];
             }
 
-            function loadGenealogy() {
+            function getGenealogy() {
                 $http({
                     url: urlService.GENEALOGY,
                     method: 'GET',
@@ -311,7 +311,6 @@ define(['raphael'], function () {
                 $timeout(function () {
                     var element = $('#binary-tree');
                     $compile(element)($scope);
-                    console.log('Loaded');
                 });
             }
         }

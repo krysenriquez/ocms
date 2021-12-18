@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
 from .enums import ActivityType, CashoutMethod, WalletType, CashoutStatus
 
 
@@ -50,6 +51,37 @@ class Activity(models.Model):
 
     def __str__(self):
         return "%s - %s" % (self.activity_type, self.account)
+
+    def get_activity_details(self):
+        generic_object = self.content_type.model_class().objects.get(id=self.object_id)
+        detail = []
+
+        if generic_object:
+            if self.activity_type == ActivityType.ENTRY:
+                detail = "Entry on %s" % (str(generic_object.pk).zfill(5))
+            elif self.activity_type == ActivityType.DIRECT_REFERRAL:
+                detail = "Direct Referral on %s" % (str(generic_object.pk).zfill(5))
+            elif self.activity_type == ActivityType.PAIRING:
+                detail = "Binary Pairing on %s and %s" % (
+                    str(generic_object.left_side.pk).zfill(5),
+                    str(generic_object.right_side.pk).zfill(5),
+                )
+            elif self.activity_type == ActivityType.LEADERSHIP:
+                detail = "Leadership Bonus %s" % (str(generic_object.account).zfill(5))
+            elif self.activity_type == ActivityType.UNILEVEL:
+                detail = "Unilevel Entry on %s" % (str(generic_object.pk).zfill(5))
+            elif self.activity_type == ActivityType.CASHOUT:
+                detail = "Cashout on Transaction #%s" % (generic_object.pk)
+        else:
+            if self.activity_type == ActivityType.UNLI_TEN:
+                detail = "Reached 10 Referrals"
+            elif self.activity_type == ActivityType.WATCH_AND_EARN:
+                detail = "Earned from watching"
+
+        return "%s" % (detail)
+
+    def get_content_type_model(self):
+        return "%s" % (self.content_type.model)
 
 
 class Cashout(models.Model):

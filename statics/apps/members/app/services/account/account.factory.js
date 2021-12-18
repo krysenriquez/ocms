@@ -3,7 +3,7 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
 
     angular.module('appMember').factory('accountFactory', accountFactory);
 
-    function accountFactory($q, $http, urlService, humpsFactory) {
+    function accountFactory($q, $http, urlService, humpsFactory, localStorageFactory, _) {
         var data = [];
 
         return {
@@ -13,6 +13,7 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             setSelectedAccount: setSelectedAccount,
             getAccountGenealogy: getAccountGenealogy,
             getAccountCodes: getAccountCodes,
+            createAccount: createAccount,
         };
 
         function getAccountId() {
@@ -28,6 +29,7 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
         }
 
         function setSelectedAccount(account) {
+            localStorageFactory.put('selectedAccount', account);
             data.selectedAccount = account;
         }
 
@@ -52,6 +54,25 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
                 url: urlService.GET_ACCOUNT_CODES,
                 method: 'GET',
                 params: { account_id: accountId },
+            }).then(
+                function (response) {
+                    var responseData = [];
+                    _.map(humpsFactory.camelizeKeys(response.data), function (code) {
+                        responseData.push(code);
+                    });
+                    return $q.resolve(responseData);
+                },
+                function (error) {
+                    return $q.reject(error);
+                }
+            );
+        }
+
+        function createAccount(data) {
+            return $http({
+                url: urlService.CREATE_ACCOUNT,
+                method: 'POST',
+                data: humpsFactory.decamelizeKeys(data),
             }).then(
                 function (response) {
                     var responseData = humpsFactory.camelizeKeys(response.data);

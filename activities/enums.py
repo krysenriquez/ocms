@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 class ActivityType(models.TextChoices):
     # * --- C-Wallet
     ENTRY = "ENTRY", _("Entry")  # * No Foreign Key
+    PAYOUT = "PAYOUT", _("Payout")  # * Foreign Key to Cashout
     # * --- B-Wallet
     DIRECT_REFERRAL = "DIRECT_REFERRAL", _("Direct Referral")  # * Foreign Key to Sponsored Account
     PAIRING = "PAIRING", _("Pairing")  # * Foreign Key to Binary

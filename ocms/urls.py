@@ -45,10 +45,13 @@ urlpatterns = [
         "member/referral-link",
         ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html")),
     ),
+    path("member/cashout", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))),
     # APIs
     path("webapi/users/", include("users.urls"), name="users"),
     path("webapi/auth/", include("auth.urls"), name="auth"),
     path("webapi/accounts/", include("accounts.urls"), name="accounts"),
+    path("webapi/activities/", include("activities.urls"), name="activities"),
+    path("webapi/settings/", include("settings.urls"), name="settings"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = "One Creations Marketing Admin"

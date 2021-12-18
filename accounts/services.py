@@ -1,8 +1,9 @@
 from django.db.models.functions import TruncDate
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from tzlocal import get_localzone
-from .models import *
+from .models import Account, Binary, Code
 from .enums import *
 from activities.enums import *
 from settings.enums import *
@@ -15,9 +16,14 @@ logger = logging.getLogger("ocmLogger")
 settings = SettingsService.get_settings()
 
 
+def get_setting_value(property):
+    return settings.filter(property=property).first().value
+
+
 def comp_plan(request, new_member):
     # NOTE : Creates New Entry Activity
     create_entry_activity(request, new_member)
+    create_referral_activity(request, new_member.referrer, new_member)
     pairing_limit_day = get_setting_value(Property.PAIRING_LIMIT_DAY)
     parents = new_member.get_all_parents_with_side()
     for parent in parents:
@@ -84,6 +90,7 @@ def comp_plan(request, new_member):
                         pairing = find_binary(current_parent, current_sibling_child, parent["side"])
                         if pairing:  # If Pairing is Found
                             todays_binary_match = find_binaries_today(current_parent)
+                            print(current_parent, todays_binary_match)
                             # NOTE : Get todays total sales matches to check for Possible Flush Out if total matches is at limit
                             if len(todays_binary_match) < pairing_limit_day:
                                 # if binary pairing is found update binary object
@@ -91,6 +98,9 @@ def comp_plan(request, new_member):
                                     pairing.id, new_member, parent["side"], BinaryType.SALES_MATCH
                                 )
                                 # NOTE : If binary is updated and not binary is created, create pairing activity
+                                print("Updated Binary", updated_binary)
+                                print("Created Binary", created_binary)
+                                print(current_parent, updated_binary)
                                 if updated_binary and created_binary is False:
                                     create_pairing_activity(request, current_parent, updated_binary)
                                     break
@@ -116,6 +126,11 @@ def comp_plan(request, new_member):
             )
 
         print("--- LOGIC ENDS HERE ---")
+    activate_account(new_member)
+
+
+def activate_account(account=None):
+    Account.objects.update_or_create(id=account.pk, defaults={"account_status": AccountStatus.ACTIVE})
 
 
 def find_binaries_today(parent=None):
@@ -174,7 +189,6 @@ def create_binary(parent=None, child=None, child_side=None):
             right_side__isnull=True,
             defaults={"parent": parent, "right_side": child},
         )
-        # Binary.objects.create(parent=parent, right_side=child)
 
 
 def create_entry_activity(request, account=None):
@@ -266,19 +280,32 @@ def create_watch_activity(request, account=None):
     )
 
 
-def get_setting_value(property):
-    return settings.filter(property=property).first().value
+def process_create_account_request(request):
+    activation_code = get_object_or_404(
+        Code, code=request.data["activation_code"], status=CodeStatus.ACTIVE
+    )
+    if request.user.is_authenticated and activation_code:
+        data = {
+            "parent": request.data["parent_account_id"].lstrip("0"),
+            "parent_side": request.data["parent_side"],
+            "activation_code": activation_code.pk,
+            "referrer": request.data["sponsor_account_id"].lstrip("0"),
+            "first_name": request.data["first_name"],
+            "last_name": request.data["last_name"],
+            "created_by": request.user.pk,
+            "personal_info": [{}],
+            "contact_info": [{}],
+            "address_info": [{}],
+            "avatar_info": [{}],
+        }
 
+        if isinstance(request.data["user"], str) and request.data["user"] == "link":
+            data["user"] = request.user.pk
+        elif isinstance(request.data["user"], dict):
+            data["user"] = request.data["user"]
 
-# During Account Creation
-# - Direct Referral - DONE
-# - Check for Give me 10 - DONE
+        return data, activation_code
 
-
-# During Update of Binary
-# - Pairing Bonus on Sales Match - Done
-# - Check for Flush Out (Limit 3 or System Properties) - Done
-# - Unilevel (5 5 4 4 3 3 2 2 1 1 ) - Done
 
 # During Withdrawals
 # - Limit amount based on Wallet Limit

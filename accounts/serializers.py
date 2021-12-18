@@ -76,9 +76,8 @@ class AccountSerializer(ModelSerializer):
     contact_info = ContactInfoSerializer(many=True, required=False)
     address_info = AddressInfoSerializer(many=True, required=False)
     avatar_info = AvatarInfoSerializer(many=True, required=False)
-
-    parent_name = serializers.CharField(source="self.parent.get_fullname")
-    referrer_name = serializers.CharField(source="self.referrer.get_fullname")
+    parent_name = serializers.CharField(source="self.parent.get_fullname", required=False)
+    referrer_name = serializers.CharField(source="self.referrer.get_fullname", required=False)
 
     def create(self, validated_data):
         personal_info = validated_data.pop("personal_info")
@@ -194,19 +193,25 @@ class AccountSerializer(ModelSerializer):
                 if avatar.id not in keep_avatar_info:
                     avatar.delete()
 
+    class Meta:
+        model = Account
+        fields = "__all__"
 
-class AvatarDirectorySerializer(ModelSerializer):
+
+class AvatarInfoSerializer(ModelSerializer):
     class Meta:
         model = AvatarInfo
         fields = ["file_attachment"]
 
 
 class AccountAvatarSerializer(ModelSerializer):
-    avatar_info = AvatarDirectorySerializer(many=True, required=False)
+    avatar_info = AvatarInfoSerializer(many=True, required=False)
+    account_name = serializers.CharField(read_only=True)
+    account_number = serializers.CharField(source="get_account_number", required=False)
 
     class Meta:
         model = Account
-        fields = ["account_id", "first_name", "avatar_info"]
+        fields = ["account_id", "account_name", "account_number", "avatar_info"]
 
 
 class GenealogyAvatarSerializer(ModelSerializer):
@@ -239,10 +244,11 @@ class RecursiveField(serializers.BaseSerializer):
 
 
 class GenealogyAccountSerializer(ModelSerializer):
-    # children = GenealogyChildAccountSerializer(many=True, required=False)
     avatar_info = GenealogyAvatarSerializer(many=True, required=False)
-    account_name = serializers.SerializerMethodField()
-    account_number = serializers.SerializerMethodField()
+    account_name = serializers.CharField(source="get_account_name", required=False)
+    account_number = serializers.CharField(source="get_account_number", required=False)
+    # account_name = serializers.SerializerMethodField()
+    # account_number = serializers.SerializerMethodField()
     all_left_children_count = serializers.CharField(read_only=True)
     all_right_children_count = serializers.CharField(read_only=True)
     depth = serializers.SerializerMethodField()
@@ -250,12 +256,6 @@ class GenealogyAccountSerializer(ModelSerializer):
     def __init__(self, *args, depth=0, **kwargs):
         super().__init__(*args, **kwargs)
         self.depth = depth
-
-    def get_account_name(self, obj):
-        return "{} {}".format(obj.first_name, obj.last_name)
-
-    def get_account_number(self, obj):
-        return str(obj.id).zfill(5)
 
     def get_depth(self, obj):
         return self.depth
@@ -271,10 +271,12 @@ class GenealogyAccountSerializer(ModelSerializer):
 
     class Meta:
         model = Account
+        ordering = ("parent_side",)
         fields = [
             "account_id",
             "account_name",
             "account_number",
+            "account_status",
             "parent_side",
             "depth",
             "avatar_info",
@@ -308,11 +310,8 @@ class GenerateCodeSerializer(ModelSerializer):
 
 
 class CodeSerializer(ModelSerializer):
-    account_number = serializers.SerializerMethodField()
-
-    def get_account_number(self, obj):
-        return str(obj.account.id).zfill(5)
+    expiration = serializers.CharField(source="get_expiration", required=False)
 
     class Meta:
         model = Code
-        fields = ["code", "code_type", "account_number", "account"]
+        fields = ["code", "code_type", "status", "expiration"]
