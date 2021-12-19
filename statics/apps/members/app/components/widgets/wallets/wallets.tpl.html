@@ -1,0 +1,76 @@
+<div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 layout-spacing">
+    <div class="card h-100">
+        <div class="card-body">
+            <div class="widget widget-wallet">
+                <div class="widget-heading pb-4">
+                    <div class="header-body">
+                        <h5 class="">Wallets</h5>
+                    </div>
+                    <div class="task-action">
+                        <div class="dropdown custom-dropdown">
+                            <a
+                                class="dropdown-toggle"
+                                href="#"
+                                role="button"
+                                id="pendingTask"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="24"
+                                    height="24"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="feather feather-more-horizontal"
+                                >
+                                    <circle cx="12" cy="12" r="1"></circle>
+                                    <circle cx="19" cy="12" r="1"></circle>
+                                    <circle cx="5" cy="12" r="1"></circle>
+                                </svg>
+                            </a>
+                            <div
+                                class="dropdown-menu dropdown-menu-right"
+                                aria-labelledby="pendingTask"
+                                style="will-change: transform"
+                            >
+                                <a
+                                    class="dropdown-item"
+                                    ng-click="vm.viewWalletDetails(wallet)"
+                                    ng-repeat="wallet in vm.wallets"
+                                    translate="{{ wallet }}"
+                                ></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-content">
+                    <div class="wallet-content">
+                        <div class="wallet-info">
+                            <p translate="{{ vm.walletInfo.wallet }}"></p>
+                            <h1 translate="{{ vm.walletInfo.total | currency:'₱': 2 }}"></h1>
+                        </div>
+                        <div class="wallet-detail">
+                            <div class="info-detail" ng-repeat="detail in vm.walletInfo.details">
+                                <p translate="{{ detail.activityType }}"></p>
+                                <p
+                                    ng-class="{ 'text-info' : detail.activityTotal > 0, 'text-danger' : detail.activityTotal < 0 }"
+                                    translate="{{ detail.activityTotal | currency:'₱': 2 }}"
+                                ></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer wallet-action">
+            <a class="btn btn-dark" ng-click="vm.openWalletSummaryModal(vm.walletInfo.wallet)">Summary</a>
+            <a class="btn btn-danger" ng-click="vm.verifyWalletCashout(vm.walletInfo)">Cash Out</a>
+        </div>
+    </div>
+</div>

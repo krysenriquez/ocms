@@ -270,9 +270,6 @@ class Code(models.Model):
                 self.save()
                 return CodeStatus.EXPIRED
             else:
-                # return datetime.datetime.strptime(expiry, "%H:%M:%S") - datetime.strptime(
-                #     modified, "%H:%M:%S"
-                # )
                 time_diff = expiry - timezone.localtime()
                 td = datetime.timedelta(seconds=time_diff.total_seconds())
                 return "%02d:%02d:%02d" % (
