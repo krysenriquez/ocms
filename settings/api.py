@@ -7,7 +7,7 @@ from .services import *
 from users.enums import UserType
 
 
-class WalletView(views.APIView):
+class WalletMemberView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
@@ -15,11 +15,37 @@ class WalletView(views.APIView):
 
         if user_type is not None and request.user.is_authenticated:
             wallet_arr = []
-            wallets = []
-            if user_type == UserType.ADMIN:
-                wallets = Wallet.objects.all()
-            elif user_type == UserType.MEMBER:
-                wallets = Wallet.objects.filter(user_type=user_type)
+            wallets = Wallet.objects.filter(user_type=UserType.MEMBER)
+
+            if wallets:
+                for wallet in wallets:
+                    wallet_arr.append(wallet.wallet)
+
+                return Response(
+                    data={"wallets": wallet_arr},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    data={"message": "No Wallet available for Account."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+        else:
+            return Response(
+                data={"message": "Unable to get Wallet list."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
+class WalletAdminView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        user_type = request.user.user_type
+
+        if user_type != UserType.MEMBER and request.user.is_authenticated:
+            wallet_arr = []
+            wallets = Wallet.objects.all()
 
             if wallets:
                 for wallet in wallets:
@@ -58,12 +84,12 @@ class WalletScheduleView(views.APIView):
                     )
                 else:
                     return Response(
-                        data={"message": "Max Cashout reached today."},
+                        data={"message": "Max Cash Out reached today."},
                         status=status.HTTP_403_FORBIDDEN,
                     )
             else:
                 return Response(
-                    data={"message": "Cashout currently unavailable."},
+                    data={"message": "Cash Out currently unavailable."},
                     status=status.HTTP_403_FORBIDDEN,
                 )
         else:

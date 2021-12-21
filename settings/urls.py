@@ -5,7 +5,8 @@ from django.urls import path
 router = DefaultRouter()
 
 urlpatterns = [
-    path("getwallets/", WalletView.as_view()),
+    path("getadminwallets/", WalletAdminView.as_view()),
+    path("getmemberwallets/", WalletMemberView.as_view()),
     path("checkwalletcashout/", WalletScheduleView.as_view()),
 ]
 

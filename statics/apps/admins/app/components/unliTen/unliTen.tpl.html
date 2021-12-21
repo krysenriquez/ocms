@@ -1,0 +1,51 @@
+<div class="widget-content widget-content-area br-6">
+    <div class="table-responsive mb-4 mt-4">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-12">
+                    <table
+                        class="table table-hover datatable"
+                        role="grid"
+                        ng-table="vm.unliTenTable"
+                        template-pagination="pagination.tpl.html"
+                    >
+                        <tr class="datatable-row" ng-repeat="account in $data">
+                            <td
+                                class="datatable-cell datatable-cell-left text-left"
+                                header-class="'text-left'"
+                                data-title="'ACCOUNT'"
+                                sortable="'accountName'"
+                            >
+                                {{ account.accountNumber }} - {{ account.accountName }}
+                            </td>
+                            <td
+                                class="datatable-cell datatable-cell-left text-left"
+                                header-class="'text-left'"
+                                data-title="'REFERRALS'"
+                                sortable="'referrals'"
+                            >
+                                {{ account.referrals | number:0}}
+                            </td>
+                            <td
+                                class="datatable-cell datatable-cell-left text-left"
+                                header-class="'text-left'"
+                                data-title="'START PERIOD'"
+                                sortable="'startPeriod'"
+                            >
+                                {{ account.startPeriod | date : 'shortDate' }}
+                            </td>
+                            <td
+                                class="datatable-cell datatable-cell-left text-left"
+                                header-class="'text-left'"
+                                data-title="'END PERIOD'"
+                                sortable="'endPeriod'"
+                            >
+                                {{ account.endPeriod | date : 'shortDate' }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

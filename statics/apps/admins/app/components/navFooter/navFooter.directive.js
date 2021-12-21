@@ -1,11 +1,13 @@
 define(['appAdmin'], function () {
     'use strict';
 
-    angular.module('appAdmin').directive('navFooter', function (DIRECTORY) {
+    angular.module('appAdmin').directive('navFooter', navFooter);
+
+    function navFooter(DIRECTORY) {
         var directive = {
             bindToController: true,
             controller: navFooterController,
-            controllerAs: 'nf',
+            controllerAs: 'vm',
             link: link,
             restrict: 'E',
             templateUrl: DIRECTORY.COMPONENTS + '/navFooter/navFooter.tpl.html',
@@ -26,5 +28,5 @@ define(['appAdmin'], function () {
         }
 
         function link() {}
-    });
+    }
 });

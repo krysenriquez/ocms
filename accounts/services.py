@@ -10,6 +10,7 @@ from settings.enums import *
 import activities.services as ActivityService
 import settings.services as SettingsService
 import logging
+import string, random
 
 logger = logging.getLogger("ocmLogger")
 
@@ -84,7 +85,7 @@ def comp_plan(request, new_member):
                     # If no pairing match exists, sibling of previous parent has been matched
                     # get child of current sibling to check for matches on the sibling of his previous parent's children
                     current_sibling_children = current_sibling.get_all_children()
-                    for current_sibling_child in reversed(current_sibling_children):
+                    for current_sibling_child in current_sibling_children:
                         # current_sibling_child = current child of current_sibling for each of model's children
                         # find from binary where parent = current_parent and opposite of parent["side"] = current_sibling_child and parent["side"] = null
                         pairing = find_binary(current_parent, current_sibling_child, parent["side"])
@@ -126,7 +127,6 @@ def comp_plan(request, new_member):
             )
 
         print("--- LOGIC ENDS HERE ---")
-    activate_account(new_member)
 
 
 def activate_account(account=None):
@@ -305,6 +305,10 @@ def process_create_account_request(request):
             data["user"] = request.data["user"]
 
         return data, activation_code
+
+
+def code_generator(size=8, chars=string.ascii_uppercase + string.digits):
+    return "".join(random.choice(chars) for _ in range(size))
 
 
 # During Withdrawals

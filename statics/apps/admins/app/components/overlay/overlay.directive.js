@@ -1,7 +1,9 @@
 define(['appAdmin', 'humpsFactory'], function () {
     'use strict';
 
-    angular.module('appAdmin').directive('overlayClick', function (DIRECTORY) {
+    angular.module('appAdmin').directive('overlayClick', overlayClick);
+
+    function overlayClick() {
         return {
             restrict: 'A',
             link: function (scope, elem, attrs) {
@@ -9,11 +11,12 @@ define(['appAdmin', 'humpsFactory'], function () {
                     if (elem.hasClass('overlay')) {
                         angular.element('html').removeClass('sidebar-noneoverflow');
                         angular.element('body').removeClass('sidebar-noneoverflow');
-                        angular.element('#container').removeClass('topbar-closed sbar-open');
+                        angular.element('#container').removeClass('sbar-open');
+                        angular.element('#container').toggleClass('sidebar-closed');
                         angular.element('#overlay').removeClass('show');
                     }
                 });
             },
         };
-    });
+    }
 });

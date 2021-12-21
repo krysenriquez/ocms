@@ -12,7 +12,7 @@ define([], function () {
         var SETTINGS_ROOT = BASE_URL + 'settings/';
 
         this.AUTH_MEMBER = BASE_AUTH + 'member/';
-        this.AUTH_WHOAMI = BASE_AUTH + 'whoami/';
+        this.AUTH_WHOAMI = BASE_AUTH + 'whoamimember/';
         this.AUTH_GET = BASE_AUTH + 'get/';
         this.AUTH_LOGOUT = BASE_AUTH + 'logout/';
 
@@ -33,7 +33,7 @@ define([], function () {
         this.GET_CASHOUTS = ACTIVITIES_ROOT + 'getcashouts/';
         this.REQUEST_CASHOUT = ACTIVITIES_ROOT + 'request/';
 
-        this.GET_WALLETS = SETTINGS_ROOT + 'getwallets/';
+        this.GET_WALLETS = SETTINGS_ROOT + 'getmemberwallets/';
         this.VERIFY_WALLET_CASHOUT = SETTINGS_ROOT + 'checkwalletcashout/';
     }
 });

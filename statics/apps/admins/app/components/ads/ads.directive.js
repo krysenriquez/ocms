@@ -1,7 +1,9 @@
 define(['appAdmin'], function () {
     'use strict';
 
-    angular.module('appAdmin').directive('googleAds', function ($timeout) {
+    angular.module('appAdmin').directive('googleAds', googleAds);
+
+    function googleAds($timeout) {
         return {
             restrict: 'A',
             link: function (scope, elem, attrs) {
@@ -15,5 +17,5 @@ define(['appAdmin'], function () {
                 });
             },
         };
-    });
+    }
 });

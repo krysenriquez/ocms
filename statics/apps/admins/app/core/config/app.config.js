@@ -1,175 +1,474 @@
-define(['appAdmin', 'templateProvider'], function () {
+define([
+    'appAdmin',
+    'templateProvider',
+    'cryptoProvider',
+    'localStorageFactory',
+    'userFactory',
+    'identityFactory',
+], function () {
     'use strict';
 
-    angular.module('appAdmin').config([
-        '$stateProvider',
-        '$urlRouterProvider',
-        '$ocLazyLoadProvider',
-        '$locationProvider',
-        'templateProvider',
-        function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider, $locationProvider, templateProvider) {
-            $ocLazyLoadProvider.config({
-                jsLoader: requirejs,
-                debug: true,
+    angular.module('appAdmin').config(config);
+
+    function config(
+        $stateProvider,
+        $urlRouterProvider,
+        $ocLazyLoadProvider,
+        $locationProvider,
+        $templateProvider,
+        $breadcrumbProvider
+    ) {
+        $ocLazyLoadProvider.config({
+            jsLoader: requirejs,
+            debug: false,
+        });
+
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: false,
+        });
+
+        $breadcrumbProvider.setOptions({
+            prefixStateName: 'admins.dashboard',
+            includeAbstract: true,
+            templateUrl: $templateProvider.getShared('breadcrumbs'),
+        });
+
+        $stateProvider
+            .state('simple', {
+                abstract: true,
+                secure: false,
+                url: '/oc-admin',
+                templateUrl: $templateProvider.getShared('simple'),
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Bootstrap CSS',
+                                    files: [DIRECTORY.CSS + '/bootstrap.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Bundle CSS',
+                                    files: [DIRECTORY.CSS + '/bundle.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Simple CSS',
+                                    files: [DIRECTORY.CSS + '/simple.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Font Awesome CSS',
+                                    files: [DIRECTORY.FONTS + '/font-awesome/css/fontawesome-all.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'ngBlock CSS',
+                                    files: [DIRECTORY.LIBS + '/ngBlock/angular-block-ui.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Toastr CSS',
+                                    files: [DIRECTORY.LIBS + '/toastr/dist/css/angular-toastr.min.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('simple.login', {
+                secure: false,
+                url: '/login',
+                template: '<login></login>',
+                data: {
+                    pageTitle: 'One Creations Admin | Login',
+                },
+                resolve: {
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Page Components',
+                                    files: [DIRECTORY.COMPONENTS + '/login/login.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins', {
+                secure: true,
+                abstract: true,
+                url: '/oc-admin',
+                templateUrl: $templateProvider.getShared('full'),
+                ncyBreadcrumb: {
+                    label: 'Root',
+                    skip: true,
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Bootstrap CSS',
+                                    files: [DIRECTORY.CSS + '/bootstrap.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Bundle CSS',
+                                    files: [DIRECTORY.CSS + '/bundle.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Font Awesome',
+                                    files: [DIRECTORY.FONTS + '/font-awesome/css/fontawesome-all.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'ngBlock CSS',
+                                    files: [DIRECTORY.LIBS + '/ngBlock/angular-block-ui.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Toastr CSS',
+                                    files: [DIRECTORY.LIBS + '/toastr/dist/css/angular-toastr.min.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Breadcrumb CSS',
+                                    files: [DIRECTORY.CSS + '/components/breadcrumb.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'ngTable CSS',
+                                    files: [DIRECTORY.LIBS + '/ngTable/ng-table.min.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Page Components',
+                                    files: [
+                                        DIRECTORY.COMPONENTS + '/navHeader/navHeader.directive.js',
+                                        DIRECTORY.COMPONENTS + '/navMenu/navMenu.directive.js',
+                                        DIRECTORY.COMPONENTS + '/navFooter/navFooter.directive.js',
+                                        DIRECTORY.COMPONENTS + '/overlay/overlay.directive.js',
+                                        DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
+                                        DIRECTORY.SHARED + '/translate/translate.directive.js',
+                                        // '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
+                                    ],
+                                },
+                            ]);
+                        },
+                    ],
+                    setUpUser: function (userFactory, localStorageFactory, identityFactory, toastr, _) {
+                        var user = localStorageFactory.get('user');
+                        if (user) {
+                            userFactory.setUser(user);
+                        } else {
+                            identityFactory.getWhichUser().then(function (response) {
+                                userFactory.setUser(response);
+                            });
+                        }
+                    },
+                },
+            })
+            .state('admins.dashboard', {
+                secure: true,
+                url: '/dashboard',
+                templateUrl: $templateProvider.getShared('dashboard'),
+                data: {
+                    pageTitle: 'One Creations Admin | Dashboard',
+                },
+                ncyBreadcrumb: {
+                    label: 'Dashboard',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Widgets CSS',
+                                    files: [DIRECTORY.CSS + '/components/widgets.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Widgets Directives',
+                                    files: [
+                                        DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/transactions/transactions.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/info/info.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/wallets/wallets.directive.js',
+                                    ],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins.wallets', {
+                secure: true,
+                url: '/wallets',
+                template: '<wallets></wallets>',
+                data: {
+                    pageTitle: 'One Creations Admin | Company Wallet',
+                },
+                ncyBreadcrumb: {
+                    label: 'Company Wallet',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Wallets Directive',
+                                    files: [DIRECTORY.COMPONENTS + '/wallets/wallets.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins.members', {
+                secure: true,
+                url: '/members',
+                template: '<members></members>',
+                data: {
+                    pageTitle: 'One Creations Admin | Members',
+                },
+                ncyBreadcrumb: {
+                    label: 'Members',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Members Directives',
+                                    files: [DIRECTORY.COMPONENTS + '/members/members.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins.salesmatch', {
+                secure: true,
+                url: '/sales-matches',
+                template: '<sales-matches></sales-matches>',
+                data: {
+                    pageTitle: 'One Creations Admin | Sales Matches',
+                },
+                ncyBreadcrumb: {
+                    label: 'Sales Matches',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Sales Matches Directives',
+                                    files: [DIRECTORY.COMPONENTS + '/salesMatches/salesMatches.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins.flushout', {
+                secure: true,
+                url: '/flush-outs',
+                template: '<flush-outs></flush-outs>',
+                data: {
+                    pageTitle: 'One Creations Admin | Flush Outs',
+                },
+                ncyBreadcrumb: {
+                    label: 'Flush Outs',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Flush Outs Directives',
+                                    files: [DIRECTORY.COMPONENTS + '/flushOuts/flushOuts.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins.referrals', {
+                secure: true,
+                url: '/referrals',
+                template: '<referrals></referrals>',
+                data: {
+                    pageTitle: 'One Creations Admin | Referrals',
+                },
+                ncyBreadcrumb: {
+                    label: 'Referrals',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Referrals Directives',
+                                    files: [DIRECTORY.COMPONENTS + '/referrals/referrals.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins.unliten', {
+                secure: true,
+                url: '/unli-ten',
+                template: '<unli-ten></unli-ten>',
+                data: {
+                    pageTitle: 'One Creations Admin | Unli Ten',
+                },
+                ncyBreadcrumb: {
+                    label: 'Unli Ten',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Unli Ten Directives',
+                                    files: [DIRECTORY.COMPONENTS + '/unliTen/unliTen.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
             });
 
-            $locationProvider.html5Mode({
-                enabled: true,
-                requireBase: false,
-            });
-
-            $stateProvider
-                .state('simple', {
-                    abstract: true,
-                    secure: false,
-                    url: '/oc-admin',
-                    templateUrl: template.getShared('simple'),
-                    resolve: {
-                        loadCSS: [
-                            '$ocLazyLoad',
-                            'DIRECTORY',
-                            function ($ocLazyLoad, DIRECTORY) {
-                                return $ocLazyLoad.load([
-                                    {
-                                        serie: true,
-                                        name: 'Bootstrap',
-                                        files: [DIRECTORY.CSS + '/bootstrap.css'],
-                                    },
-                                    {
-                                        serie: true,
-                                        name: 'Bundle',
-                                        files: [DIRECTORY.CSS + '/bundle.css'],
-                                    },
-                                    {
-                                        serie: true,
-                                        name: 'Simple',
-                                        files: [DIRECTORY.CSS + '/simple.css'],
-                                    },
-                                    {
-                                        serie: true,
-                                        name: 'Font Awesome',
-                                        files: [DIRECTORY.FONTS + '/font-awesome/css/fontawesome-all.css'],
-                                    },
-                                ]);
-                            },
-                        ],
-                    },
-                })
-                .state('simple.login', {
-                    secure: false,
-                    url: '/login',
-                    templateUrl: template.getComponent('login'),
-                    data: {
-                        pageTitle: 'One Creations | Login',
-                    },
-                    resolve: {
-                        loadController: [
-                            '$ocLazyLoad',
-                            'DIRECTORY',
-                            function ($ocLazyLoad, DIRECTORY) {
-                                return $ocLazyLoad.load({
-                                    files: [DIRECTORY.COMPONENTS + '/login/login.controller.js'],
-                                });
-                            },
-                        ],
-                    },
-                })
-                .state('admin', {
-                    secure: true,
-                    abstract: true,
-                    url: '/oc-admin',
-                    templateUrl: template.getShared('full'),
-                    resolve: {
-                        loadCSS: [
-                            '$ocLazyLoad',
-                            'DIRECTORY',
-                            function ($ocLazyLoad, DIRECTORY) {
-                                return $ocLazyLoad.load([
-                                    {
-                                        serie: true,
-                                        name: 'Bootstrap',
-                                        files: [DIRECTORY.CSS + '/bootstrap.css'],
-                                    },
-                                    {
-                                        serie: true,
-                                        name: 'Bundle',
-                                        files: [DIRECTORY.CSS + '/bundle.css', DIRECTORY.CSS + '/breadcrumb.css'],
-                                    },
-                                    {
-                                        serie: true,
-                                        name: 'Font Awesome',
-                                        files: [DIRECTORY.FONTS + '/font-awesome/css/fontawesome-all.css'],
-                                    },
-                                ]);
-                            },
-                        ],
-                        loadDirective: [
-                            '$ocLazyLoad',
-                            'DIRECTORY',
-                            function ($ocLazyLoad, DIRECTORY) {
-                                return $ocLazyLoad.load([
-                                    {
-                                        serie: true,
-                                        name: 'Page Components',
-                                        files: [
-                                            DIRECTORY.COMPONENTS + '/navHeader/navHeader.directive.js',
-                                            DIRECTORY.COMPONENTS + '/navHeader/collapseSidebar.directive.js',
-                                            DIRECTORY.COMPONENTS + '/overlay/overlay.directive.js',
-                                            DIRECTORY.COMPONENTS + '/navMenu/navMenu.directive.js',
-                                            DIRECTORY.COMPONENTS + '/navFooter/navFooter.directive.js',
-                                            DIRECTORY.COMPONENTS + '/content/content.directive.js',
-                                            DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
-                                            '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
-                                        ],
-                                    },
-                                ]);
-                            },
-                        ],
-                    },
-                })
-                .state('admin.dashboard', {
-                    secure: true,
-                    url: '/dashboard',
-                    templateUrl: template.getComponent('dashboard'),
-                    data: {
-                        pageTitle: 'One Creations | My Dashboard',
-                    },
-                    resolve: {
-                        loadCSS: [
-                            '$ocLazyLoad',
-                            'DIRECTORY',
-                            function ($ocLazyLoad, DIRECTORY) {
-                                return $ocLazyLoad.load([
-                                    {
-                                        serie: true,
-                                        name: 'Widgets CSS',
-                                        files: [DIRECTORY.CSS + '/widgets/widgets.css'],
-                                    },
-                                ]);
-                            },
-                        ],
-                        loadDirective: [
-                            '$ocLazyLoad',
-                            'DIRECTORY',
-                            function ($ocLazyLoad, DIRECTORY) {
-                                return $ocLazyLoad.load([
-                                    {
-                                        serie: true,
-                                        name: 'Widgets Directives',
-                                        files: [
-                                            DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
-                                            DIRECTORY.COMPONENTS + '/widgets/balance/balance.directive.js',
-                                            DIRECTORY.COMPONENTS + '/widgets/transactions/transactions.directive.js',
-                                            DIRECTORY.COMPONENTS + '/widgets/info/info.directive.js',
-                                        ],
-                                    },
-                                ]);
-                            },
-                        ],
-                    },
-                });
-
-            $urlRouterProvider.otherwise('/');
-        },
-    ]);
+        $urlRouterProvider.otherwise('/');
+    }
 });

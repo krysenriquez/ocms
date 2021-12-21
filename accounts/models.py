@@ -144,6 +144,35 @@ class Account(models.Model):
                 .all()
             )
 
+    def get_all_direct_referral_month_count(self):
+        return self.get_all_direct_referral_month().count()
+
+    def get_direct_referral_start_month(self):
+        local_tz = get_localzone()
+        nth_of_the_month = self.created.astimezone(local_tz).day
+
+        current_month_date = timezone.localtime().date() + relativedelta(day=int(nth_of_the_month))
+        previous_month_date = current_month_date - relativedelta(months=1, day=int(nth_of_the_month))
+        next_month_date = current_month_date + relativedelta(months=1, day=int(nth_of_the_month))
+
+        if int(nth_of_the_month) < int(timezone.localtime().day):
+            return current_month_date
+        else:
+            return previous_month_date
+
+    def get_direct_referral_end_month(self):
+        local_tz = get_localzone()
+        nth_of_the_month = self.created.astimezone(local_tz).day
+
+        current_month_date = timezone.localtime().date() + relativedelta(day=int(nth_of_the_month))
+        previous_month_date = current_month_date - relativedelta(months=1, day=int(nth_of_the_month))
+        next_month_date = current_month_date + relativedelta(months=1, day=int(nth_of_the_month))
+
+        if int(nth_of_the_month) < int(timezone.localtime().day):
+            return next_month_date
+        else:
+            return current_month_date
+
     def __str__(self):
         return "%s" % (self.get_full_name())
 

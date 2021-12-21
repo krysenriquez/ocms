@@ -1,12 +1,15 @@
 define(['urlService'], function () {
     'use strict';
 
-    angular.module('appAdmin').factory('identityFactory', function ($http, urlService) {
+    angular.module('appAdmin').factory('identityFactory', identityFactory);
+
+    function identityFactory($http, urlService, humpsFactory) {
         var promises = {};
         var whoAmI = {};
         return {
             getWhoAmI: getWhoAmI,
             getNewWhoAmI: getNewWhoAmI,
+            getWhichUser: getWhichUser,
         };
 
         function getNewWhoAmI() {
@@ -21,12 +24,20 @@ define(['urlService'], function () {
             });
         }
 
+        function getWhichUser() {
+            return $http({
+                url: urlService.AUTH_WHICH_USER,
+                method: 'POST',
+            }).then(function (response) {
+                return humpsFactory.camelizeKeys(response.data);
+            });
+        }
+
         function getWhoAmI() {
             if (angular.isUndefined(promises.getWhoAmI)) {
                 promises.getWhoAmI = getNewWhoAmI();
             }
-            console.log(promises);
             return promises.getWhoAmI;
         }
-    });
+    }
 });

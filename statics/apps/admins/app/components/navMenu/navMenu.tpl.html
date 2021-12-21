@@ -1,22 +1,19 @@
-<!--  BEGIN SIDEBAR  -->
 <div class="sidebar-wrapper sidebar-theme">
     <div id="dismiss" class="d-lg-none"><i class="flaticon-cancel-12"></i></div>
-
     <nav id="sidebar">
         <ul class="navbar-nav theme-brand flex-row text-center">
             <li class="nav-item theme-logo">
-                <a ui-sref="members.dashboard">
+                <a ui-sref="admins.dashboard">
                     <img src="{{ vm.appLogo }}" class="navbar-logo" alt="logo" />
                 </a>
             </li>
             <li class="nav-item theme-text">
-                <a ui-sref="members.dashboard" class="nav-link">{{ vm.appName }}</a>
+                <a ui-sref="admins.dashboard" class="nav-link">{{ vm.appName }}</a>
             </li>
         </ul>
-
-        <ul class="list-unstyled menu-categories" id="accordionExample">
+        <ul class="list-unstyled menu-categories">
             <li class="menu">
-                <a href="javascript:void(0);" aria-expanded="false" class="dropdown-toggle">
+                <a ui-sref="admins.dashboard" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -37,32 +34,13 @@
                     </div>
                 </a>
             </li>
-            <li class="menu">
-                <a href="javascript:void(0);" aria-expanded="false" class="dropdown-toggle">
-                    <div class="">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-users"
-                        >
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                        </svg>
-                        <span>Members</span>
-                    </div>
-                </a>
+            <li class="menu menu-heading">
+                <div class="heading">
+                    <span>COMPANY BUDGET</span>
+                </div>
             </li>
             <li class="menu">
-                <a href="javascript:void(0);" aria-expanded="false" class="dropdown-toggle">
+                <a ui-sref="admins.wallets" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -79,12 +57,159 @@
                             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                             <polyline points="9 22 9 12 15 12 15 22"></polyline>
                         </svg>
-                        <span>Transactions</span>
+                        <span>Wallets</span>
                     </div>
                 </a>
             </li>
             <li class="menu">
-                <a href="javascript:void(0);" aria-expanded="false" class="dropdown-toggle">
+                <a ui-sref="admins.payout" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-home"
+                        >
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Cashouts</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu menu-heading">
+                <div class="heading">
+                    <span>MEMBER MANAGEMENT</span>
+                </div>
+            </li>
+            <li class="menu">
+                <a ui-sref="admins.members" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-home"
+                        >
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Members</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu menu-heading">
+                <div class="heading">
+                    <span>ACTIVITIES</span>
+                </div>
+            </li>
+            <li class="menu">
+                <a ui-sref="admins.salesmatch" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-home"
+                        >
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Sales Matches</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu">
+                <a ui-sref="admins.flushout" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-home"
+                        >
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Flush Outs</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu">
+                <a ui-sref="admins.referrals" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-home"
+                        >
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Referrals</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu">
+                <a ui-sref="admins.unliten" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-home"
+                        >
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Unli Ten</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu menu-heading">
+                <div class="heading">
+                    <span>SETTINGS</span>
+                </div>
+            </li>
+            <li class="menu">
+                <a ui-sref="admins.codes" aria-expanded="false" class="dropdown-toggle">
                     <div class="">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -102,6 +227,28 @@
                             <polyline points="9 22 9 12 15 12 15 22"></polyline>
                         </svg>
                         <span>Codes</span>
+                    </div>
+                </a>
+            </li>
+            <li class="menu">
+                <a ui-sref="admins.settings" aria-expanded="false" class="dropdown-toggle">
+                    <div class="">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="feather feather-home"
+                        >
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                        <span>Settings</span>
                     </div>
                 </a>
             </li>

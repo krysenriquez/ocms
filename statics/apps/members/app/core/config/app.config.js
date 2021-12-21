@@ -31,7 +31,7 @@ define([
         $breadcrumbProvider.setOptions({
             prefixStateName: 'members.dashboard',
             includeAbstract: true,
-            templateUrl: '/statics/apps/members/app/components/breadcrumbs/breadcrumbs.tpl.html',
+            templateUrl: $templateProvider.getShared('breadcrumbs'),
         });
 
         $stateProvider
@@ -84,18 +84,22 @@ define([
             .state('simple.login', {
                 secure: false,
                 url: '/login',
-                templateUrl: $templateProvider.getComponent('login'),
+                template: '<login></login>',
                 data: {
                     pageTitle: 'One Creations | Login',
                 },
                 resolve: {
-                    loadController: [
+                    loadDirective: [
                         '$ocLazyLoad',
                         'DIRECTORY',
                         function ($ocLazyLoad, DIRECTORY) {
-                            return $ocLazyLoad.load({
-                                files: [DIRECTORY.COMPONENTS + '/login/login.controller.js'],
-                            });
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Page Components',
+                                    files: [DIRECTORY.COMPONENTS + '/login/login.directive.js'],
+                                },
+                            ]);
                         },
                     ],
                 },
@@ -190,7 +194,7 @@ define([
             .state('members.dashboard', {
                 secure: true,
                 url: '/dashboard',
-                templateUrl: $templateProvider.getComponent('dashboard'),
+                templateUrl: $templateProvider.getShared('dashboard'),
                 data: {
                     pageTitle: 'One Creations | My Dashboard',
                 },
@@ -234,7 +238,7 @@ define([
             .state('members.genealogy', {
                 secure: true,
                 url: '/genealogy',
-                templateUrl: $templateProvider.getComponent('genealogy'),
+                template: '<binary-tree></binary-tree>',
                 data: {
                     pageTitle: 'One Creations | Genealogy',
                 },
@@ -273,7 +277,7 @@ define([
             .state('members.earn', {
                 secure: true,
                 url: '/earn',
-                templateUrl: $templateProvider.getComponent('earn'),
+                template: '<ima-sdk-player></ima-sdk-player>',
                 data: {
                     pageTitle: 'One Creations | Watch and Earn',
                 },
@@ -314,15 +318,15 @@ define([
                     ],
                 },
             })
-            .state('members.link', {
+            .state('members.codes', {
                 secure: true,
-                url: '/referral-link',
-                templateUrl: $templateProvider.getComponent('link'),
+                url: '/activation-codes',
+                template: '<activation-codes></activation-codes>',
                 data: {
-                    pageTitle: 'One Creations | Referral Links',
+                    pageTitle: 'One Creations | Activation Codes',
                 },
                 ncyBreadcrumb: {
-                    label: 'Referral Links',
+                    label: 'Activation Codes',
                 },
                 resolve: {
                     loadCSS: [
@@ -345,8 +349,8 @@ define([
                             return $ocLazyLoad.load([
                                 {
                                     serie: true,
-                                    name: 'Referral Link Directive',
-                                    files: [DIRECTORY.COMPONENTS + '/referralLinks/referralLinks.directive.js'],
+                                    name: 'Activation Codes Directive',
+                                    files: [DIRECTORY.COMPONENTS + '/activationCodes/activationCodes.directive.js'],
                                 },
                             ]);
                         },
@@ -356,7 +360,7 @@ define([
             .state('members.cashout', {
                 secure: true,
                 url: '/cashout',
-                templateUrl: $templateProvider.getComponent('cashout'),
+                template: '<cash-outs></cash-outs>',
                 data: {
                     pageTitle: 'One Creations | Cashouts',
                 },
@@ -385,7 +389,7 @@ define([
                                 {
                                     serie: true,
                                     name: 'Referral Link Directive',
-                                    files: [DIRECTORY.COMPONENTS + '/cashouts/cashouts.directive.js'],
+                                    files: [DIRECTORY.COMPONENTS + '/cashOuts/cashOuts.directive.js'],
                                 },
                             ]);
                         },

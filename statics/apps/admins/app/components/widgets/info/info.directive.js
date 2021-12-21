@@ -1,7 +1,9 @@
 define(['appAdmin'], function () {
     'use strict';
 
-    angular.module('appAdmin').directive('infoWidget', function (DIRECTORY) {
+    angular.module('appAdmin').directive('infoWidget', infoWidget);
+
+    function infoWidget(DIRECTORY) {
         var directive = {
             bindToController: true,
             replace: true,
@@ -24,5 +26,5 @@ define(['appAdmin'], function () {
         }
 
         function link() {}
-    });
+    }
 });

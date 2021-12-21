@@ -1,14 +1,16 @@
 define(['appAdmin'], function () {
     'use strict';
 
-    angular.module('appAdmin').factory('humpsFactory', function () {
+    angular.module('appAdmin').factory('humpsFactory', humpsFactory, _);
+
+    function humpsFactory() {
         return {
             camelize: camelize,
             decamelize: decamelize,
             pascalize: pascalize,
             depascalize: decamelize,
             camelizeKeys: function (object, options) {
-                return _processKeys(_processor(camelize, options), object);
+                return _processKeys(_processor(camelize, options), _prepObject(object));
             },
             decamelizeKeys: function (object, options) {
                 return _processKeys(_processor(decamelize, options), object, options);
@@ -90,6 +92,10 @@ define(['appAdmin'], function () {
             };
         }
 
+        function _prepObject(object) {
+            return _.omit(object, ['config', 'headers']);
+        }
+
         function camelize(string) {
             if (_isNumerical(string)) {
                 return string;
@@ -110,5 +116,5 @@ define(['appAdmin'], function () {
         function decamelize(string, options) {
             return separateWords(string, options).toLowerCase();
         }
-    });
+    }
 });

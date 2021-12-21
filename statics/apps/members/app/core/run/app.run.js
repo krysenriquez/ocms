@@ -19,7 +19,7 @@ define(['authLoginService'], function () {
         $http.defaults.xsrfCookieName = 'csrftoken';
 
         $http({
-            url: DIRECTORY.SHARED + '/table/pagination/pagination.tpl.html',
+            url: DIRECTORY.SHARED + '/templates/pagination/pagination.tpl.html',
             method: 'GET',
         })
             .then(function (response) {

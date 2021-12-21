@@ -295,6 +295,9 @@ define(['orgChart'], function () {
                     }
                     return false;
                 });
+                $scope.chart.on('label', function (sender, args) {
+                    args.value = args.value;
+                });
             }
         }
 

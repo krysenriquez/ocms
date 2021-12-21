@@ -8,50 +8,48 @@ from django.views.decorators.csrf import csrf_protect
 from .serializers import *
 from .models import *
 from .enums import *
+from users.enums import UserType
 
 
-class AccountViewSet(ModelViewSet):
-    serializer_class = AccountSerializer
+class AccountListViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountListSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
 
     def get_queryset(self):
-        user_id = self.request.query_params.get("user_id", None)
-
-        if user_id is not None:
-            queryset = Account.objects.filter(user_id=user_id).exclude(is_active=False)
+        if self.request.user.user_type == UserType.ADMIN:
+            queryset = Account.objects.exclude(is_deleted=True).all()
             if queryset.exists():
                 return queryset
         else:
-            return Response(
-                data={"message": "Account not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            return Account.objects.none()
 
 
-class CreateAccountView(views.APIView):
+class AccountUnliTenViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountUnliTenSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
 
-    def post(self, request, *args, **kwargs):
-        processed_request, code = process_create_account_request(request)
-        serializer = AccountSerializer(data=processed_request)
-
-        if serializer.is_valid():
-            new_member = serializer.save()
-            code.update_status()
-            comp_plan(request, new_member)
-            return Response(data={"message": "Account created."}, status=status.HTTP_201_CREATED)
+    def get_queryset(self):
+        if self.request.user.user_type == UserType.ADMIN:
+            queryset = Account.objects.exclude(is_deleted=True).all()
+            if queryset.exists():
+                return queryset
         else:
-            print(serializer.errors)
-            return Response(
-                data={"message": "Unable to create Account."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Account.objects.none()
+
+    # def filter_queryset(self, queryset):
+    #     queryset = super(AccountUnliTenViewSet, self).filter_queryset(queryset)
+    #     return queryset.order_by("-referrals").distinct()
 
 
 class GenealogyAccountViewSet(ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = GenealogyAccountSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
 
     def get_queryset(self):
         queryset = (
@@ -67,7 +65,16 @@ class GenealogyAccountViewSet(ModelViewSet):
                                     queryset=Account.objects.prefetch_related(
                                         Prefetch(
                                             "children",
-                                            queryset=Account.objects.order_by("parent_side").all(),
+                                            queryset=Account.objects.prefetch_related(
+                                                Prefetch(
+                                                    "children",
+                                                    queryset=Account.objects.order_by(
+                                                        "parent_side"
+                                                    ).all(),
+                                                )
+                                            )
+                                            .order_by("parent_side")
+                                            .all(),
                                         )
                                     )
                                     .order_by("parent_side")
@@ -104,6 +111,61 @@ class GenealogyAccountViewSet(ModelViewSet):
             return queryset
 
 
+class CodeViewSet(ModelViewSet):
+    queryset = Code.objects.all()
+    serializer_class = CodeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        queryset = Code.objects.exclude(is_deleted=True)
+        account_id = self.request.query_params.get("account_id", None)
+
+        if account_id is not None:
+            queryset = queryset.filter(account__account_id=account_id).order_by("status")
+
+            return queryset
+
+
+class BinaryViewSet(ModelViewSet):
+    queryset = Binary.objects.all()
+    serializer_class = BinarySerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        if self.request.user.user_type == UserType.ADMIN:
+            queryset = Binary.objects.exclude(is_deleted=True)
+            binary_type = self.request.query_params.get("binary_type", None)
+            print(binary_type)
+            queryset = queryset.filter(binary_type=binary_type).order_by("-modified")
+            if queryset.exists():
+                return queryset
+        else:
+            return Binary.objects.none()
+
+
+class CreateAccountView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        processed_request, code = process_create_account_request(request)
+        serializer = AccountSerializer(data=processed_request)
+
+        if serializer.is_valid():
+            new_member = serializer.save()
+            code.update_status()
+            comp_plan(request, new_member)
+            activate_account(new_member)
+            return Response(data={"message": "Account created."}, status=status.HTTP_201_CREATED)
+        else:
+            print(serializer.errors)
+            return Response(
+                data={"message": "Unable to create Account."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
 class GenerateCodeView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -119,21 +181,6 @@ class GenerateCodeView(views.APIView):
                 data={"message": "Unable to generate code."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
-
-class CodeViewSet(ModelViewSet):
-    queryset = Code.objects.all()
-    serializer_class = CodeSerializer
-    permission_classes = (permissions.IsAuthenticated,)
-
-    def get_queryset(self):
-        queryset = Code.objects.exclude(is_deleted=True)
-        account_id = self.request.query_params.get("account_id", None)
-
-        if account_id is not None:
-            queryset = queryset.filter(account__account_id=account_id).order_by("status")
-
-            return queryset
 
 
 class VerifySponsorCodeView(views.APIView):
@@ -181,7 +228,7 @@ class VerifySponsorCodeView(views.APIView):
             if activation_code.status == CodeStatus.DEACTIVATED:
                 return Response(
                     data={
-                        "message": code_type.title() + " Code already expired.",
+                        "message": code_type.title() + " Code currently deactivated.",
                     },
                     status=status.HTTP_410_GONE,
                 )
@@ -189,6 +236,13 @@ class VerifySponsorCodeView(views.APIView):
                 return Response(
                     data={
                         "message": code_type.title() + " Code already been used.",
+                    },
+                    status=status.HTTP_409_CONFLICT,
+                )
+            elif activation_code.status == CodeStatus.EXPIRED:
+                return Response(
+                    data={
+                        "message": code_type.title() + " Code has already expired.",
                     },
                     status=status.HTTP_409_CONFLICT,
                 )

@@ -21,9 +21,8 @@
                                 header-class="'text-left'"
                                 data-title="'ACTIVITY'"
                                 sortable="'activityType'"
-                            >
-                                {{ summary.activityType }}
-                            </td>
+                                translate="{{ summary.activityType }}"
+                            ></td>
                             <td class="text-left" header-class="'text-left'" data-title="'AMOUNT'" sortable="'amount'">
                                 {{ summary.amount | currency:'₱': 2}}
                             </td>

@@ -1,12 +1,14 @@
-define(['appMember'], function () {
+define(['appAdmin'], function () {
     'use strict';
 
-    angular.module('appMember').directive('imaSdkPlayer', function (DIRECTORY) {
+    angular.module('appAdmin').directive('imaSdkPlayer', imaSdkPlayer).directive('myReplayPlugin', myReplayPlugin);
+
+    function imaSdkPlayer(DIRECTORY) {
         var directive = {
             bindToController: true,
             replace: true,
             controller: imaSdkPlayerController,
-            controllerAs: 'ima',
+            controllerAs: 'vm',
             link: link,
             restrict: 'E',
             templateUrl: DIRECTORY.COMPONENTS + '/imaSdkPlayer/imaSdkPlayer.tpl.html',
@@ -37,7 +39,7 @@ define(['appMember'], function () {
                     },
                 ],
                 theme: {
-                    url: DIRECTORY.CSS + '/videogular-theme.css',
+                    url: DIRECTORY.CSS + '/components/videogular-theme.css',
                 },
                 plugins: {
                     poster: LOGO.IMALOGO,
@@ -56,5 +58,24 @@ define(['appMember'], function () {
         }
 
         function link(scope, elem, attrs) {}
-    });
+    }
+
+    function myReplayPlugin(DIRECTORY) {
+        return {
+            restrict: 'E',
+            require: '^videogular',
+            link: function (scope, elem, attrs, API) {
+                scope.API = API;
+                scope.$watch(
+                    'API.isCompleted',
+                    function (newValue, oldValue) {
+                        if (newValue) {
+                            swal('Success!', 'You earned P0.05', 'success');
+                        }
+                    },
+                    true
+                );
+            },
+        };
+    }
 });

@@ -29,7 +29,6 @@ require.config({
         ngLoadingbar: libs + 'angular/angular-loading-bar.min',
         ngTable: libs + 'ngTable/ng-table',
         ngBlock: libs + 'ngBlock/angular-block-ui.min',
-
         ngToastr: libs + 'toastr/dist/js/angular-toastr.tpls.min',
         ngSweetalert: libs + 'sweetalert/SweetAlert',
         sweetalert: libs + 'sweetalert/sweetalert.min',

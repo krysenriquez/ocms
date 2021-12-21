@@ -98,6 +98,12 @@ class CustomUser(AbstractUser):
     def has_module_perms(self, app_label):
         return True
 
+    def get_all_user_accounts(self):
+        accounts = []
+        for account in self.account_user.all():
+            accounts.append(account)
+        return accounts
+
 
 class UserLogs(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="userLogs")

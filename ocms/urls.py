@@ -29,6 +29,21 @@ urlpatterns = [
     path(
         "oc-admin/dashboard", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))
     ),
+    path("oc-admin/wallets", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))),
+    path("oc-admin/members", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))),
+    path(
+        "oc-admin/sales-matches",
+        ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html")),
+    ),
+    path(
+        "oc-admin/flush-outs", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))
+    ),
+    path(
+        "oc-admin/referrals", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))
+    ),
+    path(
+        "oc-admin/unli-ten", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))
+    ),
     # Member
     path("", lambda request: redirect("member/login", permanent=False)),
     path("login", lambda request: redirect("member/login", permanent=False)),
@@ -42,7 +57,7 @@ urlpatterns = [
     ),
     path("member/earn", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))),
     path(
-        "member/referral-link",
+        "member/activation-codes",
         ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html")),
     ),
     path("member/cashout", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))),

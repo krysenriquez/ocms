@@ -11,13 +11,18 @@ class ActivitySerializer(ModelSerializer):
         max_digits=13,
     )
     activity_details = serializers.CharField(source="get_activity_details", required=False)
+    account_name = serializers.CharField(source="account.get_account_name", required=False)
+    account_number = serializers.CharField(source="account.get_account_number", required=False)
 
     class Meta:
         model = Activity
         fields = [
+            "account_name",
+            "account_number",
             "activity_type",
             "amount",
             "activity_details",
+            "created",
         ]
 
 

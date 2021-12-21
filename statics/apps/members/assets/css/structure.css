@@ -182,13 +182,14 @@ code { color: #e7515a; }
     text-transform: initial;
     position: unset;
 }
-.navbar .toggle-sidebar, .navbar .sidebarCollapse {
+.navbar .toggle-sidebar, .navbar .sidebar-collapse {
     display: inline-block;
     position: relative;
     color: #060818;
     padding: 8px 8px 8px 0;
+	cursor: pointer;
 }
-.navbar .sidebarCollapse svg {
+.navbar .sidebar-collapse svg {
     width: 20px;
     height: 20px;
 }
@@ -985,7 +986,7 @@ code { color: #e7515a; }
         margin-left: 22px;
         align-self: center;
     }
-    .navbar .toggle-sidebar, .navbar .sidebarCollapse {
+    .navbar .toggle-sidebar, .navbar .sidebar-collapse {
         display: none;
     }
     .topbar-nav.header {

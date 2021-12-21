@@ -53,10 +53,10 @@ class Activity(models.Model):
         return "%s - %s" % (self.activity_type, self.account)
 
     def get_activity_details(self):
-        generic_object = self.content_type.model_class().objects.get(id=self.object_id)
         detail = []
+        if self.content_type:
+            generic_object = self.content_type.model_class().objects.get(id=self.object_id)
 
-        if generic_object:
             if self.activity_type == ActivityType.ENTRY:
                 detail = "Entry on %s" % (str(generic_object.pk).zfill(5))
             elif self.activity_type == ActivityType.DIRECT_REFERRAL:

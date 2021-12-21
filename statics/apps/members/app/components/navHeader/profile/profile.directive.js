@@ -43,6 +43,7 @@ define(['appMember', 'humpsFactory', 'accountFactory'], function () {
             function logout() {
                 authLoginService.logout().then(function (response) {
                     if (response) {
+                        localStorageFactory.removeAll();
                         $state.go('simple.login');
                     }
                 });

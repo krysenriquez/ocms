@@ -3,7 +3,8 @@ from .api import *
 from django.urls import path
 
 router = DefaultRouter()
-router.register(r"getwalletsummary", ActivityViewSet)
+router.register(r"getactivitysummary", ActivityViewSet)
+router.register(r"getwalletsummary", ActivityWalletViewSet)
 router.register(r"getcashouts", CashoutViewSet)
 
 urlpatterns = [

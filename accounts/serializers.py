@@ -2,8 +2,7 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from django.utils import timezone
 from .models import *
-from .services import update_binary
-import string, random
+from .services import code_generator
 
 
 class PersonalInfoSerializer(ModelSerializer):
@@ -198,6 +197,47 @@ class AccountSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class AccountListSerializer(ModelSerializer):
+    account_name = serializers.CharField(source="get_account_name", required=False)
+    account_number = serializers.CharField(source="get_account_number", required=False)
+    parent_account_name = serializers.CharField(source="parent.get_account_name", required=False)
+    parent_account_number = serializers.CharField(source="parent.get_account_number", required=False)
+    referrer_account_name = serializers.CharField(source="referrer.get_account_name", required=False)
+    referrer_account_number = serializers.CharField(source="referrer.get_account_number", required=False)
+
+    class Meta:
+        model = Account
+        fields = [
+            "account_id",
+            "account_name",
+            "account_number",
+            "parent_account_name",
+            "parent_account_number",
+            "referrer_account_name",
+            "referrer_account_number",
+            "account_status",
+            "created",
+        ]
+
+
+class AccountUnliTenSerializer(ModelSerializer):
+    account_name = serializers.CharField(source="get_account_name", required=False)
+    account_number = serializers.CharField(source="get_account_number", required=False)
+    referrals = serializers.IntegerField(source="get_all_direct_referral_month_count", required=False)
+    start_period = serializers.DateField(source="get_direct_referral_start_month", required=False)
+    end_period = serializers.DateField(source="get_direct_referral_end_month", required=False)
+
+    class Meta:
+        model = Account
+        fields = [
+            "account_id",
+            "account_name",
+            "account_number",
+            "referrals",
+            "start_period",
+            "end_period",
+        ]
+
 class AvatarInfoSerializer(ModelSerializer):
     class Meta:
         model = AvatarInfo
@@ -286,10 +326,6 @@ class GenealogyAccountSerializer(ModelSerializer):
         ]
 
 
-def code_generator(size=8, chars=string.ascii_uppercase + string.digits):
-    return "".join(random.choice(chars) for _ in range(size))
-
-
 class GenerateCodeSerializer(ModelSerializer):
     quantity = serializers.CharField()
 
@@ -315,3 +351,25 @@ class CodeSerializer(ModelSerializer):
     class Meta:
         model = Code
         fields = ["code", "code_type", "status", "expiration"]
+
+
+class BinarySerializer(ModelSerializer):
+    parent_account_name = serializers.CharField(source="parent.get_account_name", required=False)
+    parent_account_number = serializers.CharField(source="parent.get_account_number", required=False)
+    left_account_name = serializers.CharField(source="left_side.get_account_name", required=False)
+    left_account_number = serializers.CharField(source="left_side.get_account_number", required=False)
+    right_account_name = serializers.CharField(source="right_side.get_account_name", required=False)
+    right_account_number = serializers.CharField(source="right_side.get_account_number", required=False)
+
+    class Meta:
+        model = Binary
+        fields = [
+            "parent_account_name",
+            "parent_account_number",
+            "left_account_name",
+            "left_account_number",
+            "right_account_name",
+            "right_account_number",
+            "binary_type",
+            "modified",
+        ]

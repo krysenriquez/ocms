@@ -32,8 +32,8 @@ class BinaryAdmin(admin.ModelAdmin):
     )
     list_filter = ("binary_type",)
     ordering = (
-        "modified",
-        "created",
+        "-modified",
+        "-created",
     )
 
     class Meta:

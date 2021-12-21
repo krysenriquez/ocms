@@ -1,7 +1,13 @@
-define(['appAdmin', 'humpsFactory', 'accountFactory'], function () {
+define([
+    'appAdmin',
+    'app/components/navHeader/collapseSidebar/collapseSidebar.directive',
+    'app/components/navHeader/profile/profile.directive',
+], function () {
     'use strict';
 
-    angular.module('appAdmin').directive('navHeader', function (DIRECTORY) {
+    angular.module('appAdmin').directive('navHeader', navHeader);
+
+    function navHeader(DIRECTORY) {
         var directive = {
             bindToController: true,
             replace: true,
@@ -15,42 +21,17 @@ define(['appAdmin', 'humpsFactory', 'accountFactory'], function () {
 
         return directive;
 
-        function directiveController(
-            APPNAME,
-            LOGO,
-            authLoginService,
-            $state,
-            $timeout,
-            $http,
-            urlService,
-            humpsFactory,
-            accountFactory
-        ) {
+        function directiveController(APPNAME, LOGO) {
             var vm = this;
-            vm.logout = logout;
 
             init();
 
             function init() {
                 vm.appName = APPNAME;
                 vm.appLogo = LOGO.NAVLOGO;
-
-                $http.get(urlService.ACCOUNT_AVATAR).then(function (response) {
-                    var responseData = humpsFactory.camelizeKeys(response.data[0]);
-                    vm.account = responseData;
-                    accountFactory.setAccountId(responseData.accountId);
-                });
-            }
-
-            function logout() {
-                authLoginService.logout().then(function (response) {
-                    if (response) {
-                        $state.go('simple.login');
-                    }
-                });
             }
         }
 
         function link() {}
-    });
+    }
 });

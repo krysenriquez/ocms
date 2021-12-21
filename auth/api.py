@@ -5,13 +5,14 @@ from django.conf import settings
 from rest_framework import status, views, permissions
 from rest_framework.response import Response
 from .serializers import UserSerializer
+from users.enums import *
 
 
 class AdminLoginView(views.APIView):
     @method_decorator(csrf_protect)
     def post(self, request):
         user = authenticate(username=request.data.get("username"), password=request.data.get("password"))
-
+        print()
         if user is None or not user.is_active:
             return Response(
                 {
@@ -20,7 +21,7 @@ class AdminLoginView(views.APIView):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        if not user.is_staff:
+        if user.user_type != UserType.ADMIN and user.user_type != UserType.DEVELOPER:
             return Response(
                 {"message": "Unauthorized Access"},
                 status=status.HTTP_403_FORBIDDEN,
@@ -68,12 +69,48 @@ class LogoutView(views.APIView):
         )
 
 
-class WhoAmIView(views.APIView):
+class WhoAmIMemberView(views.APIView):
     @method_decorator(csrf_protect)
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.id:
             return Response(
                 data={},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(data={}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class WhoAmIAdminView(views.APIView):
+    @method_decorator(csrf_protect)
+    def post(self, request, *args, **kwargs):
+        if (
+            request.user.is_authenticated
+            and request.user.id
+            and (
+                request.user.user_type == UserType.ADMIN or request.user.user_type == UserType.DEVELOPER
+            )
+        ):
+            return Response(
+                data={},
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(data={}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class WhichUserView(views.APIView):
+    @method_decorator(csrf_protect)
+    def post(self, request, *args, **kwargs):
+        if (
+            request.user.is_authenticated
+            and request.user.id
+            and (
+                request.user.user_type == UserType.ADMIN or request.user.user_type == UserType.DEVELOPER
+            )
+        ):
+            return Response(
+                data={"user_id": request.user.user_id, "username": request.user.username},
                 status=status.HTTP_200_OK,
             )
         else:

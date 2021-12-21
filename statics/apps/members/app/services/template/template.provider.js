@@ -8,10 +8,6 @@ define(['appMember'], function () {
             return {};
         };
 
-        this.getComponent = function (name) {
-            return DIRECTORY.COMPONENTS + '/pages/' + name + '/' + name + '.tpl.html';
-        };
-
         this.getShared = function (name) {
             return DIRECTORY.SHARED + '/templates' + '/' + name + '/' + name + '.tpl.html';
         };
