@@ -1,4 +1,4 @@
-define(['walletFactory', 'messageValidator', 'inputValidator', 'formValidator', 'statusFactory'], function () {
+define(['cashoutFactory', 'messageValidator', 'inputValidator', 'formValidator', 'statusFactory'], function () {
     'use strict';
 
     angular.module('appMember').controller('WalletCashoutController', WalletCashoutController);
@@ -7,7 +7,7 @@ define(['walletFactory', 'messageValidator', 'inputValidator', 'formValidator', 
         $uibModalInstance,
         $filter,
         walletObject,
-        walletFactory,
+        cashoutFactory,
         statusFactory,
         _,
         toastr
@@ -17,28 +17,48 @@ define(['walletFactory', 'messageValidator', 'inputValidator', 'formValidator', 
         vm.validateAmount = validateAmount;
         vm.requestCashout = requestCashout;
         vm.shouldDisableCashoutAmount = false;
+        vm.cashoutBracket = [];
         vm.cashout = {};
         vm.validation = {};
         vm.form = {};
+        vm.tax;
         init();
 
         function init() {
-            vm.cashoutBracket = walletObject.response;
             vm.cashout.accountId = walletObject.accountId;
             vm.cashout.wallet = walletObject.walletInfo.wallet;
             vm.cashout.details = {
                 note: '',
             };
-            if (typeof vm.cashoutBracket.bracket == 'number') {
-                vm.cashout.amount = vm.cashoutBracket.bracket;
-                vm.shouldDisableCashoutAmount = true;
-                validateAmount();
-            }
+            getCashoutTax().then(function (response) {
+                vm.tax = response.tax;
+                if (typeof walletObject.response.bracket == 'number') {
+                    vm.cashoutBracket.push(walletObject.response.bracket);
+                    vm.cashout.amount = walletObject.response.bracket;
+                    vm.cashout.amountToReceive = parseInt(walletObject.response.bracket) * (1 - vm.tax);
+                    vm.shouldDisableCashoutAmount = true;
+                    validateAmount();
+                } else {
+                    vm.cashoutBracket = walletObject.response.bracket;
+                    vm.shouldDisableCashoutAmount = false;
+                }
+            });
             getPaymentMethods();
         }
 
+        function getCashoutTax() {
+            return cashoutFactory
+                .getCashoutTax()
+                .then(function (response) {
+                    return response;
+                })
+                .catch(function (error) {
+                    toastr.error(error.data.message);
+                });
+        }
+
         function getPaymentMethods() {
-            walletFactory
+            cashoutFactory
                 .getCashoutMethods()
                 .then(function (response) {
                     vm.paymentMethods = response.methods;
@@ -61,7 +81,7 @@ define(['walletFactory', 'messageValidator', 'inputValidator', 'formValidator', 
                         status: statusFactory.OK,
                     };
                 }
-                console.log(vm.validation.amount);
+                vm.cashout.amountToReceive = vm.cashout.amount * (1 - vm.tax);
             }
         }
 
@@ -70,7 +90,7 @@ define(['walletFactory', 'messageValidator', 'inputValidator', 'formValidator', 
         }
 
         function requestCashout() {
-            walletFactory
+            cashoutFactory
                 .requestCashout(vm.cashout)
                 .then(function (response) {
                     toastr.success(response.message);

@@ -9,45 +9,26 @@
                         ng-table="vm.referralsTable"
                         template-pagination="pagination.tpl.html"
                     >
-                        <tr class="datatable-row" ng-repeat="referral in $data">
+                        <tr
+                            class="datatable-row cursor-pointer"
+                            ng-repeat="account in $data"
+                            ng-click="vm.viewReferralDetails(account)"
+                        >
                             <td
                                 class="datatable-cell datatable-cell-left text-left"
                                 header-class="'text-left'"
                                 data-title="'ACCOUNT'"
                                 sortable="'accountName'"
                             >
-                                {{ referral.accountNumber }} - {{ referral.accountName }}
+                                {{ account.accountNumber }} - {{ account.accountName }}
                             </td>
                             <td
                                 class="datatable-cell datatable-cell-left text-left"
                                 header-class="'text-left'"
-                                data-title="'ACTIVITY'"
-                                sortable="'activityType'"
-                                translate="{{referral.activityType}}"
-                            ></td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'AMOUNT'"
-                                sortable="'amount'"
+                                data-title="'REFERRALS'"
+                                sortable="'referrals'"
                             >
-                                {{ referral.amount | currency:'₱': 2}}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'DETAILS'"
-                                sortable="'activityDetails'"
-                            >
-                                {{ referral.activityDetails }}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'DATE'"
-                                sortable="'created'"
-                            >
-                                {{ referral.created | date : 'short' }}
+                                {{ account.referrals | number:0}}
                             </td>
                         </tr>
                     </table>

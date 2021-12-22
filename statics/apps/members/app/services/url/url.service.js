@@ -34,6 +34,7 @@ define([], function () {
         this.REQUEST_CASHOUT = ACTIVITIES_ROOT + 'request/';
 
         this.GET_WALLETS = SETTINGS_ROOT + 'getmemberwallets/';
+        this.GET_CASHOUT_TAX = SETTINGS_ROOT + 'getcashouttax/';
         this.VERIFY_WALLET_CASHOUT = SETTINGS_ROOT + 'checkwalletcashout/';
     }
 });

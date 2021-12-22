@@ -172,6 +172,7 @@ define([
                                         DIRECTORY.COMPONENTS + '/overlay/overlay.directive.js',
                                         DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
                                         DIRECTORY.SHARED + '/translate/translate.directive.js',
+                                        DIRECTORY.SHARED + '/templates/tableSearch/tableSearch.directive.js',
                                         // '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
                                     ],
                                 },
@@ -239,10 +240,10 @@ define([
                 url: '/wallets',
                 template: '<wallets></wallets>',
                 data: {
-                    pageTitle: 'One Creations Admin | Company Wallet',
+                    pageTitle: 'One Creations Admin | Wallets',
                 },
                 ncyBreadcrumb: {
-                    label: 'Company Wallet',
+                    label: 'Wallets',
                 },
                 resolve: {
                     loadCSS: [
@@ -267,6 +268,45 @@ define([
                                     serie: true,
                                     name: 'Wallets Directive',
                                     files: [DIRECTORY.COMPONENTS + '/wallets/wallets.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins.cashouts', {
+                secure: true,
+                url: '/cash-outs',
+                template: '<cashouts></cashouts>',
+                data: {
+                    pageTitle: 'One Creations Admin | Cash Outs',
+                },
+                ncyBreadcrumb: {
+                    label: 'Cash Outs',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Cash Outs Directive',
+                                    files: [DIRECTORY.COMPONENTS + '/cashouts/cashouts.directive.js'],
                                 },
                             ]);
                         },
@@ -462,6 +502,45 @@ define([
                                     serie: true,
                                     name: 'Unli Ten Directives',
                                     files: [DIRECTORY.COMPONENTS + '/unliTen/unliTen.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins.codes', {
+                secure: true,
+                url: '/activation-codes',
+                template: '<activation-codes></activation-codes>',
+                data: {
+                    pageTitle: 'One Creations Admin | Codes',
+                },
+                ncyBreadcrumb: {
+                    label: 'Codes',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Codes Directives',
+                                    files: [DIRECTORY.COMPONENTS + '/activationCodes/activationCodes.directive.js'],
                                 },
                             ]);
                         },

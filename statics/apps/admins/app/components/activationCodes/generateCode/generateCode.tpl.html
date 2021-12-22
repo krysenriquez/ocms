@@ -1,0 +1,56 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="modal-title" translate="generate_code_form"></h5>
+    <button type="button" class="close" aria-label="Close" ng-click="vm.cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form name="vm.form.cashoutForm">
+        <div class="form-row">
+            <div class="col-md-12 mb-2">
+                <label for="accountId" translate="account_id" translate-required="true"></label>
+                <input
+                    type="text"
+                    class="form-control"
+                    id="accountId"
+                    ng-model="vm.new.accountId"
+                    ng-change="vm.verifyAccountId()"
+                    ng-model-options="{ debounce: 1000 }"
+                    placeholder="Account ID"
+                    input-validator="vm.validation.accountId"
+                />
+                <message-validator validator="vm.validation.accountId"></message-validator>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12 mb-2">
+                <label for="quantity" translate="quantity" translate-required="true"></label>
+                <input
+                    type="number"
+                    class="form-control"
+                    id="quantity"
+                    ng-model="vm.new.quantity"
+                    placeholder="Quantity"
+                    input-validator="vm.new.quantity"
+                    required
+                />
+            </div>
+            <div class="col-md-12 mb-2">
+                <label for="status" translate="code_status" translate-required="true"></label>
+                <select
+                    class="form-control"
+                    id="status"
+                    ng-model="vm.new.status"
+                    input-validator="vm.new.status"
+                    required
+                >
+                    <option ng-repeat="status in vm.codeStatus" ng-value="status" translate="{{status}}"></option>
+                </select>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn mr-auto" ng-click="vm.cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="vm.generateCode()">Generate</button>
+</div>

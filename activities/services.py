@@ -1,5 +1,20 @@
+from decimal import Decimal
 from .models import *
 from .enums import *
+from django.utils import timezone
+from settings.enums import *
+from settings.models import Setting
+
+
+def get_settings():
+    return Setting.objects.all()
+
+
+settings = get_settings()
+
+
+def get_setting_value(property):
+    return settings.filter(property=property).first().value
 
 
 def create_activity(
@@ -53,12 +68,93 @@ def process_create_cashout_activity(request, cashout):
     if cashout:
         content_type = ContentType.objects.get(model="cashout")
 
+        leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)
+        company_earnings = get_setting_value(Property.COMPANY_CASHOUT_EARNING)
+        total_tax = leadership_bonus + company_earnings
+
         return create_activity(
             account=cashout.account,
             activity_type=ActivityType.CASHOUT,
-            amount=cashout.amount,
+            amount=cashout.amount * Decimal(1 - total_tax),
             wallet=request.data["wallet"],
             content_type=content_type,
             object_id=cashout.pk,
+            user=request.user,
+        )
+
+
+def process_save_cashout_status(request):
+    cashout = Cashout.objects.get(id=request.data["cashout_id"].lstrip("0"))
+    if cashout:
+        if cashout.status == CashoutStatus.REQUESTED:
+            if request.data["status"] == CashoutStatus.APPROVED:
+                data = {
+                    "approved_date": timezone.localtime(),
+                    "approved_by": request.user.pk,
+                }
+            elif request.data["status"] == CashoutStatus.RELEASED:
+                data = {
+                    "approved_date": timezone.localtime(),
+                    "approved_by": request.user.pk,
+                    "released_date": timezone.localtime(),
+                    "released_by": request.user.pk,
+                }
+        elif cashout.status == CashoutStatus.APPROVED:
+            if request.data["status"] == CashoutStatus.RELEASED:
+                data = {"released_date": timezone.localtime()}
+
+        data["status"] = request.data["status"]
+
+        return cashout, data
+
+
+def process_create_payout_activity(request, updated_cashout):
+    if updated_cashout:
+        content_type = ContentType.objects.get(model="cashout")
+        leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)
+        company_earnings = get_setting_value(Property.COMPANY_CASHOUT_EARNING)
+        total_tax = leadership_bonus + company_earnings
+        return create_activity(
+            account=updated_cashout.account,
+            activity_type=ActivityType.PAYOUT,
+            amount=updated_cashout.amount * Decimal(1 - total_tax),
+            wallet=WalletType.C_WALLET,
+            content_type=content_type,
+            object_id=updated_cashout.pk,
+            user=request.user,
+        )
+
+
+def process_create_leadership_activity(request, updated_cashout):
+    from accounts.models import Account
+
+    if updated_cashout:
+        account = get_object_or_404(Account, id=updated_cashout.account.pk)
+        leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)
+        content_type = ContentType.objects.get(model="cashout")
+        return create_activity(
+            account=account.referrer,
+            activity_type=ActivityType.LEADERSHIP,
+            amount=updated_cashout.amount * Decimal(leadership_bonus),
+            wallet=WalletType.E_WALLET,
+            content_type=content_type,
+            object_id=updated_cashout.pk,
+            user=request.user,
+        )
+
+
+def process_create_company_earning_activity(request, updated_cashout):
+    from accounts.models import Account
+
+    if updated_cashout:
+        company_earnings = get_setting_value(Property.COMPANY_CASHOUT_EARNING)
+        content_type = ContentType.objects.get(model="cashout")
+        return create_activity(
+            account=updated_cashout.account,
+            activity_type=ActivityType.COMPANY_TAX,
+            amount=updated_cashout.amount * Decimal(company_earnings),
+            wallet=WalletType.C_WALLET,
+            content_type=content_type,
+            object_id=updated_cashout.pk,
             user=request.user,
         )

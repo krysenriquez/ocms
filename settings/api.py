@@ -37,6 +37,34 @@ class WalletMemberView(views.APIView):
             )
 
 
+class GetCashoutTaxView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        user_type = request.user.user_type
+
+        if user_type is not None and request.user.is_authenticated:
+            leadership_bonus = Setting.objects.get(property=Property.LEADERSHIP_BONUS).value
+            company_earning = Setting.objects.get(property=Property.COMPANY_CASHOUT_EARNING).value
+            total_tax = leadership_bonus + company_earning
+
+            if total_tax:
+                return Response(
+                    data={"tax": total_tax},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    data={"tax": 0 },
+                    status=status.HTTP_200_OK,
+                )
+        else:
+            return Response(
+                data={"message": "Unable to get Wallet list."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
 class WalletAdminView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -71,7 +99,9 @@ class WalletScheduleView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
+        user_type = request.user.user_type
+
+        if user_type is not None and request.user.is_authenticated:
             wallet = request.data.get("wallet")
             account_id = request.data.get("account_id")
             if get_wallet_can_cashout(account_id, wallet):

@@ -26,6 +26,21 @@ class AccountListViewSet(ModelViewSet):
             return Account.objects.none()
 
 
+class AccountReferralsViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountReferralsSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        if self.request.user.user_type == UserType.ADMIN:
+            queryset = Account.objects.exclude(is_deleted=True).all()
+            if queryset.exists():
+                return queryset
+        else:
+            return Account.objects.none()
+
+
 class AccountUnliTenViewSet(ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = AccountUnliTenSerializer
@@ -40,10 +55,6 @@ class AccountUnliTenViewSet(ModelViewSet):
         else:
             return Account.objects.none()
 
-    # def filter_queryset(self, queryset):
-    #     queryset = super(AccountUnliTenViewSet, self).filter_queryset(queryset)
-    #     return queryset.order_by("-referrals").distinct()
-
 
 class GenealogyAccountViewSet(ModelViewSet):
     queryset = Account.objects.all()
@@ -52,63 +63,68 @@ class GenealogyAccountViewSet(ModelViewSet):
     http_method_names = ["get"]
 
     def get_queryset(self):
-        queryset = (
-            Account.objects.prefetch_related(
-                Prefetch(
-                    "children",
-                    queryset=Account.objects.prefetch_related(
-                        Prefetch(
-                            "children",
-                            queryset=Account.objects.prefetch_related(
-                                Prefetch(
-                                    "children",
-                                    queryset=Account.objects.prefetch_related(
-                                        Prefetch(
-                                            "children",
-                                            queryset=Account.objects.prefetch_related(
-                                                Prefetch(
-                                                    "children",
-                                                    queryset=Account.objects.order_by(
-                                                        "parent_side"
-                                                    ).all(),
+        user_type = self.request.user.user_type
+
+        if user_type is not None and self.request.user.is_authenticated:
+            queryset = (
+                Account.objects.prefetch_related(
+                    Prefetch(
+                        "children",
+                        queryset=Account.objects.prefetch_related(
+                            Prefetch(
+                                "children",
+                                queryset=Account.objects.prefetch_related(
+                                    Prefetch(
+                                        "children",
+                                        queryset=Account.objects.prefetch_related(
+                                            Prefetch(
+                                                "children",
+                                                queryset=Account.objects.prefetch_related(
+                                                    Prefetch(
+                                                        "children",
+                                                        queryset=Account.objects.order_by(
+                                                            "parent_side"
+                                                        ).all(),
+                                                    )
                                                 )
+                                                .order_by("parent_side")
+                                                .all(),
                                             )
-                                            .order_by("parent_side")
-                                            .all(),
                                         )
+                                        .order_by("parent_side")
+                                        .all(),
                                     )
-                                    .order_by("parent_side")
-                                    .all(),
                                 )
+                                .order_by("parent_side")
+                                .all(),
                             )
-                            .order_by("parent_side")
-                            .all(),
                         )
+                        .order_by("parent_side")
+                        .all(),
+                    ),
+                )
+                .annotate(
+                    account_name=Concat(
+                        F("first_name"), V(" "), F("middle_name"), V(" "), F("last_name")
+                    ),
+                )
+                .all()
+            )
+
+            account_id = self.request.query_params.get("account_id", None)
+
+            if account_id is not None:
+                queryset = queryset.filter(account_id=account_id)
+
+                for member in queryset:
+                    member.all_left_children_count = len(
+                        member.get_all_children_side(parent_side=ParentSide.LEFT)
                     )
-                    .order_by("parent_side")
-                    .all(),
-                ),
-            )
-            .annotate(
-                account_name=Concat(F("first_name"), V(" "), F("middle_name"), V(" "), F("last_name")),
-            )
-            .all()
-        )
+                    member.all_right_children_count = len(
+                        member.get_all_children_side(parent_side=ParentSide.RIGHT)
+                    )
 
-        account_id = self.request.query_params.get("account_id", None)
-
-        if account_id is not None:
-            queryset = queryset.filter(account_id=account_id)
-
-            for member in queryset:
-                member.all_left_children_count = len(
-                    member.get_all_children_side(parent_side=ParentSide.LEFT)
-                )
-                member.all_right_children_count = len(
-                    member.get_all_children_side(parent_side=ParentSide.RIGHT)
-                )
-
-            return queryset
+                return queryset
 
 
 class CodeViewSet(ModelViewSet):
@@ -118,11 +134,30 @@ class CodeViewSet(ModelViewSet):
     http_method_names = ["get"]
 
     def get_queryset(self):
-        queryset = Code.objects.exclude(is_deleted=True)
-        account_id = self.request.query_params.get("account_id", None)
+        user_type = self.request.user.user_type
+        if user_type is not None and self.request.user.is_authenticated:
+            account_id = self.request.query_params.get("account_id", None)
 
-        if account_id is not None:
-            queryset = queryset.filter(account__account_id=account_id).order_by("status")
+            if account_id is not None:
+                queryset = (
+                    Code.objects.exclude(is_deleted=True)
+                    .filter(account__account_id=account_id)
+                    .order_by("status")
+                )
+
+                return queryset
+
+
+class CodeAdminViewSet(ModelViewSet):
+    queryset = Code.objects.all()
+    serializer_class = CodeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        user_type = self.request.user.user_type
+        if user_type is not None and self.request.user.is_authenticated and user_type == UserType.ADMIN:
+            queryset = Code.objects.exclude(is_deleted=True).order_by("-modified")
 
             return queryset
 
@@ -166,10 +201,38 @@ class CreateAccountView(views.APIView):
             )
 
 
+class GetCodeStatusView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        user_type = request.user.user_type
+        if user_type is not None and request.user.is_authenticated and user_type == UserType.ADMIN:
+            status_arr = []
+            for code in CodeStatus:
+                status_arr.append(code)
+
+            if status_arr:
+                return Response(
+                    data={"status": status_arr},
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    data={"message": "No Code Status available."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+        else:
+            return Response(
+                data={"message": "Unable to get Code Status list."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
 class GenerateCodeView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
+        request.data["account"] = request.data.get("account_id").lstrip("0")
         request.data["created_by"] = request.user.pk
         serializer = GenerateCodeSerializer(data=request.data)
 
@@ -181,6 +244,32 @@ class GenerateCodeView(views.APIView):
                 data={"message": "Unable to generate code."},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+
+class VerifyAccountView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        # Parent of the Add Member, account is the ID of the sponsor
+        if request.user.user_type == UserType.ADMIN:
+            account_id = request.data.get("account_id").lstrip("0")
+            if account_id:
+                try:
+                    account = Account.objects.get(id=account_id)
+                    return Response(
+                        data={"message": "Account existing."},
+                        status=status.HTTP_200_OK,
+                    )
+                except Account.DoesNotExist:
+                    return Response(
+                        data={"message": "Account does not exist."},
+                        status=status.HTTP_404_NOT_FOUND,
+                    )
+            else:
+                return Response(
+                    data={"message": "Account does not exist."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
 
 class VerifySponsorCodeView(views.APIView):

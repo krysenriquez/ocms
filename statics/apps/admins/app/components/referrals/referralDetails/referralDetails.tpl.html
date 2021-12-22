@@ -1,5 +1,10 @@
-<div class="widget-content widget-content-area br-6">
-    <table-search table="vm.cashoutsTable"></table-search>
+<div class="modal-header">
+    <h5 class="modal-title" id="modal-title" translate="wallet_summary"></h5>
+    <button type="button" class="close" aria-label="Close" ng-click="vm.cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
     <div class="table-responsive mb-4 mt-4">
         <div class="container-fluid">
             <div class="row">
@@ -7,60 +12,48 @@
                     <table
                         class="table table-hover datatable"
                         role="grid"
-                        ng-table="vm.cashoutsTable"
+                        ng-table="vm.referralDetailsTable"
                         template-pagination="pagination.tpl.html"
                     >
-                        <tr
-                            class="datatable-row cursor-pointer"
-                            ng-repeat="cashout in $data"
-                            ng-click="vm.openCashoutModal(cashout)"
-                        >
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'CASHOUT NUMBER'"
-                                sortable="'cashoutNumber'"
-                            >
-                                {{ cashout.cashoutNumber }}
-                            </td>
+                        <tr class="datatable-row" ng-repeat="referral in $data">
                             <td
                                 class="datatable-cell datatable-cell-left text-left"
                                 header-class="'text-left'"
                                 data-title="'ACCOUNT'"
-                                sortable="'accountNumber'"
+                                sortable="'accountName'"
                             >
-                                {{ cashout.accountNumber }} - {{ cashout.accountName }}
+                                {{ referral.accountNumber }} - {{ referral.accountName }}
                             </td>
+                            <td
+                                class="datatable-cell datatable-cell-left text-left"
+                                header-class="'text-left'"
+                                data-title="'ACTIVITY'"
+                                sortable="'activityType'"
+                                translate="{{referral.activityType}}"
+                            ></td>
                             <td
                                 class="datatable-cell datatable-cell-left text-left"
                                 header-class="'text-left'"
                                 data-title="'AMOUNT'"
                                 sortable="'amount'"
                             >
-                                {{ cashout.amount | currency:'₱': 2 }}
+                                {{ referral.amount | currency:'₱': 2}}
                             </td>
                             <td
                                 class="datatable-cell datatable-cell-left text-left"
                                 header-class="'text-left'"
-                                data-title="'STATUS'"
-                                sortable="'status'"
-                                translate=" {{ cashout.status }}"
-                            ></td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'APPROVED DATE'"
-                                sortable="'approvedDate'"
+                                data-title="'DETAILS'"
+                                sortable="'activityDetails'"
                             >
-                                {{ cashout.approvedDate | date: 'short' }}
+                                {{ referral.activityDetails }}
                             </td>
                             <td
                                 class="datatable-cell datatable-cell-left text-left"
                                 header-class="'text-left'"
-                                data-title="'RELEASE DATE'"
-                                sortable="'releasedDate'"
+                                data-title="'DATE'"
+                                sortable="'created'"
                             >
-                                {{ cashout.releasedDate | date: 'short' }}
+                                {{ referral.created | date : 'short' }}
                             </td>
                         </tr>
                     </table>

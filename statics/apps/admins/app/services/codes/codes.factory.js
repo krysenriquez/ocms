@@ -6,6 +6,7 @@ define(['urlService', 'humpsFactory'], function () {
     function codesFactory($http, $q, urlService, humpsFactory) {
         return {
             verifyCode: verifyCode,
+            getCodeStatus: getCodeStatus,
         };
 
         function verifyCode(data) {
@@ -16,6 +17,20 @@ define(['urlService', 'humpsFactory'], function () {
             })
                 .then(function (response) {
                     var responseData = humpsFactory.camelizeKeys(response);
+                    return $q.resolve(responseData);
+                })
+                .catch(function (error) {
+                    return $q.reject(error);
+                });
+        }
+
+        function getCodeStatus(data) {
+            return $http({
+                url: urlService.GET_CODE_STATUS,
+                method: 'POST',
+            })
+                .then(function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response.data);
                     return $q.resolve(responseData);
                 })
                 .catch(function (error) {

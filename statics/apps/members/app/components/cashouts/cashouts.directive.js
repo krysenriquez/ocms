@@ -1,23 +1,24 @@
-define(['appMember', 'ngTable', 'accountFactory', 'walletFactory'], function () {
+define(['appMember', 'ngTable', 'accountFactory', 'cashoutFactory'], function () {
     'use strict';
 
-    angular.module('appMember').directive('cashOuts', cashOuts);
+    angular.module('appMember').directive('cashouts', cashouts);
 
-    function cashOuts(DIRECTORY) {
+    function cashouts(DIRECTORY) {
         var directive = {
             bindToController: true,
             replace: true,
-            controller: cashOutsController,
+            controller: cashoutsController,
             controllerAs: 'vm',
             link: link,
             restrict: 'E',
-            templateUrl: DIRECTORY.COMPONENTS + '/cashOuts/cashOuts.tpl.html',
+            templateUrl: DIRECTORY.COMPONENTS + '/cashouts/cashouts.tpl.html',
         };
 
         return directive;
 
-        function cashOutsController($scope, $filter, accountFactory, walletFactory, NgTableParams, toastr) {
+        function cashoutsController($scope, $filter, $uibModal, accountFactory, cashoutFactory, NgTableParams, toastr) {
             var vm = this;
+            vm.openCashoutModal = openCashoutModal;
             var accountId;
             init();
 
@@ -32,13 +33,13 @@ define(['appMember', 'ngTable', 'accountFactory', 'walletFactory'], function () 
                         } else {
                             accountId = oldValue;
                         }
-                        loadCashOutsTable();
+                        loadCashoutsTable();
                     }
                 );
             }
 
-            function loadCashOutsTable() {
-                vm.cashOutsTable = new NgTableParams(
+            function loadCashoutsTable() {
+                vm.cashoutsTable = new NgTableParams(
                     {
                         page: 1,
                         count: 5,
@@ -46,7 +47,7 @@ define(['appMember', 'ngTable', 'accountFactory', 'walletFactory'], function () 
                     {
                         counts: [5, 10, 20, 30, 50, 100],
                         getData: function (params) {
-                            return walletFactory
+                            return cashoutFactory
                                 .getCashouts(accountId)
                                 .then(function (response) {
                                     var filteredData = params.filter()
@@ -64,7 +65,6 @@ define(['appMember', 'ngTable', 'accountFactory', 'walletFactory'], function () 
                                         (params.page() - 1) * params.count(),
                                         params.page() * params.count()
                                     );
-                                    console.log(page);
                                     return page;
                                 })
                                 .catch(function (error) {
@@ -73,6 +73,36 @@ define(['appMember', 'ngTable', 'accountFactory', 'walletFactory'], function () 
                         },
                     }
                 );
+            }
+
+            function openCashoutModal(cashout) {
+                $uibModal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: DIRECTORY.COMPONENTS + '/cashouts/cashoutSummary/cashoutSummary.tpl.html',
+                    size: 'lg',
+                    controller: 'CashoutSummaryController',
+                    controllerAs: 'vm',
+                    bindToController: true,
+                    resolve: {
+                        loadController: function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'CashoutSummaryController',
+                                    files: [
+                                        DIRECTORY.COMPONENTS + '/cashouts/cashoutSummary/cashoutSummary.controller.js',
+                                    ],
+                                },
+                            ]);
+                        },
+                        cashoutObject: function () {
+                            return {
+                                cashout: cashout,
+                            };
+                        },
+                    },
+                });
             }
         }
 

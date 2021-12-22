@@ -220,6 +220,21 @@ class AccountListSerializer(ModelSerializer):
         ]
 
 
+class AccountReferralsSerializer(ModelSerializer):
+    account_name = serializers.CharField(source="get_account_name", required=False)
+    account_number = serializers.CharField(source="get_account_number", required=False)
+    referrals = serializers.IntegerField(source="get_all_direct_referral_count", required=False)
+
+    class Meta:
+        model = Account
+        fields = [
+            "account_id",
+            "account_name",
+            "account_number",
+            "referrals",
+        ]
+
+
 class AccountUnliTenSerializer(ModelSerializer):
     account_name = serializers.CharField(source="get_account_name", required=False)
     account_number = serializers.CharField(source="get_account_number", required=False)
@@ -237,6 +252,7 @@ class AccountUnliTenSerializer(ModelSerializer):
             "start_period",
             "end_period",
         ]
+
 
 class AvatarInfoSerializer(ModelSerializer):
     class Meta:

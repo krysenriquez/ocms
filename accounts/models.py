@@ -117,6 +117,9 @@ class Account(models.Model):
             self.parent.get_all_parents_with_side(parents, level)
         return parents
 
+    def get_all_direct_referral_count(self):
+        return self.referrals.all().count()
+
     def get_all_direct_referral_month(self):
         local_tz = get_localzone()
         nth_of_the_month = self.created.astimezone(local_tz).day
@@ -263,8 +266,24 @@ class Code(models.Model):
         related_name="code_created_by",
         null=True,
     )
-    description = models.TextField(blank=True, null=True)
-    note = models.TextField(blank=True, null=True)
+    transferred_by = models.ForeignKey(
+        Account,
+        related_name="codes_transferred",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    transferred_to = models.ForeignKey(
+        Account,
+        related_name="codes_received",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
+    transferred_date = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     deleted = models.DateTimeField(blank=True, null=True)

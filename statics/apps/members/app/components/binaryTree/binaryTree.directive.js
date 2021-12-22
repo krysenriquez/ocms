@@ -291,7 +291,9 @@ define(['orgChart'], function () {
                     if (_.includes(args.node.tags, 'addMember')) {
                         openAddMemberModal(returnNodeObject(args.node.id));
                     } else {
-                        sender.editUI.show(args.node.id, true);
+                        jsonTree = [];
+                        getGenealogy(args.node.id);
+                        // sender.editUI.show(args.node.id, true);
                     }
                     return false;
                 });

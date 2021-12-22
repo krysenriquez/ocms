@@ -30,6 +30,9 @@ urlpatterns = [
         "oc-admin/dashboard", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))
     ),
     path("oc-admin/wallets", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))),
+    path(
+        "oc-admin/cash-outs", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))
+    ),
     path("oc-admin/members", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))),
     path(
         "oc-admin/sales-matches",
@@ -43,6 +46,10 @@ urlpatterns = [
     ),
     path(
         "oc-admin/unli-ten", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))
+    ),
+    path(
+        "oc-admin/activation-codes",
+        ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html")),
     ),
     # Member
     path("", lambda request: redirect("member/login", permanent=False)),

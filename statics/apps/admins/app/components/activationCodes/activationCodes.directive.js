@@ -1,32 +1,33 @@
 define(['appAdmin', 'ngTable', 'accountFactory'], function () {
     'use strict';
 
-    angular.module('appAdmin').directive('referrals', referrals);
+    angular.module('appAdmin').directive('activationCodes', activationCodes);
 
-    function referrals(DIRECTORY) {
+    function activationCodes(DIRECTORY) {
         var directive = {
             bindToController: true,
             replace: true,
-            controller: referralsController,
+            controller: activationCodesController,
             controllerAs: 'vm',
             link: link,
             restrict: 'E',
-            templateUrl: DIRECTORY.COMPONENTS + '/referrals/referrals.tpl.html',
+            templateUrl: DIRECTORY.COMPONENTS + '/activationCodes/activationCodes.tpl.html',
         };
 
         return directive;
 
-        function referralsController($scope, $filter, $uibModal, accountFactory, NgTableParams, toastr) {
+        function activationCodesController($scope, $filter, $uibModal, accountFactory, NgTableParams, toastr) {
             var vm = this;
-            vm.viewReferralDetails = viewReferralDetails;
+            vm.generateCode = generateCode;
+            var accountId;
             init();
 
             function init() {
-                loadReferralsTable();
+                loadActivationCodesTable();
             }
 
-            function loadReferralsTable() {
-                vm.referralsTable = new NgTableParams(
+            function loadActivationCodesTable() {
+                vm.activationCodesTable = new NgTableParams(
                     {
                         page: 1,
                         count: 10,
@@ -35,7 +36,7 @@ define(['appAdmin', 'ngTable', 'accountFactory'], function () {
                         counts: [10, 20, 30, 50, 100],
                         getData: function (params) {
                             return accountFactory
-                                .getReferrals()
+                                .getAccountCodes()
                                 .then(function (response) {
                                     var filteredData = params.filter()
                                         ? $filter('filter')(response, params.filter())
@@ -62,13 +63,13 @@ define(['appAdmin', 'ngTable', 'accountFactory'], function () {
                 );
             }
 
-            function viewReferralDetails(account) {
+            function generateCode() {
                 $uibModal.open({
                     animation: true,
                     backdrop: false,
-                    templateUrl: DIRECTORY.COMPONENTS + '/referrals/referralDetails/referralDetails.tpl.html',
+                    templateUrl: DIRECTORY.COMPONENTS + '/activationCodes/generateCode/generateCode.tpl.html',
                     size: 'lg',
-                    controller: 'ReferralDetailsController',
+                    controller: 'GenerateCodeController',
                     controllerAs: 'vm',
                     bindToController: true,
                     resolve: {
@@ -76,18 +77,13 @@ define(['appAdmin', 'ngTable', 'accountFactory'], function () {
                             return $ocLazyLoad.load([
                                 {
                                     serie: true,
-                                    name: 'ReferralDetailsController',
+                                    name: 'GenerateCodeController',
                                     files: [
                                         DIRECTORY.COMPONENTS +
-                                            '/referrals/referralDetails/referralDetails.controller.js',
+                                            '/activationCodes/generateCode/generateCode.controller.js',
                                     ],
                                 },
                             ]);
-                        },
-                        accountObject: function () {
-                            return {
-                                account: account,
-                            };
                         },
                     },
                 });

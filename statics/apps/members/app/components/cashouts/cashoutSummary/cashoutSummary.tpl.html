@@ -1,0 +1,43 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="modal-title" translate="cashout_form"></h5>
+    <button type="button" class="close" aria-label="Close" ng-click="vm.cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form name="vm.form.cashoutForm">
+        <div class="form-row">
+            <div class="col-md-6 mb-2">
+                <label for="amount" translate="cashout_amount"></label>
+                <h6 translate="{{ vm.cashout.amount | currency:'₱': 2   }}"></h6>
+            </div>
+            <div class="col-md-6 mb-2">
+                <label for="name" translate="cashout_amount_to_receive"></label>
+                <h6 translate="{{ vm.cashout.amountToReceive | currency:'₱': 2  }}"></h6>
+            </div>
+        </div>
+        <div class="form-row" ng-repeat-start="details in vm.cashout.details">
+            <div class="col-md-12 mb-2">
+                <label for="name" translate="cashout_name"></label>
+                <h6 translate="{{ details.name }}"></h6>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12 mb-2">
+                <label for="phoneNumber" translate="cashout_phone_number"></label>
+                <h6 translate="{{ details.phoneNumber}}"></h6>
+            </div>
+            <div class="col-md-12 mb-2">
+                <label for="method" translate="cashout_method"></label>
+                <h6 translate="{{ details.method}}"></h6>
+            </div>
+        </div>
+        <div class="form-row" ng-repeat-end>
+            <div class="col-md-12 mb-2">
+                <label for="note" translate="cashout_note"></label>
+                <h6 translate="{{ details.note}}"></h6>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer"></div>

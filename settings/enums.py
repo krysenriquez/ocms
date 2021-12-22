@@ -37,3 +37,5 @@ class Property(models.TextChoices):
     E_WALLET_CASHOUT_DAY = "E_WALLET_CASHOUT_DAY", _("E-Wallet Cashout Day")
     E_WALLET_CAN_CASHOUT_OVERRIDE = "E_WALLET_CAN_CASHOUT_OVERRIDE", _("E-Wallet Can Cashout Override")
     B_WALLET_CAN_CASHOUT_OVERRIDE = "B_WALLET_CAN_CASHOUT_OVERRIDE", _("B-Wallet Can Cashout Override")
+    LEADERSHIP_BONUS = "LEADERSHIP_BONUS", _("Leadership Bonus")
+    COMPANY_CASHOUT_EARNING = "COMPANY_CASHOUT_EARNING", _("Company Cashout Earning")

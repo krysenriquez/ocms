@@ -1,5 +1,4 @@
 <div class="widget-content widget-content-area br-6">
-    <table-search table="vm.cashoutsTable"></table-search>
     <div class="table-responsive mb-4 mt-4">
         <div class="container-fluid">
             <div class="row">
@@ -18,22 +17,6 @@
                             <td
                                 class="datatable-cell datatable-cell-left text-left"
                                 header-class="'text-left'"
-                                data-title="'CASHOUT NUMBER'"
-                                sortable="'cashoutNumber'"
-                            >
-                                {{ cashout.cashoutNumber }}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'ACCOUNT'"
-                                sortable="'accountNumber'"
-                            >
-                                {{ cashout.accountNumber }} - {{ cashout.accountName }}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
                                 data-title="'AMOUNT'"
                                 sortable="'amount'"
                             >
@@ -44,8 +27,9 @@
                                 header-class="'text-left'"
                                 data-title="'STATUS'"
                                 sortable="'status'"
-                                translate=" {{ cashout.status }}"
-                            ></td>
+                            >
+                                {{ cashout.status }}
+                            </td>
                             <td
                                 class="datatable-cell datatable-cell-left text-left"
                                 header-class="'text-left'"

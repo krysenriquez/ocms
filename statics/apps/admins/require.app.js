@@ -49,6 +49,7 @@ require.config({
         accountFactory: services + 'account/account.factory',
         activityFactory: services + 'activity/activity.factory',
         authLoginService: services + 'authLogin/authLogin.service',
+        cashoutFactory: services + 'cashout/cashout.factory',
         codesFactory: services + 'codes/codes.factory',
         humpsFactory: services + 'humps/humps.factory',
         identityFactory: services + 'identity/identity.factory',

@@ -8,6 +8,7 @@ urlpatterns = [
     path("getadminwallets/", WalletAdminView.as_view()),
     path("getmemberwallets/", WalletMemberView.as_view()),
     path("checkwalletcashout/", WalletScheduleView.as_view()),
+    path("getcashouttax/", GetCashoutTaxView.as_view()),
 ]
 
 urlpatterns += router.urls

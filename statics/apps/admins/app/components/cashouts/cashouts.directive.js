@@ -1,13 +1,13 @@
-define(['appAdmin', 'ngTable', 'accountFactory', 'walletFactory'], function () {
+define(['appAdmin', 'ngTable', 'accountFactory', 'cashoutFactory'], function () {
     'use strict';
 
-    angular.module('appAdmin').directive('cashOuts', cashOuts);
+    angular.module('appAdmin').directive('cashouts', cashouts);
 
-    function cashOuts(DIRECTORY) {
+    function cashouts(DIRECTORY) {
         var directive = {
             bindToController: true,
             replace: true,
-            controller: cashOutsController,
+            controller: cashoutsController,
             controllerAs: 'vm',
             link: link,
             restrict: 'E',
@@ -16,29 +16,17 @@ define(['appAdmin', 'ngTable', 'accountFactory', 'walletFactory'], function () {
 
         return directive;
 
-        function cashOutsController($scope, $filter, accountFactory, walletFactory, NgTableParams, toastr) {
+        function cashoutsController($scope, $filter, accountFactory, cashoutFactory, NgTableParams, toastr, $uibModal) {
             var vm = this;
-            var accountId;
+            vm.openCashoutModal = openCashoutModal;
             init();
 
             function init() {
-                $scope.$watch(
-                    function () {
-                        return accountFactory.getSelectedAccount().accountId;
-                    },
-                    function (newValue, oldValue) {
-                        if (newValue !== oldValue) {
-                            accountId = newValue;
-                        } else {
-                            accountId = oldValue;
-                        }
-                        loadCashOutsTable();
-                    }
-                );
+                loadCashoutsTable();
             }
 
-            function loadCashOutsTable() {
-                vm.cashOutsTable = new NgTableParams(
+            function loadCashoutsTable() {
+                vm.cashoutsTable = new NgTableParams(
                     {
                         page: 1,
                         count: 5,
@@ -46,8 +34,8 @@ define(['appAdmin', 'ngTable', 'accountFactory', 'walletFactory'], function () {
                     {
                         counts: [5, 10, 20, 30, 50, 100],
                         getData: function (params) {
-                            return walletFactory
-                                .getCashouts(accountId)
+                            return cashoutFactory
+                                .getCashouts()
                                 .then(function (response) {
                                     var filteredData = params.filter()
                                         ? $filter('filter')(response, params.filter())
@@ -64,7 +52,6 @@ define(['appAdmin', 'ngTable', 'accountFactory', 'walletFactory'], function () {
                                         (params.page() - 1) * params.count(),
                                         params.page() * params.count()
                                     );
-                                    console.log(page);
                                     return page;
                                 })
                                 .catch(function (error) {
@@ -73,6 +60,36 @@ define(['appAdmin', 'ngTable', 'accountFactory', 'walletFactory'], function () {
                         },
                     }
                 );
+            }
+
+            function openCashoutModal(cashout) {
+                $uibModal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: DIRECTORY.COMPONENTS + '/cashouts/cashoutSummary/cashoutSummary.tpl.html',
+                    size: 'lg',
+                    controller: 'CashoutSummaryController',
+                    controllerAs: 'vm',
+                    bindToController: true,
+                    resolve: {
+                        loadController: function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'CashoutSummaryController',
+                                    files: [
+                                        DIRECTORY.COMPONENTS + '/cashouts/cashoutSummary/cashoutSummary.controller.js',
+                                    ],
+                                },
+                            ]);
+                        },
+                        cashoutObject: function () {
+                            return {
+                                cashout: cashout,
+                            };
+                        },
+                    },
+                });
             }
         }
 

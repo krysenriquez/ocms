@@ -18,11 +18,20 @@ define([], function () {
 
         this.GET_BINARY = ACCOUNTS_ROOT + 'getbinary/';
         this.GET_MEMBERS = ACCOUNTS_ROOT + 'getmembers/';
+        this.GET_REFERRALS = ACCOUNTS_ROOT + 'getreferrals/';
         this.GET_UNLI_TEN = ACCOUNTS_ROOT + 'getunliten/';
+        this.GET_ACCOUNT_CODES = ACCOUNTS_ROOT + 'getallaccountcodes/';
+        this.GET_CODE_STATUS = ACCOUNTS_ROOT + 'getcodestatus/';
+        this.VERIFY_ACCOUNT = ACCOUNTS_ROOT + 'verifyaccount/';
+        this.GENERATE_CODE = ACCOUNTS_ROOT + 'generatecode/';
 
         this.GET_ACTIVITY_SUMMARY = ACTIVITIES_ROOT + 'getactivitysummary/';
-        this.GET_WALLET_SUMMARY = ACTIVITIES_ROOT + 'getwalletsummary/';
+        this.GET_WALLET_SUMMARY = ACTIVITIES_ROOT + 'getallwalletsummary/';
+        this.GET_CASHOUTS = ACTIVITIES_ROOT + 'getadmincashouts/';
+        this.GET_CASHOUT_STATUS = ACTIVITIES_ROOT + 'getcashoutstatus/';
+        this.UPDATE_CASHOUT_STATUS = ACTIVITIES_ROOT + 'updatecashoutstatus/';
 
+        this.GET_CASHOUT_TAX = SETTINGS_ROOT + 'getcashouttax/';
         this.GET_WALLETS = SETTINGS_ROOT + 'getadminwallets/';
         // To
         // Test
@@ -38,7 +47,6 @@ define([], function () {
         this.VERIFY_PASSWORD = USERS_ROOT + 'checkpassword/';
 
         this.GET_PAYMENT_METHODS = ACTIVITIES_ROOT + 'getpaymentmethods/';
-        this.GET_CASHOUTS = ACTIVITIES_ROOT + 'getcashouts/';
         this.REQUEST_CASHOUT = ACTIVITIES_ROOT + 'request/';
 
         this.VERIFY_WALLET_CASHOUT = SETTINGS_ROOT + 'checkwalletcashout/';

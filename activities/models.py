@@ -59,6 +59,10 @@ class Activity(models.Model):
 
             if self.activity_type == ActivityType.ENTRY:
                 detail = "Entry on %s" % (str(generic_object.pk).zfill(5))
+            elif self.activity_type == ActivityType.PAYOUT:
+                detail = "Payout to Cashout %s" % (str(generic_object.pk).zfill(5))
+            elif self.activity_type == ActivityType.COMPANY_TAX:
+                detail = "Received from Cashout %s" % (str(generic_object.pk).zfill(5))
             elif self.activity_type == ActivityType.DIRECT_REFERRAL:
                 detail = "Direct Referral on %s" % (str(generic_object.pk).zfill(5))
             elif self.activity_type == ActivityType.PAIRING:
@@ -128,6 +132,9 @@ class Cashout(models.Model):
     is_deleted = models.BooleanField(
         default=False,
     )
+
+    def get_cashout_number(self):
+        return str(self.id).zfill(5)
 
 
 class CashoutDetails(models.Model):

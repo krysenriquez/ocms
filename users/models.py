@@ -59,9 +59,7 @@ class CustomUser(AbstractUser):
         unique=True,
         max_length=30,
     )
-    display_name = models.CharField(
-        max_length=50,
-    )
+    display_name = models.CharField(max_length=50, blank=True, null=True)
     email_address = models.EmailField(
         verbose_name="email address",
         max_length=50,

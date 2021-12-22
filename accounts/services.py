@@ -302,9 +302,24 @@ def process_create_account_request(request):
         if isinstance(request.data["user"], str) and request.data["user"] == "link":
             data["user"] = request.user.pk
         elif isinstance(request.data["user"], dict):
-            data["user"] = request.data["user"]
+            new_user = create_new_user(request.data["user"])
+            if new_user:
+                data["user"] = new_user.pk
 
         return data, activation_code
+
+
+def create_new_user(request):
+    from users.models import CustomUser
+
+    data = {
+        "username": request["username"],
+        "email_address": request["email_address"],
+    }
+    user = CustomUser.objects.create(**data)
+    user.set_password(request["password"])
+    user.save()
+    return user
 
 
 def code_generator(size=8, chars=string.ascii_uppercase + string.digits):

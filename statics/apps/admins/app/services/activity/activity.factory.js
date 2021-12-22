@@ -41,12 +41,13 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             );
         }
 
-        function getActivitySummary(activityType) {
+        function getActivitySummary(activityType, accountId) {
             return $http({
                 url: urlService.GET_ACTIVITY_SUMMARY,
                 method: 'GET',
                 params: {
                     activity_type: activityType,
+                    account_id: accountId,
                 },
             }).then(
                 function (response) {

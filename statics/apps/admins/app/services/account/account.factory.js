@@ -14,7 +14,10 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             getBinary: getBinary,
             getAccountCodes: getAccountCodes,
             getMembers: getMembers,
+            getReferrals: getReferrals,
             getUnliTen: getUnliTen,
+            verifyCode: verifyCode,
+            generateCode: generateCode,
         };
 
         function getAccountGenealogy(accountId) {
@@ -70,6 +73,28 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             );
         }
 
+        function getReferrals() {
+            return $http({
+                url: urlService.GET_REFERRALS,
+                method: 'GET',
+            }).then(
+                function (response) {
+                    var responseData = [];
+                    _.map(
+                        _.orderBy(humpsFactory.camelizeKeys(response.data), ['referrals'], ['desc']),
+                        function (binary) {
+                            responseData.push(binary);
+                        }
+                    );
+
+                    return $q.resolve(responseData);
+                },
+                function (error) {
+                    return $q.reject(error);
+                }
+            );
+        }
+
         function getUnliTen() {
             return $http({
                 url: urlService.GET_UNLI_TEN,
@@ -92,11 +117,10 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             );
         }
 
-        function getAccountCodes(accountId) {
+        function getAccountCodes() {
             return $http({
                 url: urlService.GET_ACCOUNT_CODES,
                 method: 'GET',
-                params: { account_id: accountId },
             }).then(
                 function (response) {
                     var responseData = [];
@@ -109,6 +133,38 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
                     return $q.reject(error);
                 }
             );
+        }
+
+        function verifyCode(accountId) {
+            return $http({
+                url: urlService.VERIFY_ACCOUNT,
+                method: 'POST',
+                data: {
+                    account_id: accountId,
+                },
+            })
+                .then(function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response);
+                    return $q.resolve(responseData);
+                })
+                .catch(function (error) {
+                    return $q.reject(error);
+                });
+        }
+
+        function generateCode(data) {
+            return $http({
+                url: urlService.GENERATE_CODE,
+                method: 'POST',
+                data: humpsFactory.decamelizeKeys(data),
+            })
+                .then(function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response);
+                    return $q.resolve(responseData);
+                })
+                .catch(function (error) {
+                    return $q.reject(error);
+                });
         }
     }
 });

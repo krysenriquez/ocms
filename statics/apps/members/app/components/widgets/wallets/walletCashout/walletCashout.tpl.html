@@ -7,13 +7,13 @@
 <div class="modal-body">
     <form name="vm.form.cashoutForm">
         <div class="form-row">
-            <div class="col-md-12 mb-2">
+            <div class="col-md-6 mb-2">
                 <label for="amount" translate="cashout_amount" translate-required="true"></label>
                 <select
                     class="form-control"
                     id="amount"
                     ng-model="vm.cashout.amount"
-                    ng-options="o as o for o in vm.cashoutBracket.bracket"
+                    ng-options="o as o for o in vm.cashoutBracket"
                     ng-change="vm.validateAmount()"
                     ng-model-options="{ debounce: 1000 }"
                     input-validator="vm.validation.amount"
@@ -22,6 +22,12 @@
                 ></select>
                 <message-validator validator="vm.validation.amount"></message-validator>
             </div>
+            <div class="col-md-6 mb-2">
+                <label for="name" translate="cashout_amount_to_receive"></label>
+                <input type="text" class="form-control" id="name" ng-model="vm.cashout.amountToReceive" disabled />
+            </div>
+        </div>
+        <div class="form-row">
             <div class="col-md-12 mb-2">
                 <label for="name" translate="cashout_name" translate-required="true"></label>
                 <input
@@ -65,6 +71,11 @@
             <div class="col-md-12 mb-2">
                 <label for="note" translate="cashout_note"></label>
                 <textarea class="form-control" id="note" ng-model="vm.cashout.details.note" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12 mb-2">
+                <span translate="cashout_disclosure" translate-required="true"></span>
             </div>
         </div>
     </form>

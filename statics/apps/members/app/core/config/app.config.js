@@ -360,7 +360,7 @@ define([
             .state('members.cashout', {
                 secure: true,
                 url: '/cashout',
-                template: '<cash-outs></cash-outs>',
+                template: '<cashouts></cashouts>',
                 data: {
                     pageTitle: 'One Creations | Cashouts',
                 },
@@ -389,7 +389,7 @@ define([
                                 {
                                     serie: true,
                                     name: 'Referral Link Directive',
-                                    files: [DIRECTORY.COMPONENTS + '/cashOuts/cashOuts.directive.js'],
+                                    files: [DIRECTORY.COMPONENTS + '/cashouts/cashouts.directive.js'],
                                 },
                             ]);
                         },

@@ -6,6 +6,7 @@ class ActivityType(models.TextChoices):
     # * --- C-Wallet
     ENTRY = "ENTRY", _("Entry")  # * No Foreign Key
     PAYOUT = "PAYOUT", _("Payout")  # * Foreign Key to Cashout
+    COMPANY_TAX = "COMPANY_TAX", _("Company Tax")  # * Foreign Key to Cashout
     # * --- B-Wallet
     DIRECT_REFERRAL = "DIRECT_REFERRAL", _("Direct Referral")  # * Foreign Key to Sponsored Account
     PAIRING = "PAIRING", _("Pairing")  # * Foreign Key to Binary
@@ -30,11 +31,11 @@ class CashoutStatus(models.TextChoices):
     APPROVED = "APPROVED", _("Approved")
     RELEASED = "RELEASED", _("Released")
     DENIED = "DENIED", _("Denied")
-    ACTIVE = "ACTIVE", _("Active")
 
 
 class CashoutMethod(models.TextChoices):
     CEBUANA = "CEBUANA", _("Cebuana")
     G_CASH = "G_CASH", _("G-Cash")
     PALAWAN_EXPRESS = "PALAWAN_EXPRESS", _("Palawan Express")
-    SMART_PADALA = "SMART_PADALA", _("Smart Padala")
+    UNION_BANK = "UNION_BANK", _("Union Bank")
+    BDO = "BDO", _("BDO")
