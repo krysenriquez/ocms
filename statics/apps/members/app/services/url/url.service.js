@@ -27,6 +27,7 @@ define([], function () {
         this.VERIFY_EMAIL_ADDRESS = USERS_ROOT + 'checkemailaddress/';
         this.VERIFY_PASSWORD = USERS_ROOT + 'checkpassword/';
 
+        this.GET_ACTIVITY_SUMMARY = ACTIVITIES_ROOT + 'getactivitysummaryinfo/';
         this.GET_WALLET_INFO = ACTIVITIES_ROOT + 'getwalletinfo/';
         this.GET_WALLET_SUMMARY = ACTIVITIES_ROOT + 'getwalletsummary/';
         this.GET_PAYMENT_METHODS = ACTIVITIES_ROOT + 'getpaymentmethods/';

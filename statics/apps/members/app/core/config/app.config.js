@@ -131,8 +131,8 @@ define([
                                 },
                                 {
                                     serie: true,
-                                    name: 'Font Awesome',
-                                    files: [DIRECTORY.FONTS + '/font-awesome/css/fontawesome-all.css'],
+                                    name: 'Font Awesome JS',
+                                    files: [DIRECTORY.PLUGINS + '/fontawesome/all.js'],
                                 },
                                 {
                                     serie: true,
@@ -224,9 +224,9 @@ define([
                                     serie: true,
                                     name: 'Widgets Directives',
                                     files: [
-                                        DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
-                                        DIRECTORY.COMPONENTS + '/widgets/transactions/transactions.directive.js',
-                                        DIRECTORY.COMPONENTS + '/widgets/info/info.directive.js',
+                                        // DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
+                                        // DIRECTORY.COMPONENTS + '/widgets/transactions/transactions.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/summary/summary.directive.js',
                                         DIRECTORY.COMPONENTS + '/widgets/wallets/wallets.directive.js',
                                     ],
                                 },

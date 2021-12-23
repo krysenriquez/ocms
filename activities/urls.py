@@ -11,6 +11,7 @@ router.register(r"getadmincashouts", CashoutAdminViewSet)
 
 urlpatterns = [
     path("getwalletinfo/", WalletMemberView.as_view()),
+    path("getactivitysummaryinfo/", SummaryMemberView.as_view()),
     path("getpaymentmethods/", CashoutMethodView.as_view()),
     path("request/", RequestCashoutView.as_view()),
     path("getcashoutstatus/", CashoutStatusView.as_view()),

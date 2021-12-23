@@ -8,15 +8,18 @@ from .serializers import *
 from .models import *
 from .enums import *
 from .services import (
+    get_cashout_total_tax,
     process_create_cashout_activity,
     process_create_cashout_request,
     process_create_company_earning_activity,
     process_create_leadership_activity,
     process_create_payout_activity,
     process_save_cashout_status,
+    get_setting_value,
 )
 from users.enums import UserType
-from accounts.models import Account
+from accounts.models import Account, Binary
+from accounts.enums import BinaryType
 
 
 class ActivityMemberWalletViewSet(ModelViewSet):
@@ -36,13 +39,14 @@ class ActivityMemberWalletViewSet(ModelViewSet):
                     account = Account.objects.get(account_id=account_id)
                     user_accounts = self.request.user.get_all_user_accounts()
                     if account in user_accounts:
+                        total_tax = get_cashout_total_tax()
                         return (
                             queryset.filter(account__account_id=account_id, wallet=wallet)
                             .annotate(
                                 amount=Case(
                                     When(
                                         Q(activity_type=ActivityType.CASHOUT),
-                                        then=0 - (Sum(F("activity_amount") / 0.9)),
+                                        then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
                                     ),
                                     When(
                                         ~Q(activity_type=ActivityType.CASHOUT),
@@ -65,6 +69,7 @@ class ActivityAdminWalletViewSet(ModelViewSet):
         if user_type is not None and self.request.user.is_authenticated:
             queryset = Activity.objects.exclude(is_deleted=True)
             wallet = self.request.query_params.get("wallet", None)
+            total_tax = get_cashout_total_tax()
             if wallet is not None:
                 account_id = self.request.query_params.get("account_id", None)
                 if account_id is not None:
@@ -75,7 +80,7 @@ class ActivityAdminWalletViewSet(ModelViewSet):
                                 amount=Case(
                                     When(
                                         Q(activity_type=ActivityType.CASHOUT),
-                                        then=0 - Sum(F("activity_amount")),
+                                        then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
                                     ),
                                     When(
                                         ~Q(activity_type=ActivityType.CASHOUT),
@@ -116,6 +121,7 @@ class ActivityViewSet(ModelViewSet):
             activity_type = self.request.query_params.get("activity_type", None)
             account_id = self.request.query_params.get("account_id", None)
             if activity_type is not None:
+                total_tax = get_cashout_total_tax()
                 queryset = (
                     Activity.objects.exclude(is_deleted=True)
                     .filter(activity_type=activity_type)
@@ -123,7 +129,7 @@ class ActivityViewSet(ModelViewSet):
                         amount=Case(
                             When(
                                 Q(activity_type=ActivityType.CASHOUT),
-                                then=0 - Sum(F("activity_amount")),
+                                then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
                             ),
                             When(
                                 ~Q(activity_type=ActivityType.CASHOUT),
@@ -166,19 +172,54 @@ class CashoutAdminViewSet(ModelViewSet):
             return queryset
 
 
+class SummaryMemberView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            account_id = request.data.get("account_id")
+            data = []
+            pairing_count = Binary.objects.filter(
+                parent__account_id=account_id, binary_type=BinaryType.PAIRING
+            ).count()
+            data.append({"activity": BinaryType.PAIRING, "summary": pairing_count})
+
+            flushed_out_count = Binary.objects.filter(
+                parent__account_id=account_id, binary_type=BinaryType.FLUSHED_OUT
+            ).count()
+            data.append({"activity": BinaryType.FLUSHED_OUT, "summary": flushed_out_count})
+
+            referrals_count = Activity.objects.filter(
+                account__account_id=account_id, activity_type=ActivityType.DIRECT_REFERRAL
+            ).count()
+            data.append({"activity": ActivityType.DIRECT_REFERRAL, "summary": referrals_count})
+
+            account = Account.objects.get(account_id=account_id)
+            unliten_count = account.get_all_direct_referral_month_count()
+
+            data.append({"activity": ActivityType.UNLI_TEN, "summary": str(unliten_count % 10) + "/10"})
+
+            return Response(
+                data=data,
+                status=status.HTTP_200_OK,
+            )
+        else:
+            return Response(
+                data={"message": "Unable to get Wallet details."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
 class WalletMemberView(views.APIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
-        wallet = request.data.get("wallet")
-        if wallet is not None and request.user.is_authenticated:
-            activities = []
-            wallet_total = []
+        if request.user.is_authenticated:
             account_id = request.data.get("account_id")
-            if account_id is not None:
-                account = Account.objects.get(account_id=account_id)
-                user_accounts = self.request.user.get_all_user_accounts()
-                if account in user_accounts:
+            total_tax = get_cashout_total_tax()
+            data = []
+            for wallet in WalletType:
+                if wallet != WalletType.C_WALLET:
                     activities = (
                         Activity.objects.filter(account__account_id=account_id, wallet=wallet)
                         .values("activity_type")
@@ -186,7 +227,7 @@ class WalletMemberView(views.APIView):
                             activity_total=Case(
                                 When(
                                     Q(activity_type=ActivityType.CASHOUT),
-                                    then=0 - (Sum(F("activity_amount") / 0.9)),
+                                    then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
                                 ),
                                 When(
                                     ~Q(activity_type=ActivityType.CASHOUT),
@@ -196,118 +237,20 @@ class WalletMemberView(views.APIView):
                         )
                         .order_by("-activity_total")
                     )
-                    wallet_total = activities.aggregate(total=Sum("activity_total")).get("total")
-
-                    return Response(
-                        data={"wallet": wallet, "total": wallet_total, "details": activities},
-                        status=status.HTTP_200_OK,
+                    wallet_total = activities.aggregate(total=Coalesce(Sum("activity_total"), 0)).get(
+                        "total"
                     )
-                else:
-                    return Response(
-                        data={"message": "Unable to get Wallet details."},
-                        status=status.HTTP_403_FORBIDDEN,
-                    )
-            else:
-                return Response(
-                    data={"message": "Unable to get Wallet details."},
-                    status=status.HTTP_403_FORBIDDEN,
-                )
+                    data.append({"wallet": wallet, "total": wallet_total, "details": activities})
 
+            return Response(
+                data=data,
+                status=status.HTTP_200_OK,
+            )
         else:
             return Response(
                 data={"message": "Unable to get Wallet details."},
                 status=status.HTTP_404_NOT_FOUND,
             )
-
-
-# class WalletAdminView(views.APIView):
-#     permission_classes = (permissions.IsAuthenticated,)
-
-#     def post(self, request, *args, **kwargs):
-#         wallet = request.data.get("wallet")
-#         if wallet is not None and request.user.is_authenticated:
-#             activities = []
-#             wallet_total = []
-#             account_id = request.data.get("account_id")
-#             if account_id is not None:
-#                 if self.request.user.user_type == UserType.ADMIN:
-#                     activities = (
-#                         Activity.objects.filter(account__account_id=account_id, wallet=wallet)
-#                         .values("activity_type")
-#                         .annotate(
-#                             activity_total=Case(
-#                                 When(
-#                                     Q(activity_type=ActivityType.CASHOUT),
-#                                     then=0 - Sum(F("activity_amount")),
-#                                 ),
-#                                 When(
-#                                     ~Q(activity_type=ActivityType.CASHOUT),
-#                                     then=Sum(F("activity_amount")),
-#                                 ),
-#                             )
-#                         )
-#                         .order_by("-activity_total")
-#                     )
-#                     wallet_total = activities.aggregate(total=Sum("activity_total")).get("total")
-
-#                     return Response(
-#                         data={"wallet": wallet, "total": wallet_total, "details": activities},
-#                         status=status.HTTP_200_OK,
-#                     )
-#                 else:
-#                     account = Account.objects.get(account_id=account_id)
-#                     user_accounts = self.request.user.get_all_user_accounts()
-#                     if account in user_accounts:
-#                         activities = (
-#                             Activity.objects.filter(account__account_id=account_id, wallet=wallet)
-#                             .values("activity_type")
-#                             .annotate(
-#                                 activity_total=Case(
-#                                     When(
-#                                         Q(activity_type=ActivityType.CASHOUT),
-#                                         then=0 - Sum(F("activity_amount")),
-#                                     ),
-#                                     When(
-#                                         ~Q(activity_type=ActivityType.CASHOUT),
-#                                         then=Sum(F("activity_amount")),
-#                                     ),
-#                                 )
-#                             )
-#                             .order_by("-activity_total")
-#                         )
-#                         wallet_total = activities.aggregate(total=Sum("activity_total")).get("total")
-
-#                         return Response(
-#                             data={"wallet": wallet, "total": wallet_total, "details": activities},
-#                             status=status.HTTP_200_OK,
-#                         )
-#                     else:
-#                         return Response(
-#                             data={"message": "Unable to get Wallet details."},
-#                             status=status.HTTP_403_FORBIDDEN,
-#                         )
-#             else:
-#                 if request.user.user_type == UserType.ADMIN:
-#                     activities = (
-#                         Activity.objects.filter(wallet=wallet)
-#                         .values("activity_type")
-#                         .annotate(activity_total=Sum(F("activity_amount")))
-#                     )
-#                     wallet_total = activities.aggregate(total=Sum("activity_total")).get("total")
-#                     return Response(
-#                         data={"wallet": wallet, "total": wallet_total, "details": activities},
-#                         status=status.HTTP_200_OK,
-#                     )
-#                 else:
-#                     return Response(
-#                         data={"message": "Unable to get Wallet details."},
-#                         status=status.HTTP_403_FORBIDDEN,
-#                     )
-#         else:
-#             return Response(
-#                 data={"message": "Unable to get Wallet details."},
-#                 status=status.HTTP_404_NOT_FOUND,
-#             )
 
 
 class CashoutMethodView(views.APIView):

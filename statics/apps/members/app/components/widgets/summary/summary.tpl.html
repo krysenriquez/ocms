@@ -1,0 +1,25 @@
+<div class="widget widget-summary">
+    <div class="widget-heading">
+        <h5 class="">Summary</h5>
+    </div>
+    <div class="widget-content">
+        <div class="summary-list" ng-repeat="summary in vm.summaries" ng-class="summary.activity | lowercase">
+            <div class="summery-info">
+                <div class="widget-icon">
+                    <i
+                        ng-class="{ 'fas fa-user-group' : summary.activity == 'PAIRING', 
+						'fas fa-users-slash' : summary.activity == 'FLUSHED_OUT',
+						'fas fa-user-tag' : summary.activity == 'DIRECT_REFERRAL',
+						'fas fa-users' : summary.activity == 'UNLI_TEN', }"
+                    ></i>
+                </div>
+                <div class="widget-summary-details">
+                    <div class="widget-summary-info">
+                        <h6 translate="{{ summary.activity }}"></h6>
+                        <span class="summary-count" translate="{{ summary.summary }}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

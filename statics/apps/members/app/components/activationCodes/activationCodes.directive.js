@@ -41,10 +41,10 @@ define(['appMember', 'ngTable', 'accountFactory'], function () {
                 vm.activationCodesTable = new NgTableParams(
                     {
                         page: 1,
-                        count: 5,
+                        count: 10,
                     },
                     {
-                        counts: [5, 10, 20, 30, 50, 100],
+                        counts: [10, 20, 30, 50, 100],
                         getData: function (params) {
                             return accountFactory
                                 .getAccountCodes(accountId)

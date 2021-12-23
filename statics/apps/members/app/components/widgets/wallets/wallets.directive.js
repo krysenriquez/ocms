@@ -48,10 +48,7 @@ define(['appMember', 'settingsFactory', 'activityFactory', 'walletFactory'], fun
                         } else {
                             accountId = oldValue;
                         }
-                        loadWallets().then(function (response) {
-                            vm.wallets = response;
-                            viewWalletDetails(vm.wallets[0]);
-                        });
+                        viewWalletDetails();
                     }
                 );
             }
@@ -67,11 +64,11 @@ define(['appMember', 'settingsFactory', 'activityFactory', 'walletFactory'], fun
                     });
             }
 
-            function viewWalletDetails(wallet) {
+            function viewWalletDetails() {
                 activityFactory
-                    .getWalletInfo(accountId, wallet)
+                    .getWalletInfo(accountId)
                     .then(function (response) {
-                        vm.walletInfo = response;
+                        vm.wallets = response;
                     })
                     .catch(function (error) {
                         toastr.error(error.data.message);

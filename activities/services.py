@@ -108,12 +108,16 @@ def process_save_cashout_status(request):
         return cashout, data
 
 
+def get_cashout_total_tax():
+    leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)
+    company_earnings = get_setting_value(Property.COMPANY_CASHOUT_EARNING)
+    return leadership_bonus + company_earnings
+
+
 def process_create_payout_activity(request, updated_cashout):
     if updated_cashout:
         content_type = ContentType.objects.get(model="cashout")
-        leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)
-        company_earnings = get_setting_value(Property.COMPANY_CASHOUT_EARNING)
-        total_tax = leadership_bonus + company_earnings
+        total_tax = get_cashout_total_tax()
         return create_activity(
             account=updated_cashout.account,
             activity_type=ActivityType.PAYOUT,
