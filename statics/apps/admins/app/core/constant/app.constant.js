@@ -22,6 +22,7 @@ define(['appAdmin'], function () {
             IMG: root + '/assets/img',
             JS: root + '/assets/js',
             LIBS: root + '/assets/libs',
+            PLUGINS: root + '/assets/plugins',
             MEDIA: '/statics/media',
             STRINGS: root + '/app/strings',
         })

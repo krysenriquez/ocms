@@ -4,13 +4,13 @@
     </div>
     <div class="widget-content">
         <div class="summary-list" ng-repeat="summary in vm.summaries" ng-class="summary.activity | lowercase">
-            <div class="summery-info">
+            <div class="summary-info">
                 <div class="widget-icon">
                     <i
-                        ng-class="{ 'fas fa-user-group' : summary.activity == 'PAIRING', 
-						'fas fa-users-slash' : summary.activity == 'FLUSHED_OUT',
-						'fas fa-user-tag' : summary.activity == 'DIRECT_REFERRAL',
-						'fas fa-users' : summary.activity == 'UNLI_TEN', }"
+                        ng-class="{ 'fa-duotone fa-user-group' : summary.activity == 'PAIRING', 
+						'fa-duotone fa-users-slash' : summary.activity == 'FLUSHED_OUT',
+						'fa-duotone fa-user-tag' : summary.activity == 'DIRECT_REFERRAL',
+						'fa-duotone fa-users' : summary.activity == 'UNLI_TEN', }"
                     ></i>
                 </div>
                 <div class="widget-summary-details">

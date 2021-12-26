@@ -131,8 +131,8 @@ define([
                                 },
                                 {
                                     serie: true,
-                                    name: 'Font Awesome',
-                                    files: [DIRECTORY.FONTS + '/font-awesome/css/fontawesome-all.css'],
+                                    name: 'Font Awesome JS',
+                                    files: [DIRECTORY.PLUGINS + '/fontawesome/all.js'],
                                 },
                                 {
                                     serie: true,
@@ -224,9 +224,12 @@ define([
                                     serie: true,
                                     name: 'Widgets Directives',
                                     files: [
-                                        DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
-                                        DIRECTORY.COMPONENTS + '/widgets/transactions/transactions.directive.js',
-                                        DIRECTORY.COMPONENTS + '/widgets/info/info.directive.js',
+                                        // DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/top/earners/earners.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/top/flushout/flushout.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/top/salesMatch/salesMatch.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/expenses/expenses.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/summary/summary.directive.js',
                                         DIRECTORY.COMPONENTS + '/widgets/wallets/wallets.directive.js',
                                     ],
                                 },
@@ -541,6 +544,45 @@ define([
                                     serie: true,
                                     name: 'Codes Directives',
                                     files: [DIRECTORY.COMPONENTS + '/activationCodes/activationCodes.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('admins.settings', {
+                secure: true,
+                url: '/system-settings',
+                template: '<system-settings></system-settings>',
+                data: {
+                    pageTitle: 'One Creations Admin | System Settings',
+                },
+                ncyBreadcrumb: {
+                    label: 'System Settings',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'System Settings Directives',
+                                    files: [DIRECTORY.COMPONENTS + '/settings/settings.directive.js'],
                                 },
                             ]);
                         },

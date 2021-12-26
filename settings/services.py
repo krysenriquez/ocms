@@ -1,10 +1,11 @@
 from django.db.models.functions import TruncDate
+from django.db.models import Q
 from django.utils import timezone
 from tzlocal import get_localzone
 from settings.models import *
 from settings.enums import *
-from activities.models import Activity
-from activities.enums import ActivityType
+from activities.models import Activity, Cashout
+from activities.enums import ActivityType, CashoutStatus
 import activities.services as ActivityService
 
 
@@ -52,6 +53,14 @@ def check_if_has_cashout_today(account_id, wallet):
         activity_type=ActivityType.CASHOUT,
         wallet=wallet,
         modified_local_tz=timezone.localtime().date(),
+    )
+
+
+def check_if_has_pending_cashout(account_id, wallet):
+    return Cashout.objects.filter(
+        Q(status=CashoutStatus.REQUESTED) | Q(status=CashoutStatus.APPROVED),
+        account__account_id=account_id,
+        wallet=wallet,
     )
 
 

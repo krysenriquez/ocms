@@ -7,31 +7,33 @@ define(['appMember', 'statusFactory'], (function () {
         return {
             link: link,
             restrict: 'A',
+            require: 'ngModel',
         };
 
-        function link(scope, elem, attrs) {
-            scope.$watch(
-                attrs.inputValidator,
-                function (newValue, oldValue) {
-                    if (angular.isDefined(newValue) && newValue != oldValue) {
-                        if (newValue.status) {
-                            if (statusFactory.isValidStatus(newValue.status)) {
-                                elem.removeClass('is-invalid');
-                                elem.addClass('is-valid');
-                            } else {
-                                elem.removeClass('is-valid');
-                                elem.addClass('is-invalid');
-                            }
+        function link(scope, elem, attrs, ctrl) {
+            scope.$watch(attrs.inputValidator, function (newValue, oldValue) {
+                if (angular.isDefined(newValue) && newValue != oldValue) {
+                    if (newValue.status) {
+                        if (statusFactory.isValidStatus(newValue.status)) {
+                            elem.removeClass('is-invalid');
+                            elem.addClass('is-valid');
                         } else {
-                            if (newValue != null) {
-                                elem.removeClass('is-invalid');
-                                elem.addClass('is-valid');
-                            } else {
-                                elem.removeClass('is-valid');
-                                elem.addClass('is-invalid');
-                            }
+                            elem.removeClass('is-valid');
+                            elem.addClass('is-invalid');
                         }
-                    } else if (oldValue) {
+                        ctrl.$setValidity('status', statusFactory.isValidStatus(newValue.status));
+                    } else {
+                        if (newValue != null) {
+                            elem.removeClass('is-invalid');
+                            elem.addClass('is-valid');
+                        } else {
+                            elem.removeClass('is-valid');
+                            elem.addClass('is-invalid');
+                        }
+                    }
+                } else {
+                    if (angular.isDefined(oldValue) && newValue != oldValue) {
+                        console.log('here');
                         if (oldValue.status) {
                             if (statusFactory.isValidStatus(oldValue.status)) {
                                 elem.removeClass('is-invalid');
@@ -40,14 +42,20 @@ define(['appMember', 'statusFactory'], (function () {
                                 elem.removeClass('is-valid');
                                 elem.addClass('is-invalid');
                             }
+                            ctrl.$setValidity('status', statusFactory.isValidStatus(oldValue.status));
                         } else {
-                            elem.removeClass('is-valid');
-                            elem.addClass('is-invalid');
+                            console.log('here');
+                            if (oldValue != null) {
+                                elem.removeClass('is-invalid');
+                                elem.addClass('is-valid');
+                            } else {
+                                elem.removeClass('is-valid');
+                                elem.addClass('is-invalid');
+                            }
                         }
                     }
-                },
-                true
-            );
+                }
+            });
         }
     }
 })());

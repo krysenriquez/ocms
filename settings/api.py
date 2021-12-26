@@ -55,7 +55,7 @@ class GetCashoutTaxView(views.APIView):
                 )
             else:
                 return Response(
-                    data={"tax": 0 },
+                    data={"tax": 0},
                     status=status.HTTP_200_OK,
                 )
         else:
@@ -107,11 +107,19 @@ class WalletScheduleView(views.APIView):
             if get_wallet_can_cashout(account_id, wallet):
                 no_cashout_today = not check_if_has_cashout_today(account_id, wallet)
                 if no_cashout_today:
-                    bracket = construct_cashout_amount(account_id, wallet)
-                    return Response(
-                        data={"bracket": bracket},
-                        status=status.HTTP_200_OK,
-                    )
+                    has_no_pending_cashout = not check_if_has_pending_cashout(account_id, wallet)
+                    print(has_no_pending_cashout)
+                    if has_no_pending_cashout:
+                        bracket = construct_cashout_amount(account_id, wallet)
+                        return Response(
+                            data={"bracket": bracket},
+                            status=status.HTTP_200_OK,
+                        )
+                    else:
+                        return Response(
+                            data={"message": "Pending Cashout request existing for Wallet."},
+                            status=status.HTTP_403_FORBIDDEN,
+                        )
                 else:
                     return Response(
                         data={"message": "Max Cash Out reached today."},

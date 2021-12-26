@@ -3,8 +3,8 @@
 }
 
 .modal-dialog{
-	width: 80%;
-	margin: auto;
+	width: 90%;
+	margin: 0.5rem auto;
  }
 
 .ng-animate.no-animate {

@@ -11,6 +11,7 @@ define(['urlService', 'humpsFactory'], function () {
             getCashouts: getCashouts,
             getCashoutStatus: getCashoutStatus,
             saveCashoutStatus: saveCashoutStatus,
+            getPendingCashouts: getPendingCashouts,
         };
 
         function getCashoutTax() {
@@ -46,6 +47,21 @@ define(['urlService', 'humpsFactory'], function () {
                 url: urlService.REQUEST_CASHOUT,
                 method: 'POST',
                 data: humpsFactory.decamelizeKeys(data),
+            }).then(
+                function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response.data);
+                    return $q.resolve(responseData);
+                },
+                function (error) {
+                    return $q.reject(error);
+                }
+            );
+        }
+
+        function getPendingCashouts() {
+            return $http({
+                url: urlService.GET_PENDING_CASHOUTS,
+                method: 'POST',
             }).then(
                 function (response) {
                     var responseData = humpsFactory.camelizeKeys(response.data);

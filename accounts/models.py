@@ -234,7 +234,7 @@ class AddressInfo(models.Model):
     def __str__(self):
         return "%s" % (self.account)
 
-    def full_address(self):
+    def get_full_address(self):
         return "%s %s %s" % (self.street, self.city, self.state)
 
 

@@ -51,6 +51,10 @@ urlpatterns = [
         "oc-admin/activation-codes",
         ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html")),
     ),
+    path(
+        "oc-admin/system-settings",
+        ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html")),
+    ),
     # Member
     path("", lambda request: redirect("member/login", permanent=False)),
     path("login", lambda request: redirect("member/login", permanent=False)),
@@ -68,6 +72,12 @@ urlpatterns = [
         ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html")),
     ),
     path("member/cashout", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))),
+    path("member/profile", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))),
+    path("member/account", ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html"))),
+    path(
+        "member/account/edit",
+        ensure_csrf_cookie(TemplateView.as_view(template_name="members/base.html")),
+    ),
     # APIs
     path("webapi/users/", include("users.urls"), name="users"),
     path("webapi/auth/", include("auth.urls"), name="auth"),

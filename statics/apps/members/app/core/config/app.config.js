@@ -209,6 +209,11 @@ define([
                             return $ocLazyLoad.load([
                                 {
                                     serie: true,
+                                    name: 'Table CSS',
+                                    files: [DIRECTORY.CSS + '/components/tables.css'],
+                                },
+                                {
+                                    serie: true,
                                     name: 'Widgets CSS',
                                     files: [DIRECTORY.CSS + '/components/widgets.css'],
                                 },
@@ -224,8 +229,7 @@ define([
                                     serie: true,
                                     name: 'Widgets Directives',
                                     files: [
-                                        // DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
-                                        // DIRECTORY.COMPONENTS + '/widgets/transactions/transactions.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
                                         DIRECTORY.COMPONENTS + '/widgets/summary/summary.directive.js',
                                         DIRECTORY.COMPONENTS + '/widgets/wallets/wallets.directive.js',
                                     ],
@@ -390,6 +394,51 @@ define([
                                     serie: true,
                                     name: 'Referral Link Directive',
                                     files: [DIRECTORY.COMPONENTS + '/cashouts/cashouts.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
+            .state('members.profile', {
+                secure: true,
+                url: '/profile',
+                template: '<profile></profile>',
+                data: {
+                    pageTitle: 'One Creations | My Profile',
+                },
+                ncyBreadcrumb: {
+                    label: 'Profile',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Widgets CSS',
+                                    files: [
+                                        DIRECTORY.CSS + '/components/widgets.css',
+                                        DIRECTORY.CSS + '/components/profile.css',
+                                    ],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Profile Directives',
+                                    files: [
+                                        DIRECTORY.COMPONENTS + '/profile/profile.directive.js',
+                                        DIRECTORY.COMPONENTS + '/profile/binary/binary.directive.js',
+                                    ],
                                 },
                             ]);
                         },

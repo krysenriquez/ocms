@@ -29,129 +29,25 @@ define(['appAdmin', 'settingsFactory', 'activityFactory', 'walletFactory'], func
             toastr
         ) {
             var vm = this;
-            var accountId;
             vm.viewWalletDetails = viewWalletDetails;
-            vm.openWalletSummaryModal = openWalletSummaryModal;
-            vm.verifyWalletCashout = verifyWalletCashout;
-            vm.openWalletCashoutModal = openWalletCashoutModal;
 
             init();
 
             function init() {
-                $scope.$watch(
-                    function () {
-                        return accountFactory.getSelectedAccount().accountId;
-                    },
-                    function (newValue, oldValue) {
-                        if (newValue !== oldValue) {
-                            accountId = newValue;
-                        } else {
-                            accountId = oldValue;
-                        }
-                        loadWallets().then(function (response) {
-                            vm.wallets = response;
-                            viewWalletDetails(vm.wallets[0]);
-                        });
-                    }
-                );
+                viewWalletDetails();
             }
 
-            function loadWallets() {
-                return settingsFactory
-                    .getWallets()
-                    .then(function (response) {
-                        return response.wallets;
-                    })
-                    .catch(function (error) {
-                        toastr.error(error.data.message);
-                    });
-            }
-
-            function viewWalletDetails(wallet) {
+            function viewWalletDetails() {
                 activityFactory
-                    .getWalletInfo(accountId, wallet)
+                    .getAllWalletInfo()
                     .then(function (response) {
-                        vm.walletInfo = response;
+                        vm.wallets = response;
+
+                        console.log(vm.wallets);
                     })
                     .catch(function (error) {
                         toastr.error(error.data.message);
                     });
-            }
-
-            function openWalletSummaryModal(wallet) {
-                $uibModal.open({
-                    animation: true,
-                    backdrop: false,
-                    templateUrl: DIRECTORY.COMPONENTS + '/widgets/wallets/walletSummary/walletSummary.tpl.html',
-                    size: 'xl',
-                    controller: 'WalletSummaryController',
-                    controllerAs: 'vm',
-                    bindToController: true,
-                    resolve: {
-                        loadController: function ($ocLazyLoad, DIRECTORY) {
-                            return $ocLazyLoad.load([
-                                {
-                                    serie: true,
-                                    name: 'WalletSummaryController',
-                                    files: [
-                                        DIRECTORY.COMPONENTS +
-                                            '/widgets/wallets/walletSummary/walletSummary.controller.js',
-                                    ],
-                                },
-                            ]);
-                        },
-                        walletObject: function () {
-                            return {
-                                wallet: wallet,
-                                accountId: accountId,
-                            };
-                        },
-                    },
-                });
-            }
-
-            function verifyWalletCashout(walletInfo) {
-                walletFactory
-                    .verifyWalletCashout(accountId, walletInfo.wallet)
-                    .then(function (response) {
-                        openWalletCashoutModal(walletInfo, response);
-                    })
-                    .catch(function (error) {
-                        toastr.error(error.data.message);
-                    });
-            }
-
-            function openWalletCashoutModal(walletInfo, response) {
-                $uibModal.open({
-                    animation: true,
-                    backdrop: false,
-                    templateUrl: DIRECTORY.COMPONENTS + '/widgets/wallets/walletCashout/walletCashout.tpl.html',
-                    size: 'xl',
-                    controller: 'WalletCashoutController',
-                    controllerAs: 'vm',
-                    bindToController: true,
-                    resolve: {
-                        loadController: function ($ocLazyLoad, DIRECTORY) {
-                            return $ocLazyLoad.load([
-                                {
-                                    serie: true,
-                                    name: 'WalletCashoutController',
-                                    files: [
-                                        DIRECTORY.COMPONENTS +
-                                            '/widgets/wallets/walletCashout/walletCashout.controller.js',
-                                    ],
-                                },
-                            ]);
-                        },
-                        walletObject: function () {
-                            return {
-                                walletInfo: walletInfo,
-                                accountId: accountId,
-                                response: response,
-                            };
-                        },
-                    },
-                });
             }
         }
 

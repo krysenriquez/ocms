@@ -1,0 +1,26 @@
+<div class="widget widget-expenses">
+    <div class="widget-heading">
+        <h5 class="value" translate="wallet_cashouts"></h5>
+    </div>
+    <div class="widget-content">
+        <div class="widget-content">
+            <div class="expenses-summary">
+                <div class="expenses-list" ng-repeat="expense in vm.expenses" ng-class="{ 'last-child': $last }">
+                    <div class="expense-icon">
+                        <div class="icon">
+                            <span class="avatar-title" ng-class="expense.wallet | initials | lowercase ">
+                                {{ expense.wallet | initials }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="expense-details">
+                        <div class="expense-info">
+                            <h6 translate="{{ expense.wallet }}"></h6>
+                            <p class="summary-count">{{ expense.total | currency:'₱': 2 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

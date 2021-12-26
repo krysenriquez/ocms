@@ -7,7 +7,7 @@ from .enums import ActivityType, CashoutMethod, WalletType, CashoutStatus
 
 class Activity(models.Model):
     account = models.ForeignKey(
-        "accounts.Account",
+        "accounts.Account", 
         on_delete=models.SET_NULL,
         related_name="activity",
         null=True,
@@ -99,6 +99,7 @@ class Cashout(models.Model):
     amount = models.DecimalField(
         default=0, max_length=256, decimal_places=2, max_digits=13, blank=True, null=True
     )
+    wallet = models.CharField(max_length=32, choices=WalletType.choices, blank=True, null=True)
     status = models.CharField(
         max_length=32,
         choices=CashoutStatus.choices,
@@ -125,6 +126,17 @@ class Cashout(models.Model):
         null=True,
         on_delete=models.CASCADE,
         related_name="approved_cashout",
+    )
+    denied_date = models.DateTimeField(
+        null=True,
+        blank=True,
+    )
+    denied_by = models.ForeignKey(
+        "users.CustomUser",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="denied_cashout",
     )
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)

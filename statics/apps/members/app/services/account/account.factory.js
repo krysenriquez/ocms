@@ -14,6 +14,8 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             getAccountGenealogy: getAccountGenealogy,
             getAccountCodes: getAccountCodes,
             createAccount: createAccount,
+            getProfile: getProfile,
+            getBinaryProfile: getBinaryProfile,
         };
 
         function getAccountId() {
@@ -76,6 +78,38 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             }).then(
                 function (response) {
                     var responseData = humpsFactory.camelizeKeys(response.data);
+                    return $q.resolve(responseData);
+                },
+                function (error) {
+                    return $q.reject(error);
+                }
+            );
+        }
+
+        function getProfile(accountId) {
+            return $http({
+                url: urlService.GET_PROFILE,
+                method: 'GET',
+                params: { account_id: accountId },
+            }).then(
+                function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response.data[0]);
+                    return $q.resolve(responseData);
+                },
+                function (error) {
+                    return $q.reject(error);
+                }
+            );
+        }
+
+        function getBinaryProfile(accountId) {
+            return $http({
+                url: urlService.GET_BINARY_PROFILE,
+                method: 'GET',
+                params: { account_id: accountId },
+            }).then(
+                function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response.data[0]);
                     return $q.resolve(responseData);
                 },
                 function (error) {

@@ -75,7 +75,7 @@ define(['appMember', 'settingsFactory', 'activityFactory', 'walletFactory'], fun
                     });
             }
 
-            function openWalletSummaryModal(wallet) {
+            function openWalletSummaryModal(walletInfo) {
                 $uibModal.open({
                     animation: true,
                     backdrop: false,
@@ -99,7 +99,7 @@ define(['appMember', 'settingsFactory', 'activityFactory', 'walletFactory'], fun
                         },
                         walletObject: function () {
                             return {
-                                wallet: wallet,
+                                wallet: walletInfo.wallet,
                                 accountId: accountId,
                             };
                         },

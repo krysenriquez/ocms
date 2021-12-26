@@ -1,0 +1,31 @@
+<div class="widget widget-table-top">
+    <div class="widget-heading">
+        <h5 class="" translate="top_flush_outs"></h5>
+    </div>
+    <div class="widget-content">
+        <div class="table-responsive">
+            <table class="table table-scroll">
+                <thead>
+                    <tr>
+                        <th><div class="th-content">Account</div></th>
+                        <th><div class="th-content">Amount</div></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="account in vm.accounts track by $index">
+                        <td>
+                            <div class="td-content product-name">
+                                <i class="fa-duotone fa-award" ng-if="$index < 3"></i>
+                                <div class="align-self-center">
+                                    <p class="prd-name">{{ account.accountName }}</p>
+                                    <p class="prd-category text-primary">{{ account.accountNumber }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td><div class="td-content">{{ account.walletAmount | currency:'₱': 2 }}</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

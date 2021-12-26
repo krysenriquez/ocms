@@ -17,12 +17,14 @@ class ActivitySerializer(ModelSerializer):
     class Meta:
         model = Activity
         fields = [
+            "wallet",
             "account_name",
             "account_number",
             "activity_type",
             "amount",
             "activity_details",
             "created",
+            "modified",
         ]
 
 

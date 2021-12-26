@@ -24,10 +24,15 @@ define([], function () {
         this.GET_CODE_STATUS = ACCOUNTS_ROOT + 'getcodestatus/';
         this.VERIFY_ACCOUNT = ACCOUNTS_ROOT + 'verifyaccount/';
         this.GENERATE_CODE = ACCOUNTS_ROOT + 'generatecode/';
+        this.GET_TOP_BINARY = ACCOUNTS_ROOT + 'gettopbinarysummary/';
+        this.GET_TOP_EARNERS = ACCOUNTS_ROOT + 'gettopearners/';
 
+        this.GET_ALL_WALLET_INFO = ACTIVITIES_ROOT + 'getallwalletinfo/';
+        this.GET_ALL_ACTIVITY_SUMMARY = ACTIVITIES_ROOT + 'getallactivitysummaryinfo/';
         this.GET_ACTIVITY_SUMMARY = ACTIVITIES_ROOT + 'getactivitysummary/';
         this.GET_WALLET_SUMMARY = ACTIVITIES_ROOT + 'getallwalletsummary/';
         this.GET_CASHOUTS = ACTIVITIES_ROOT + 'getadmincashouts/';
+        this.GET_PENDING_CASHOUTS = ACTIVITIES_ROOT + 'getpendingcashouts/';
         this.GET_CASHOUT_STATUS = ACTIVITIES_ROOT + 'getcashoutstatus/';
         this.UPDATE_CASHOUT_STATUS = ACTIVITIES_ROOT + 'updatecashoutstatus/';
 

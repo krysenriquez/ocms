@@ -309,7 +309,7 @@ define(['orgChart'], function () {
                 function (newValue, oldValue) {
                     if (newValue) {
                         scope.chart.load(newValue);
-                        var element = $('#binary-chart');
+                        var element = $('#binary-profile');
                         $compile(element)(scope);
                     }
                 },

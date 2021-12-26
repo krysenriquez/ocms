@@ -67,6 +67,9 @@ require.config({
         messageValidator: shared + 'validators/message/messageValidator.directive',
         inputValidator: shared + 'validators/input/inputValidator.directive',
         formValidator: shared + 'validators/form/formValidator.directive',
+        buttonValidator: shared + 'validators/button/buttonValidator.directive',
+        minLengthValidator: shared + 'validators/minLength/minLength.directive',
+        // Directives
         translate: shared + 'translate/translate.directive',
     },
     shim: {

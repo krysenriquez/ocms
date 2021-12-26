@@ -1,0 +1,48 @@
+<div class="col-12">
+    <div class="row layout-top-spacing">
+        <div class="col-xl-4 col-lg-4 col-md-5 col-sm-12 layout-spacing">
+            <div class="widget widget-profile">
+                <div class="widget-content widget-content-area">
+                    <div class="d-flex justify-content-between">
+                        <h3 class="">Account {{ vm.profile.accountNumber }}</h3>
+                        <a ng-click="vm.editProfile()" class="mt-2 edit-profile">
+                            <i class="fa-duotone fa-pen-line"></i>
+                        </a>
+                    </div>
+                    <div class="text-center user-info">
+                        <img
+                            src="{{ vm.profile.avatarInfo.length > 0 && vm.profile.avatarInfo[0].fileAttachment ? vm.profile.avatarInfo[0].fileAttachment : vm.blankAvatar }}"
+                            alt="avatar"
+                        />
+                        <p class="">{{ vm.profile.fullName }}</p>
+                    </div>
+                    <div class="user-info-list">
+                        <div class="">
+                            <ul class="contacts-block list-unstyled">
+                                <li class="contacts-block__item">
+                                    <i class="fa-solid fa-venus-mars"></i>
+                                    <span translate="{{ vm.profile.personalInfo[0].gender }}"></span>
+                                </li>
+                                <li class="contacts-block__item">
+                                    <i class="fa-duotone fa-calendar"></i>
+                                    {{ vm.profile.personalInfo[0].birthdate }}
+                                </li>
+                                <li class="contacts-block__item">
+                                    <i class="fa-duotone fa-map-location-dot"></i>
+                                    {{ vm.profile.addressInfo[0].fullAddress }}
+                                </li>
+                                <li class="contacts-block__item">
+                                    <i class="fa-duotone fa-circle-phone-flip"></i>
+                                    {{ vm.profile.contactInfo[0].contactNumber }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8 col-lg-8 col-md-7 col-sm-12 layout-spacing">
+            <binary></binary>
+        </div>
+    </div>
+</div>

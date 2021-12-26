@@ -3,6 +3,8 @@ define([
     'messageValidator',
     'inputValidator',
     'formValidator',
+    'buttonValidator',
+    'minLengthValidator',
     'userFactory',
     'verifyFactory',
 ], function () {
@@ -18,7 +20,8 @@ define([
         toastr,
         userFactory,
         accountFactory,
-        verifyFactory
+        verifyFactory,
+        statusFactory
     ) {
         var vm = this;
         vm.save = save;
@@ -35,8 +38,9 @@ define([
         vm.shouldDisableUseCurrentUser = shouldDisableUseCurrentUser;
         vm.validateUsername = validateUsername;
         vm.validateEmailAddress = validateEmailAddress;
+        vm.validateRepeatPassword = validateRepeatPassword;
         vm.new = {};
-        vm.form = {};
+        vm.form = { binaryForm: {}, userForm: {} };
         vm.validation = {};
         var remainingUserAccount;
 
@@ -49,6 +53,7 @@ define([
             getUserAccountCount().then(function (response) {
                 remainingUserAccount = response;
             });
+            console.log(vm.form);
         }
 
         function validateActivationCode() {
@@ -139,6 +144,22 @@ define([
                 });
         }
 
+        function validateRepeatPassword() {
+            if (vm.new.user.repeatPassword === vm.new.user.password) {
+                console.log('here');
+                vm.validation.repeatPassword = {
+                    message: 'Passwords match.',
+                    status: statusFactory.OK,
+                };
+            } else {
+                console.log('here');
+                vm.validation.repeatPassword = {
+                    message: 'Passwords do not match.',
+                    status: statusFactory.BAD_REQUEST,
+                };
+            }
+        }
+
         function save() {
             accountFactory
                 .createAccount(vm.new)
@@ -157,6 +178,7 @@ define([
         }
 
         function next() {
+            console.log(vm.form);
             vm.step = vm.step + 1;
         }
 

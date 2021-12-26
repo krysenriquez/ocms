@@ -64,13 +64,16 @@ def process_create_cashout_request(request):
         return data
 
 
+def get_cashout_total_tax():
+    leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)
+    company_earnings = get_setting_value(Property.COMPANY_CASHOUT_EARNING)
+    return leadership_bonus + company_earnings
+
+
 def process_create_cashout_activity(request, cashout):
     if cashout:
         content_type = ContentType.objects.get(model="cashout")
-
-        leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)
-        company_earnings = get_setting_value(Property.COMPANY_CASHOUT_EARNING)
-        total_tax = leadership_bonus + company_earnings
+        total_tax = get_cashout_total_tax()
 
         return create_activity(
             account=cashout.account,
@@ -99,19 +102,26 @@ def process_save_cashout_status(request):
                     "released_date": timezone.localtime(),
                     "released_by": request.user.pk,
                 }
+            elif request.data["status"] == CashoutStatus.DENIED:
+                data = {
+                    "denied_date": timezone.localtime(),
+                    "denied_by": request.user.pk,
+                }
         elif cashout.status == CashoutStatus.APPROVED:
             if request.data["status"] == CashoutStatus.RELEASED:
-                data = {"released_date": timezone.localtime()}
+                data = {
+                    "released_date": timezone.localtime(),
+                    "released_by": request.user.pk,
+                }
+            elif request.data["status"] == CashoutStatus.DENIED:
+                data = {
+                    "denied_date": timezone.localtime(),
+                    "denied_by": request.user.pk,
+                }
 
         data["status"] = request.data["status"]
 
         return cashout, data
-
-
-def get_cashout_total_tax():
-    leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)
-    company_earnings = get_setting_value(Property.COMPANY_CASHOUT_EARNING)
-    return leadership_bonus + company_earnings
 
 
 def process_create_payout_activity(request, updated_cashout):

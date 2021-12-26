@@ -15,7 +15,7 @@
         </form>
     </div>
     <div ng-switch="vm.step">
-        <form ng-switch-when="1" name="vm.form.binary" class="">
+        <form ng-switch-when="1" name="vm.form.binaryForm" class="">
             <div class="form-row">
                 <div class="col-md-6 mb-2">
                     <label for="firstName" translate="first_name" translate-required="true"></label>
@@ -25,7 +25,7 @@
                         id="firstName"
                         ng-model="vm.new.firstName"
                         placeholder="First Name"
-                        input-validator="vm.new.firstName"
+                        input-validator="vm.validation.firstName"
                         required
                     />
                 </div>
@@ -234,10 +234,9 @@
                             id="password"
                             ng-model="vm.new.user.password"
                             placeholder="Password"
-                            input-validator="vm.validation.password"
+                            input-validator="vm.new.user.password"
                             required
                         />
-                        <message-validator validator="vm.validation.password"></message-validator>
                     </div>
                     <div class="col-md-12 mb-2">
                         <label for="repeatPassword" translate="repeat_password" translate-required="true"></label>
@@ -246,7 +245,10 @@
                             class="form-control"
                             id="repeatPassword"
                             ng-model="vm.new.user.repeatPassword"
+                            ng-change="vm.validateRepeatPassword()"
+                            ng-model-options="{ debounce: 1000 }"
                             placeholder="Repeat Password"
+                            input-validator="vm.validation.repeatPassword"
                             required
                         />
                         <message-validator validator="vm.validation.repeatPassword"></message-validator>
@@ -259,8 +261,22 @@
 <div class="modal-footer">
     <button type="button" class="btn mr-auto" ng-click="vm.cancel()">Cancel</button>
     <button type="button" class="btn mr-auto" ng-if="vm.step == 2" ng-click="vm.previous()">Previous</button>
-    <button type="button" class="btn btn-primary" ng-if="vm.step == 1" form-validator ng-click="vm.next()">
+    <button
+        type="button"
+        class="btn btn-primary"
+        ng-if="vm.step == 1"
+        button-validator="vm.form.binaryForm.$valid"
+        ng-click="vm.next()"
+    >
         Next Step
     </button>
-    <button type="button" class="btn btn-primary" ng-if="vm.step == 2" ng-click="vm.save()">Save</button>
+    <button
+        type="button"
+        class="btn btn-primary"
+        ng-if="vm.step == 2"
+        ng-click="vm.save()"
+        button-validator="vm.form.userForm.$valid"
+    >
+        Save
+    </button>
 </div>

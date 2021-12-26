@@ -17,7 +17,7 @@ class PersonalInfoSerializer(ModelSerializer):
 
     class Meta:
         model = PersonalInfo
-        fields = "__all__"
+        fields = ["id", "birthdate", "gender"]
         read_only_fields = ("account",)
 
 
@@ -32,12 +32,13 @@ class ContactInfoSerializer(ModelSerializer):
 
     class Meta:
         model = ContactInfo
-        fields = "__all__"
+        fields = ["id", "contact_number"]
         read_only_fields = ("account",)
 
 
 class AddressInfoSerializer(ModelSerializer):
     id = serializers.IntegerField(required=False)
+    full_address = serializers.CharField(source="get_full_address", required=False)
 
     def update(self, instance, validated_data):
         instance.street = validated_data.get("street", instance.street)
@@ -49,7 +50,13 @@ class AddressInfoSerializer(ModelSerializer):
 
     class Meta:
         model = AddressInfo
-        fields = "__all__"
+        fields = [
+            "id",
+            "street",
+            "city",
+            "state",
+            "full_address",
+        ]
         read_only_fields = ("account",)
 
 
@@ -65,7 +72,11 @@ class AvatarInfoSerializer(ModelSerializer):
 
     class Meta:
         model = AvatarInfo
-        fields = "__all__"
+        fields = [
+            "id",
+            "file_name",
+            "file_attachment",
+        ]
         read_only_fields = ("account",)
 
 
@@ -197,6 +208,25 @@ class AccountSerializer(ModelSerializer):
         fields = "__all__"
 
 
+class AccountProfileSerializer(ModelSerializer):
+    personal_info = PersonalInfoSerializer(many=True, required=False)
+    contact_info = ContactInfoSerializer(many=True, required=False)
+    address_info = AddressInfoSerializer(many=True, required=False)
+    avatar_info = AvatarInfoSerializer(many=True, required=False)
+    parent_name = serializers.CharField(source="self.parent.get_fullname", required=False)
+    referrer_name = serializers.CharField(source="self.referrer.get_fullname", required=False)
+    full_name = serializers.CharField(source="get_full_name", required=False)
+    account_number = serializers.CharField(source="get_account_number", required=False)
+
+    def get_avatar_info(self, obj):
+        print(obj)
+        return obj.avatar_info[0]["file_attachment"]
+
+    class Meta:
+        model = Account
+        fields = "__all__"
+
+
 class AccountListSerializer(ModelSerializer):
     account_name = serializers.CharField(source="get_account_name", required=False)
     account_number = serializers.CharField(source="get_account_number", required=False)
@@ -253,6 +283,33 @@ class AccountUnliTenSerializer(ModelSerializer):
             "end_period",
         ]
 
+class AccountBinarySerializer(ModelSerializer):
+    account_name = serializers.CharField(source="get_account_name", required=False)
+    account_number = serializers.CharField(source="get_account_number", required=False)
+    binary_count = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Account
+        fields = [
+            "account_name",
+            "account_number",
+            "binary_count",
+        ]
+
+
+class AccountWalletSerializer(ModelSerializer):
+    account_name = serializers.CharField(source="get_account_name", required=False)
+    account_number = serializers.CharField(source="get_account_number", required=False)
+    wallet_amount = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Account
+        fields = [
+            "account_name",
+            "account_number",
+            "wallet_amount",
+        ]
+
 
 class AvatarInfoSerializer(ModelSerializer):
     class Meta:
@@ -303,8 +360,6 @@ class GenealogyAccountSerializer(ModelSerializer):
     avatar_info = GenealogyAvatarSerializer(many=True, required=False)
     account_name = serializers.CharField(source="get_account_name", required=False)
     account_number = serializers.CharField(source="get_account_number", required=False)
-    # account_name = serializers.SerializerMethodField()
-    # account_number = serializers.SerializerMethodField()
     all_left_children_count = serializers.CharField(read_only=True)
     all_right_children_count = serializers.CharField(read_only=True)
     depth = serializers.SerializerMethodField()
@@ -339,6 +394,64 @@ class GenealogyAccountSerializer(ModelSerializer):
             "children",
             "all_left_children_count",
             "all_right_children_count",
+        ]
+
+
+class BinaryAccountProfileParentSerializer(ModelSerializer):
+    avatar_info = GenealogyAvatarSerializer(many=True, required=False)
+    account_name = serializers.CharField(source="get_account_name", required=False)
+    account_number = serializers.CharField(source="get_account_number", required=False)
+
+    class Meta:
+        model = Account
+        ordering = ("parent_side",)
+        fields = [
+            "account_id",
+            "account_name",
+            "account_number",
+            "account_status",
+            "avatar_info",
+        ]
+
+
+class BinaryAccountProfileSerializer(ModelSerializer):
+    avatar_info = GenealogyAvatarSerializer(many=True, required=False)
+    account_name = serializers.CharField(source="get_account_name", required=False)
+    account_number = serializers.CharField(source="get_account_number", required=False)
+    all_left_children_count = serializers.CharField(read_only=True)
+    all_right_children_count = serializers.CharField(read_only=True)
+    parent = BinaryAccountProfileParentSerializer(required=False)
+    referrer = BinaryAccountProfileParentSerializer(required=False)
+
+    def __init__(self, *args, depth=0, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.depth = depth
+
+    def get_fields(self):
+        fields = super().get_fields()
+        if self.depth < 1:
+            fields["children"] = RecursiveField(many=True, required=False)
+        else:
+            del fields["parent"]
+            del fields["children"]
+
+        return fields
+
+    class Meta:
+        model = Account
+        ordering = ("parent_side",)
+        fields = [
+            "account_id",
+            "account_name",
+            "account_number",
+            "account_status",
+            "parent_side",
+            "avatar_info",
+            "children",
+            "all_left_children_count",
+            "all_right_children_count",
+            "parent",
+            "referrer",
         ]
 
 

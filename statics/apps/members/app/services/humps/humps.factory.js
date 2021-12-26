@@ -40,7 +40,9 @@ define(['appMember'], function () {
             } else {
                 output = {};
                 for (var key in obj) {
-                    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                    if (key == 'unique') {
+                        delete obj[key];
+                    } else if (Object.prototype.hasOwnProperty.call(obj, key)) {
                         output[convert(key, options)] = _processKeys(convert, obj[key], options);
                     }
                 }

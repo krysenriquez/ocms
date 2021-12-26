@@ -14,27 +14,17 @@ define(['appMember', 'statusFactory'], (function () {
                 attrs.buttonValidator,
                 function (newValue, oldValue) {
                     if (angular.isDefined(newValue) && newValue != oldValue) {
-                        if (newValue.status) {
-                            if (statusFactory.isValidStatus(newValue.status)) {
-                                elem.removeClass('is-invalid');
-                                elem.addClass('is-valid');
-                            } else {
-                                elem.removeClass('is-valid');
-                                elem.addClass('is-invalid');
-                            }
+                        if (newValue) {
+                            elem.removeAttr('disabled');
                         } else {
-                            if (newValue != null) {
-                                elem.removeClass('is-invalid');
-                                elem.addClass('is-valid');
-                            } else {
-                                elem.removeClass('is-valid');
-                                elem.addClass('is-invalid');
-                            }
+                            attrs.$set('disabled', 'disabled');
                         }
-                    } else if (oldValue) {
-                        console.log(oldValue);
-                        elem.removeClass('is-valid');
-                        elem.addClass('is-invalid');
+                    } else {
+                        if (oldValue) {
+                            elem.removeAttr('disabled');
+                        } else {
+                            attrs.$set('disabled', 'disabled');
+                        }
                     }
                 },
                 true

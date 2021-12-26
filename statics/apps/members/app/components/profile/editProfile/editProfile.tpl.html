@@ -1,0 +1,192 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="modal-title" translate="edit_profile"></h5>
+    <button type="button" class="close" aria-label="Close" ng-click="vm.cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="col-md-12 mx-0">
+        <form name="vm.form.profileForm" class="">
+            <div class="info">
+                <div class="row">
+                    <div class="col-12 mx-auto">
+                        <div class="row">
+                            <div class="col-xl-2 col-lg-2 col-md-4">
+                                <div
+                                    class="image-input image-input-outline"
+                                    ng-style="{'background-image': 'url('+ newAvatar +')'}"
+                                >
+                                    <div
+                                        class="image-input-wrapper"
+                                        ng-style="{'background-image': 'url('+ newAvatar  +')'}"
+                                    ></div>
+                                    <label
+                                        class="btn btn-xs btn-icon btn-circle btn-white btn-shadow"
+                                        data-action="change"
+                                        data-toggle="tooltip"
+                                        title=""
+                                        data-original-title="Change avatar"
+                                    >
+                                        <i class="fa fa-pen icon-sm text-muted"></i>
+                                        <input
+                                            type="file"
+                                            id="avatar"
+                                            name="avatar"
+                                            select-ng-files="newAvatar"
+                                            ng-model="member.accountAvatar[0].fileAttachment"
+                                            ng-change="avatarChange(member.accountAvatar[0].fileAttachment)"
+                                            accept=".png, .jpg, .jpeg"
+                                        />
+                                        <input type="hidden" name="profile_avatar_remove" />
+                                    </label>
+
+                                    <span
+                                        class="
+                                            btn btn-xs btn-icon btn-circle btn-white btn-hover-text-primary btn-shadow
+                                        "
+                                        data-action="remove"
+                                        data-toggle="tooltip"
+                                        data-original-title="Remove avatar"
+                                    >
+                                        <i class="fa fa-times icon-sm text-muted"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-xl-10 col-lg-12 col-md-8 mt-md-0 mt-4">
+                                <div class="form">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label
+                                                    for="firstName"
+                                                    translate="first_name"
+                                                    translate-required="true"
+                                                ></label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="firstName"
+                                                    placeholder="First Name"
+                                                    ng-model="vm.edit.firstName"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="middleName" translate="middle_name"></label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="middleName"
+                                                    placeholder="Middle Name"
+                                                    ng-model="vm.edit.middleName"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label
+                                                    for="lastName"
+                                                    translate="last_name"
+                                                    translate-required="true"
+                                                ></label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="lastName"
+                                                    placeholder="Last Name"
+                                                    ng-model="vm.edit.lastName"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="gender" translate="gender"></label>
+                                                <select
+                                                    class="form-control"
+                                                    id="gender"
+                                                    ng-model="vm.edit.personalInfo[0].gender"
+                                                    ng-options="o as o for o in ['MALE', 'FEMALE']"
+                                                    required
+                                                ></select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="birthdate" translate="birthdate"></label>
+                                                <input
+                                                    type="date"
+                                                    class="form-control"
+                                                    id="birthdate"
+                                                    ng-model="vm.edit.personalInfo[0].birthdate"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="contactNumber" translate="contact_number"></label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="contactNumber"
+                                                    placeholder="Contact Number"
+                                                    ng-model="vm.edit.contactInfo[0].contactNumber"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="street" translate="street"></label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="street"
+                                                    placeholder="Street"
+                                                    ng-model="vm.edit.addressInfo[0].street"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="city" translate="city"></label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="city"
+                                                    placeholder="City"
+                                                    ng-model="vm.edit.addressInfo[0].city"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="state" translate="state"></label>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="state"
+                                                    placeholder="State/Province"
+                                                    ng-model="vm.edit.addressInfo[0].state"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn mr-auto" ng-click="vm.cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="vm.save()" button-validator="vm.form.profileForm.$valid">
+        Save
+    </button>
+</div>

@@ -20,6 +20,8 @@ define([], function () {
         this.GENEALOGY = ACCOUNTS_ROOT + 'genealogy/';
         this.GET_ACCOUNT_CODES = ACCOUNTS_ROOT + 'getaccountcodes/';
         this.VERIFY_SPONSOR_CODE = ACCOUNTS_ROOT + 'verifysponsorcode/';
+        this.GET_PROFILE = ACCOUNTS_ROOT + 'getprofile/';
+        this.GET_BINARY_PROFILE = ACCOUNTS_ROOT + 'getbinaryaccountprofile/';
 
         this.GET_USER_ACCOUNTS = USERS_ROOT + 'getuseraccounts/';
         this.GET_USER_ACCOUNTS_COUNT = USERS_ROOT + 'useraccounts/';
@@ -30,6 +32,7 @@ define([], function () {
         this.GET_ACTIVITY_SUMMARY = ACTIVITIES_ROOT + 'getactivitysummaryinfo/';
         this.GET_WALLET_INFO = ACTIVITIES_ROOT + 'getwalletinfo/';
         this.GET_WALLET_SUMMARY = ACTIVITIES_ROOT + 'getwalletsummary/';
+        this.GET_RECENT_ACTIVITIES = ACTIVITIES_ROOT + 'getrecentactivities';
         this.GET_PAYMENT_METHODS = ACTIVITIES_ROOT + 'getpaymentmethods/';
         this.GET_CASHOUTS = ACTIVITIES_ROOT + 'getcashouts/';
         this.REQUEST_CASHOUT = ACTIVITIES_ROOT + 'request/';

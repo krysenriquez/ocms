@@ -1,14 +1,30 @@
 from rest_framework import status, views, permissions
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from django.db.models import Q, Prefetch, F, Value as V, query
-from django.db.models.functions import Concat
+from django.db.models import Q, Prefetch, F, Value as V, query, Count, Sum, Case, When
+from django.db.models.functions import Concat, Coalesce
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
+
+from settings.models import Wallet
 from .serializers import *
 from .models import *
 from .enums import *
 from users.enums import UserType
+
+
+class AccountProfileViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountProfileSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            account_id = self.request.query_params.get("account_id", None)
+            queryset = Account.objects.exclude(is_deleted=True).filter(account_id=account_id).all()
+            if queryset.exists():
+                return queryset
 
 
 class AccountListViewSet(ModelViewSet):
@@ -56,6 +72,65 @@ class AccountUnliTenViewSet(ModelViewSet):
             return Account.objects.none()
 
 
+class AccountBinaryViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountBinarySerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        if self.request.user.user_type == UserType.ADMIN:
+            binary_type = self.request.query_params.get("binary_type", None)
+            queryset = (
+                Account.objects.exclude(is_deleted=True)
+                .annotate(binary_count=Count("binary", filter=Q(binary__binary_type=binary_type)))
+                .all()
+                .order_by("-binary_count")[:5]
+            )
+            if queryset.exists():
+                return queryset
+        else:
+            return Account.objects.none()
+
+
+class AccountWalletViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountWalletSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        if self.request.user.user_type == UserType.ADMIN:
+            queryset = (
+                Account.objects.exclude(is_deleted=True)
+                .annotate(
+                    wallet_amount=Coalesce(
+                        Sum(
+                            Case(
+                                When(
+                                    Q(activity__activity_type=ActivityType.CASHOUT)
+                                    & ~Q(activity__wallet=WalletType.C_WALLET),
+                                    then=0 - F("activity__activity_amount"),
+                                ),
+                                When(
+                                    ~Q(activity__activity_type=ActivityType.CASHOUT)
+                                    & ~Q(activity__wallet=WalletType.C_WALLET),
+                                    then=F("activity__activity_amount"),
+                                ),
+                            )
+                        ),
+                        0,
+                    )
+                )
+                .all()
+                .order_by("-wallet_amount")[:5]
+            )
+            if queryset.exists():
+                return queryset
+        else:
+            return Account.objects.none()
+
+
 class GenealogyAccountViewSet(ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = GenealogyAccountSerializer
@@ -66,50 +141,74 @@ class GenealogyAccountViewSet(ModelViewSet):
         user_type = self.request.user.user_type
 
         if user_type is not None and self.request.user.is_authenticated:
-            queryset = (
-                Account.objects.prefetch_related(
-                    Prefetch(
-                        "children",
-                        queryset=Account.objects.prefetch_related(
-                            Prefetch(
-                                "children",
-                                queryset=Account.objects.prefetch_related(
-                                    Prefetch(
-                                        "children",
-                                        queryset=Account.objects.prefetch_related(
-                                            Prefetch(
-                                                "children",
-                                                queryset=Account.objects.prefetch_related(
-                                                    Prefetch(
-                                                        "children",
-                                                        queryset=Account.objects.order_by(
-                                                            "parent_side"
-                                                        ).all(),
-                                                    )
+            queryset = Account.objects.prefetch_related(
+                Prefetch(
+                    "children",
+                    queryset=Account.objects.prefetch_related(
+                        Prefetch(
+                            "children",
+                            queryset=Account.objects.prefetch_related(
+                                Prefetch(
+                                    "children",
+                                    queryset=Account.objects.prefetch_related(
+                                        Prefetch(
+                                            "children",
+                                            queryset=Account.objects.prefetch_related(
+                                                Prefetch(
+                                                    "children",
+                                                    queryset=Account.objects.order_by(
+                                                        "parent_side"
+                                                    ).all(),
                                                 )
-                                                .order_by("parent_side")
-                                                .all(),
                                             )
+                                            .order_by("parent_side")
+                                            .all(),
                                         )
-                                        .order_by("parent_side")
-                                        .all(),
                                     )
+                                    .order_by("parent_side")
+                                    .all(),
                                 )
-                                .order_by("parent_side")
-                                .all(),
                             )
+                            .order_by("parent_side")
+                            .all(),
                         )
-                        .order_by("parent_side")
-                        .all(),
-                    ),
-                )
-                .annotate(
-                    account_name=Concat(
-                        F("first_name"), V(" "), F("middle_name"), V(" "), F("last_name")
-                    ),
-                )
-                .all()
-            )
+                    )
+                    .order_by("parent_side")
+                    .all(),
+                ),
+            ).all()
+
+            account_id = self.request.query_params.get("account_id", None)
+
+            if account_id is not None:
+                queryset = queryset.filter(account_id=account_id)
+
+                for member in queryset:
+                    member.all_left_children_count = len(
+                        member.get_all_children_side(parent_side=ParentSide.LEFT)
+                    )
+                    member.all_right_children_count = len(
+                        member.get_all_children_side(parent_side=ParentSide.RIGHT)
+                    )
+
+                return queryset
+
+
+class BinaryAccountProfileViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = BinaryAccountProfileSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        user_type = self.request.user.user_type
+
+        if user_type is not None and self.request.user.is_authenticated:
+            queryset = Account.objects.prefetch_related(
+                Prefetch(
+                    "children",
+                ),
+            ).all()
 
             account_id = self.request.query_params.get("account_id", None)
 
@@ -172,7 +271,6 @@ class BinaryViewSet(ModelViewSet):
         if self.request.user.user_type == UserType.ADMIN:
             queryset = Binary.objects.exclude(is_deleted=True)
             binary_type = self.request.query_params.get("binary_type", None)
-            print(binary_type)
             queryset = queryset.filter(binary_type=binary_type).order_by("-modified")
             if queryset.exists():
                 return queryset
