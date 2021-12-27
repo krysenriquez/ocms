@@ -1,0 +1,586 @@
+<div class="widget">
+    <div class="widget-content widget-content-area br-6">
+        <div id="settingsAccordion" class="mb-4">
+            <div class="card">
+                <div class="card-header" id="wallets">
+                    <section class="mb-0 mt-0">
+                        <div
+                            role="menu"
+                            class="collapsed"
+                            data-toggle="collapse"
+                            data-target="#walletsAccordion"
+                            aria-expanded="true"
+                            aria-controls="walletsAccordion"
+                        >
+                            Wallets
+                            <div class="icons"><svg></svg></div>
+                        </div>
+                    </section>
+                </div>
+                <div id="walletsAccordion" class="collapse" aria-labelledby="..." data-parent="#settingsAccordion">
+                    <div class="card-body">
+                        <h6>B-Wallet</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="B_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    translate="B_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="B_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    ng-model="vm.settings.B_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    input-validator="vm.settings.B_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="B_WALLET_CASHOUT_DAY"
+                                    translate="B_WALLET_CASHOUT_DAY"
+                                    translate-required="true"
+                                ></label>
+                                <select
+                                    class="form-control"
+                                    id="B_WALLET_CASHOUT_DAY"
+                                    ng-model="vm.settings.B_WALLET_CASHOUT_DAY"
+                                    input-validator="vm.settings.B_WALLET_CASHOUT_DAY"
+                                    required
+                                >
+                                    <option ng-repeat="day in vm.days" ng-value="day.value">{{ day.day }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="B_WALLET_CAN_CASHOUT_OVERRIDE"
+                                    translate="B_WALLET_CAN_CASHOUT_OVERRIDE"
+                                    translate-required="true"
+                                ></label>
+                                <div>
+                                    <label class="switch s-icons s-outline s-outline-primary mr-2">
+                                        <input
+                                            type="checkbox"
+                                            id="B_WALLET_CAN_CASHOUT_OVERRIDE"
+                                            ng-model="vm.settings.B_WALLET_CAN_CASHOUT_OVERRIDE"
+                                            ng-true-value="1"
+                                            ng-false-value="0"
+                                        />
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <h6>E-Wallet</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="E_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    translate="E_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="E_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    ng-model="vm.settings.E_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    input-validator="vm.settings.E_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="E_WALLET_CASHOUT_DAY"
+                                    translate="E_WALLET_CASHOUT_DAY"
+                                    translate-required="true"
+                                ></label>
+                                <select
+                                    class="form-control"
+                                    id="E_WALLET_CASHOUT_DAY"
+                                    ng-model="vm.settings.E_WALLET_CASHOUT_DAY"
+                                    input-validator="vm.settings.E_WALLET_CASHOUT_DAY"
+                                    required
+                                >
+                                    <option ng-repeat="day in vm.days" ng-value="day.value">{{ day.day }}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="E_WALLET_CAN_CASHOUT_OVERRIDE"
+                                    translate="E_WALLET_CAN_CASHOUT_OVERRIDE"
+                                    translate-required="true"
+                                ></label>
+                                <div>
+                                    <label class="switch s-icons s-outline s-outline-primary mr-2">
+                                        <input
+                                            type="checkbox"
+                                            id="E_WALLET_CAN_CASHOUT_OVERRIDE"
+                                            ng-model="vm.settings.E_WALLET_CAN_CASHOUT_OVERRIDE"
+                                        />
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <h6>W-Wallet</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="W_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    translate="W_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="W_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    ng-model="vm.settings.W_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    input-validator="vm.settings.W_WALLET_CASHOUT_AMOUNT_FIRST"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="comPlan">
+                    <section class="mb-0 mt-0">
+                        <div
+                            role="menu"
+                            class="collapsed"
+                            data-toggle="collapse"
+                            data-target="#comPlanAccordion"
+                            aria-expanded="true"
+                            aria-controls="comPlanAccordion"
+                        >
+                            Compensation Plan
+                            <div class="icons"><svg></svg></div>
+                        </div>
+                    </section>
+                </div>
+                <div id="comPlanAccordion" class="collapse" aria-labelledby="..." data-parent="#settingsAccordion">
+                    <div class="card-body">
+                        <h6>New Member and Referrals</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-6 mb-2">
+                                <label for="ENTRY_AMOUNT" translate="ENTRY_AMOUNT" translate-required="true"></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="ENTRY_AMOUNT"
+                                    ng-model="vm.settings.ENTRY_AMOUNT"
+                                    input-validator="vm.settings.ENTRY_AMOUNT"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="DIRECT_REFERRAL_AMOUNT"
+                                    translate="DIRECT_REFERRAL_AMOUNT"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="DIRECT_REFERRAL_AMOUNT"
+                                    ng-model="vm.settings.DIRECT_REFERRAL_AMOUNT"
+                                    input-validator="vm.settings.DIRECT_REFERRAL_AMOUNT"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <h6>Binary Pairing</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="PAIRING_BONUS_AMOUNT"
+                                    translate="PAIRING_BONUS_AMOUNT"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="PAIRING_BONUS_AMOUNT"
+                                    ng-model="vm.settings.PAIRING_BONUS_AMOUNT"
+                                    input-validator="vm.settings.PAIRING_BONUS_AMOUNT"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="PAIRING_LIMIT_DAY"
+                                    translate="PAIRING_LIMIT_DAY"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="PAIRING_LIMIT_DAY"
+                                    ng-model="vm.settings.PAIRING_LIMIT_DAY"
+                                    input-validator="vm.settings.PAIRING_LIMIT_DAY"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <h6>Unli Ten</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="UNLI_TEN_BONUS"
+                                    translate="UNLI_TEN_BONUS"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNLI_TEN_BONUS"
+                                    ng-model="vm.settings.UNLI_TEN_BONUS"
+                                    input-validator="vm.settings.UNLI_TEN_BONUS"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="UNLI_TEN_COUNT"
+                                    translate="UNLI_TEN_COUNT"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNLI_TEN_COUNT"
+                                    ng-model="vm.settings.UNLI_TEN_COUNT"
+                                    input-validator="vm.settings.UNLI_TEN_COUNT"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <h6>Watch and Earn</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="WATCH_AND_EARN_AMOUNT"
+                                    translate="WATCH_AND_EARN_AMOUNT"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="WATCH_AND_EARN_AMOUNT"
+                                    ng-model="vm.settings.WATCH_AND_EARN_AMOUNT"
+                                    input-validator="vm.settings.WATCH_AND_EARN_AMOUNT"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="uniLevel">
+                    <section class="mb-0 mt-0">
+                        <div
+                            role="menu"
+                            class="collapsed"
+                            data-toggle="collapse"
+                            data-target="#uniLevelAccordion"
+                            aria-expanded="true"
+                            aria-controls="uniLevelAccordion"
+                        >
+                            Uni Level
+                            <div class="icons"><svg></svg></div>
+                        </div>
+                    </section>
+                </div>
+                <div id="uniLevelAccordion" class="collapse" aria-labelledby="..." data-parent="#settingsAccordion">
+                    <div class="card-body">
+                        <h6>Uni Level</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="UNILEVEL_GENERATION"
+                                    translate="UNILEVEL_GENERATION"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_GENERATION"
+                                    ng-model="vm.settings.UNILEVEL_GENERATION"
+                                    input-validator="vm.settings.UNILEVEL_GENERATION"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <h6>Unilevel Amount</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_1_GEN"
+                                    translate="UNILEVEL_AMOUNT_1_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_1_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_1_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_1_GEN"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_2_GEN"
+                                    translate="UNILEVEL_AMOUNT_2_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_2_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_2_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_2_GEN"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_3_GEN"
+                                    translate="UNILEVEL_AMOUNT_3_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_3_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_3_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_3_GEN"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_4_GEN"
+                                    translate="UNILEVEL_AMOUNT_4_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_4_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_4_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_4_GEN"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_5_GEN"
+                                    translate="UNILEVEL_AMOUNT_5_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_5_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_5_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_5_GEN"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_6_GEN"
+                                    translate="UNILEVEL_AMOUNT_6_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_6_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_6_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_6_GEN"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_7_GEN"
+                                    translate="UNILEVEL_AMOUNT_7_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_7_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_7_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_7_GEN"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_8_GEN"
+                                    translate="UNILEVEL_AMOUNT_8_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_8_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_8_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_8_GEN"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_9_GEN"
+                                    translate="UNILEVEL_AMOUNT_9_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_9_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_9_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_9_GEN"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label
+                                    for="UNILEVEL_AMOUNT_10_GEN"
+                                    translate="UNILEVEL_AMOUNT_10_GEN"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="UNILEVEL_AMOUNT_10_GEN"
+                                    ng-model="vm.settings.UNILEVEL_AMOUNT_10_GEN"
+                                    input-validator="vm.settings.UNILEVEL_AMOUNT_10_GEN"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="cashOut">
+                    <section class="mb-0 mt-0">
+                        <div
+                            role="menu"
+                            class="collapsed"
+                            data-toggle="collapse"
+                            data-target="#cashOutAccordion"
+                            aria-expanded="true"
+                            aria-controls="cashOutAccordion"
+                        >
+                            Cashout Tax
+                            <div class="icons"><svg></svg></div>
+                        </div>
+                    </section>
+                </div>
+                <div id="cashOutAccordion" class="collapse" aria-labelledby="..." data-parent="#settingsAccordion">
+                    <div class="card-body">
+                        <h6>Leadership Bonus and Company Tax</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="LEADERSHIP_BONUS"
+                                    translate="LEADERSHIP_BONUS"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="LEADERSHIP_BONUS"
+                                    ng-model="vm.settings.LEADERSHIP_BONUS"
+                                    input-validator="vm.settings.LEADERSHIP_BONUS"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="COMPANY_CASHOUT_EARNING"
+                                    translate="COMPANY_CASHOUT_EARNING"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="COMPANY_CASHOUT_EARNING"
+                                    ng-model="vm.settings.COMPANY_CASHOUT_EARNING"
+                                    input-validator="vm.settings.COMPANY_CASHOUT_EARNING"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header" id="others">
+                    <section class="mb-0 mt-0">
+                        <div
+                            role="menu"
+                            class="collapsed"
+                            data-toggle="collapse"
+                            data-target="#othersAccordion"
+                            aria-expanded="true"
+                            aria-controls="othersAccordion"
+                        >
+                            Other Settings
+                            <div class="icons"><svg></svg></div>
+                        </div>
+                    </section>
+                </div>
+                <div id="othersAccordion" class="collapse" aria-labelledby="..." data-parent="#settingsAccordion">
+                    <div class="card-body">
+                        <h6>Code Expiration and Max Account Limit</h6>
+                        <div class="form-row mb-4">
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="CODE_EXPIRATION"
+                                    translate="CODE_EXPIRATION"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="CODE_EXPIRATION"
+                                    ng-model="vm.settings.CODE_EXPIRATION"
+                                    input-validator="vm.settings.CODE_EXPIRATION"
+                                    required
+                                />
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label
+                                    for="MAX_USER_ACCOUNT_LIMIT"
+                                    translate="MAX_USER_ACCOUNT_LIMIT"
+                                    translate-required="true"
+                                ></label>
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="MAX_USER_ACCOUNT_LIMIT"
+                                    ng-model="vm.settings.MAX_USER_ACCOUNT_LIMIT"
+                                    input-validator="vm.settings.MAX_USER_ACCOUNT_LIMIT"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary" ng-click="vm.updateSettings()">Update</button>
+        </div>
+    </div>
+</div>

@@ -38,6 +38,9 @@ define([], function () {
 
         this.GET_CASHOUT_TAX = SETTINGS_ROOT + 'getcashouttax/';
         this.GET_WALLETS = SETTINGS_ROOT + 'getadminwallets/';
+        this.GET_SETTINGS = SETTINGS_ROOT + 'getadminsettings/';
+        this.UPDATE_SETTINGS = SETTINGS_ROOT + 'updateadminsettings/';
+
         // To
         // Test
         // Below
@@ -52,8 +55,5 @@ define([], function () {
         this.VERIFY_PASSWORD = USERS_ROOT + 'checkpassword/';
 
         this.GET_PAYMENT_METHODS = ACTIVITIES_ROOT + 'getpaymentmethods/';
-        this.REQUEST_CASHOUT = ACTIVITIES_ROOT + 'request/';
-
-        this.VERIFY_WALLET_CASHOUT = SETTINGS_ROOT + 'checkwalletcashout/';
     }
 });

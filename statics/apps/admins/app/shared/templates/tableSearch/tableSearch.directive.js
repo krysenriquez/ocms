@@ -11,16 +11,18 @@ define(['appAdmin', 'statusFactory'], (function () {
             restrict: 'E',
             templateUrl: DIRECTORY.SHARED + '/templates/tableSearch/tableSearch.tpl.html',
             scope: {
-                table: '=',
+                table: '=table',
             },
         };
 
         function tableSearchController($scope) {
             var vm = this;
             $scope.$watch(
-                'table',
+                'vm.searchTermAuto',
                 function (newTerm, oldTerm) {
-                    console.log($scope.table);
+                    if (angular.isDefined(vm.table)) {
+                        vm.table.filter({ $: newTerm });
+                    }
                 },
                 true
             );

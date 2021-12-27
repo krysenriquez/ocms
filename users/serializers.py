@@ -7,7 +7,7 @@ from accounts.serializers import AccountAvatarSerializer
 
 
 class ResetPasswordSerializer(serializers.Serializer):
-    newPassword = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
     user = serializers.IntegerField(required=True)
 
     class Meta:
@@ -20,8 +20,8 @@ class ResetPasswordSerializer(serializers.Serializer):
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-    currentPassword = serializers.CharField(required=True)
-    newPassword = serializers.CharField(required=True)
+    current_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
     user = serializers.IntegerField(required=True)
 
     class Meta:
@@ -47,9 +47,9 @@ class UserLogsDetailsSerializer(ModelSerializer):
 
 
 class UserLogsSerializer(ModelSerializer):
-    actionTypeText = serializers.CharField(read_only=True)
-    logDetails = UserLogsDetailsSerializer(many=True, required=False)
-    userName = serializers.CharField(read_only=True)
+    action_type_text = serializers.CharField(read_only=True)
+    log_details = UserLogsDetailsSerializer(many=True, required=False)
+    username = serializers.CharField(read_only=True)
 
     def create(self, validated_data):
         logDetails = validated_data.pop("logDetails")
@@ -85,13 +85,8 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
         fields = [
-            "id",
-            "user_id",
-            "display_name",
             "username",
             "email_address",
-            "user_type",
-            "is_active",
         ]
 
 

@@ -1,3 +1,22 @@
-<div class="widget-content widget-content-area br-6">
-    <div class="chart" id="binary-tree"></div>
+<div class="widget">
+    <div class="widget-content widget-content-area br-6">
+        <div class="row">
+            <div class="col-12 d-flex align-content-end">
+                <div class="input-group">
+                    <input
+                        type="text"
+                        class="form-control"
+                        aria-label="Text input with segmented dropdown button"
+                        ng-model="vm.accountNumber"
+                    />
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-info" ng-click="vm.getGenealogy()">
+                            <i class="fa-duotone fa-magnifying-glass"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="chart" id="binary-tree"></div>
+    </div>
 </div>

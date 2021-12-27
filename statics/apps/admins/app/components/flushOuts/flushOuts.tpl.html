@@ -1,56 +1,59 @@
-<div class="widget-content widget-content-area br-6">
-    <div class="table-responsive mb-4 mt-4">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12">
-                    <table
-                        class="table table-hover datatable"
-                        role="grid"
-                        ng-table="vm.flushedOutTable"
-                        template-pagination="pagination.tpl.html"
-                    >
-                        <tr class="datatable-row" ng-repeat="binary in $data">
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'ACCOUNT'"
-                                sortable="'parentAccountNumber'"
-                            >
-                                {{ binary.parentAccountNumber }} - {{ binary.parentAccountName }}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'LEFT ACCOUNT'"
-                                sortable="'leftAccountNumber'"
-                            >
-                                {{ binary.leftAccountNumber }} - {{ binary.leftAccountName }}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'RIGHT ACCOUNT'"
-                                sortable="'rightAccountNumber'"
-                            >
-                                {{ binary.rightAccountNumber }} - {{ binary.rightAccountName }}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'TYPE'"
-                                sortable="'binaryType'"
-                                translate="{{ binary.binaryType }}"
-                            ></td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'TYPE'"
-                                sortable="'modified'"
-                            >
-                                {{ binary.modified | date : 'short' }}
-                            </td>
-                        </tr>
-                    </table>
+<div class="widget">
+    <div class="widget-content widget-content-area br-6">
+        <table-search table="vm.flushedOutTable"></table-search>
+        <div class="table-responsive mb-4 mt-4">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <table
+                            class="table table-hover datatable"
+                            role="grid"
+                            ng-table="vm.flushedOutTable"
+                            template-pagination="pagination.tpl.html"
+                        >
+                            <tr class="datatable-row" ng-repeat="binary in $data">
+                                <td
+                                    class="datatable-cell datatable-cell-left text-left"
+                                    header-class="'text-left'"
+                                    data-title="'ACCOUNT'"
+                                    sortable="'parentAccountNumber'"
+                                >
+                                    {{ binary.parentAccountNumber }} - {{ binary.parentAccountName }}
+                                </td>
+                                <td
+                                    class="datatable-cell datatable-cell-left text-left"
+                                    header-class="'text-left'"
+                                    data-title="'LEFT ACCOUNT'"
+                                    sortable="'leftAccountNumber'"
+                                >
+                                    {{ binary.leftAccountNumber }} - {{ binary.leftAccountName }}
+                                </td>
+                                <td
+                                    class="datatable-cell datatable-cell-left text-left"
+                                    header-class="'text-left'"
+                                    data-title="'RIGHT ACCOUNT'"
+                                    sortable="'rightAccountNumber'"
+                                >
+                                    {{ binary.rightAccountNumber }} - {{ binary.rightAccountName }}
+                                </td>
+                                <td
+                                    class="datatable-cell datatable-cell-left text-left"
+                                    header-class="'text-left'"
+                                    data-title="'TYPE'"
+                                    sortable="'binaryType'"
+                                    translate="{{ binary.binaryType }}"
+                                ></td>
+                                <td
+                                    class="datatable-cell datatable-cell-left text-left"
+                                    header-class="'text-left'"
+                                    data-title="'TYPE'"
+                                    sortable="'modified'"
+                                >
+                                    {{ binary.modified | date : 'short' }}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

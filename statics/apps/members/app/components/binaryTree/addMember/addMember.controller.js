@@ -53,7 +53,6 @@ define([
             getUserAccountCount().then(function (response) {
                 remainingUserAccount = response;
             });
-            console.log(vm.form);
         }
 
         function validateActivationCode() {

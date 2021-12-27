@@ -20,35 +20,25 @@ define(['orgChart'], function () {
 
         function binaryTreeController($scope, $http, accountFactory, $uibModal, _, blockUI, toastr) {
             var vm = this;
+            vm.getGenealogy = getGenealogy;
             var jsonTree = [];
 
             init();
 
-            function init() {
-                $scope.$watch(
-                    function () {
-                        return accountFactory.getSelectedAccount().accountId;
-                    },
-                    function (newValue, oldValue) {
-                        if (newValue !== oldValue) {
-                            jsonTree = [];
-                            vm.accountId = newValue;
-                        } else {
-                            vm.accountId = oldValue;
-                        }
-                        getGenealogy(vm.accountId);
-                    }
-                );
-            }
+            function init() {}
 
-            function getGenealogy(accountId) {
+            function getGenealogy() {
                 blockUI.start('Generating Genealogy ...');
+                jsonTree = [];
                 accountFactory
-                    .getAccountGenealogy(accountId)
+                    .getAccountGenealogy(vm.accountNumber)
                     .then(function (response) {
-                        if (response) {
+                        if (response && response.accountId) {
                             fourthGenJSON(response);
                             loadBinary(jsonTree);
+                        } else {
+                            blockUI.stop();
+                            toastr.error('Account Number does not exists.');
                         }
                     })
                     .catch(function (error) {
@@ -218,36 +208,6 @@ define(['orgChart'], function () {
                 }
             }
 
-            function openAddMemberModal(nodeObject) {
-                $uibModal.open({
-                    animation: true,
-                    backdrop: false,
-                    templateUrl: DIRECTORY.COMPONENTS + '/binaryTree/addMember/addMember.tpl.html',
-                    size: 'xl',
-                    controller: 'AddMemberController',
-                    controllerAs: 'vm',
-                    bindToController: true,
-                    resolve: {
-                        loadController: function ($ocLazyLoad, DIRECTORY) {
-                            return $ocLazyLoad.load([
-                                {
-                                    serie: true,
-                                    name: 'AddMemberController',
-                                    files: [DIRECTORY.COMPONENTS + '/binaryTree/addMember/addMember.controller.js'],
-                                },
-                            ]);
-                        },
-                        nodeObject: function () {
-                            return nodeObject;
-                        },
-                    },
-                });
-            }
-
-            function returnNodeObject(nodeId) {
-                return $scope.chart.get(nodeId);
-            }
-
             function setUpTree() {
                 const tree = document.getElementById('binary-tree');
                 if (tree) {
@@ -287,14 +247,6 @@ define(['orgChart'], function () {
                 $scope.chart = setUpTree();
                 $scope.data = object;
                 blockUI.stop();
-                $scope.chart.on('click', function (sender, args) {
-                    if (_.includes(args.node.tags, 'addMember')) {
-                        openAddMemberModal(returnNodeObject(args.node.id));
-                    } else {
-                        sender.editUI.show(args.node.id, true);
-                    }
-                    return false;
-                });
                 $scope.chart.on('label', function (sender, args) {
                     args.value = args.value;
                 });
@@ -307,7 +259,7 @@ define(['orgChart'], function () {
                 function (newValue, oldValue) {
                     if (newValue) {
                         scope.chart.load(newValue);
-                        var element = $('#binary-chart');
+                        var element = $('#binary-profile');
                         $compile(element)(scope);
                     }
                 },

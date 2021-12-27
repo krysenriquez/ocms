@@ -355,6 +355,45 @@ define([
                     ],
                 },
             })
+            .state('admins.genealogy', {
+                secure: true,
+                url: '/genealogy',
+                template: '<binary-tree></binary-tree>',
+                data: {
+                    pageTitle: 'One Creations Admin | Genealogy',
+                },
+                ncyBreadcrumb: {
+                    label: 'Members',
+                },
+                resolve: {
+                    loadCSS: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Widgets CSS',
+                                    files: [DIRECTORY.CSS + '/components/genealogy.css'],
+                                },
+                            ]);
+                        },
+                    ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Widgets Directives',
+                                    files: [DIRECTORY.COMPONENTS + '/binaryTree/binaryTree.directive.js'],
+                                },
+                            ]);
+                        },
+                    ],
+                },
+            })
             .state('admins.salesmatch', {
                 secure: true,
                 url: '/sales-matches',
@@ -571,6 +610,16 @@ define([
                                     name: 'Table CSS',
                                     files: [DIRECTORY.CSS + '/components/tables.css'],
                                 },
+                                {
+                                    serie: true,
+                                    name: 'Accordion CSS',
+                                    files: [DIRECTORY.CSS + '/components/accordion.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Switches CSS',
+                                    files: [DIRECTORY.CSS + '/components/switches.css'],
+                                },
                             ]);
                         },
                     ],
@@ -582,7 +631,7 @@ define([
                                 {
                                     serie: true,
                                     name: 'System Settings Directives',
-                                    files: [DIRECTORY.COMPONENTS + '/settings/settings.directive.js'],
+                                    files: [DIRECTORY.COMPONENTS + '/systemSettings/systemSettings.directive.js'],
                                 },
                             ]);
                         },

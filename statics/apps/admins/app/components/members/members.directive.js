@@ -18,7 +18,6 @@ define(['appAdmin', 'ngTable', 'accountFactory'], function () {
 
         function membersController($scope, $filter, accountFactory, NgTableParams, toastr) {
             var vm = this;
-
             init();
 
             function init() {
@@ -37,6 +36,7 @@ define(['appAdmin', 'ngTable', 'accountFactory'], function () {
                             return accountFactory
                                 .getMembers()
                                 .then(function (response) {
+                                    console.log(response);
                                     var filteredData = params.filter()
                                         ? $filter('filter')(response, params.filter())
                                         : response;

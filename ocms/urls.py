@@ -35,6 +35,9 @@ urlpatterns = [
     ),
     path("oc-admin/members", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))),
     path(
+        "oc-admin/genealogy", ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html"))
+    ),
+    path(
         "oc-admin/sales-matches",
         ensure_csrf_cookie(TemplateView.as_view(template_name="admins/base.html")),
     ),

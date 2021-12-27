@@ -8,7 +8,7 @@ class Property(models.TextChoices):
     MAX_USER_ACCOUNT_LIMIT = "MAX_USER_ACCOUNT_LIMIT", _("Max User Account Limit")
     ENTRY_AMOUNT = "ENTRY_AMOUNT", _("Entry Amount")
     DIRECT_REFERRAL_AMOUNT = "DIRECT_REFERRAL_AMOUNT", _("Direct Referral Amount")
-    PAIRING_BONUS_AMOUNT = "PAIRING_BONUS_AMOUNT", _("Pairing Bonus Limit")
+    PAIRING_BONUS_AMOUNT = "PAIRING_BONUS_AMOUNT", _("Pairing Bonus Amount")
     PAIRING_LIMIT_DAY = "PAIRING_LIMIT_DAY", _("Pairing Limit Day")
     UNLI_TEN_BONUS = "UNLI_TEN_BONUS", _("Unli Ten Bonus")
     UNLI_TEN_COUNT = "UNLI_TEN_COUNT", _("Unli Ten Count")

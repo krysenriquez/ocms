@@ -3,11 +3,43 @@ define(['urlService', 'humpsFactory'], function () {
 
     angular.module('appMember').factory('userFactory', userFactory);
 
-    function userFactory($http, $q, urlService, humpsFactory, DIRECTORY) {
+    function userFactory($http, $q, urlService, humpsFactory, DIRECTORY, _) {
         return {
             getUserAccounts: getUserAccounts,
             getRemainingUserAccountCount: getRemainingUserAccountCount,
+            getUser: getUser,
+            changePassword: changePassword,
         };
+
+        function changePassword(data) {
+            console.log(data);
+            return $http({
+                url: urlService.CHANGE_PASSWORD,
+                method: 'POST',
+                data: humpsFactory.decamelizeKeys(data),
+            })
+                .then(function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response.data);
+                    return $q.resolve(responseData);
+                })
+                .catch(function (error) {
+                    return $q.reject(error);
+                });
+        }
+
+        function getUser() {
+            return $http({
+                url: urlService.GET_USER,
+                method: 'GET',
+            })
+                .then(function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response.data[0]);
+                    return $q.resolve(responseData);
+                })
+                .catch(function (error) {
+                    return $q.reject(error);
+                });
+        }
 
         function fetchUserAccounts() {
             return $http({

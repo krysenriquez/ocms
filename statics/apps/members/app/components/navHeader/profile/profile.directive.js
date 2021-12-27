@@ -17,9 +17,17 @@ define(['appMember', 'humpsFactory', 'accountFactory'], function () {
 
         return directive;
 
-        function profileDropdownController($scope, $state, localStorageFactory, accountFactory, authLoginService) {
+        function profileDropdownController(
+            $scope,
+            $state,
+            $uibModal,
+            localStorageFactory,
+            accountFactory,
+            authLoginService
+        ) {
             var vm = this;
             vm.logout = logout;
+            vm.viewUserAccount = viewUserAccount;
 
             init();
 
@@ -46,6 +54,29 @@ define(['appMember', 'humpsFactory', 'accountFactory'], function () {
                         localStorageFactory.removeAll();
                         $state.go('simple.login');
                     }
+                });
+            }
+
+            function viewUserAccount() {
+                $uibModal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: DIRECTORY.COMPONENTS + '/navHeader/account/account.tpl.html',
+                    size: 'sm',
+                    controller: 'UserAccountController',
+                    controllerAs: 'vm',
+                    bindToController: true,
+                    resolve: {
+                        loadController: function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'UserAccountController',
+                                    files: [DIRECTORY.COMPONENTS + '/navHeader/account/account.controller.js'],
+                                },
+                            ]);
+                        },
+                    },
                 });
             }
         }

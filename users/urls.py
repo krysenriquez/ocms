@@ -3,7 +3,7 @@ from .api import *
 from django.urls import path
 
 router = DefaultRouter()
-router.register(r"user", UserViewSet)
+router.register(r"getuser", UserViewSet)
 router.register(r"userlogs", UserLogsViewSet)
 router.register(r"contenttype", ContentTypeViewSet)
 

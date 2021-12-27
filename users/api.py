@@ -126,23 +126,28 @@ class ChangePassword(views.APIView):
         user = CustomUser.objects.get(id=request)
         return user
 
-    def put(self, request, *args, **kwargs):
-        serializer = ChangePasswordSerializer(data=request.data)
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            request.data["user"] = self.request.user.pk
+            serializer = ChangePasswordSerializer(data=request.data)
 
-        if serializer.is_valid():
-            user = serializer.data.get("user")
-            currentPassword = serializer.data.get("current_password")
-            self.object = self.get_object(user)
-            if not self.object.check_password(currentPassword):
-                return Response(
-                    data={"message": "Invalid Current Password."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            self.object.set_password(serializer.data.get("newPassword"))
-            self.object.save()
-            return Response(data={"message": "Password Updated."}, status=status.HTTP_200_OK)
+            if serializer.is_valid():
+                user = serializer.data.get("user")
+                current_password = serializer.data.get("current_password")
+                self.object = self.get_object(user)
+                if not self.object.check_password(current_password):
+                    return Response(
+                        data={"message": "Invalid Current Password."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                self.object.set_password(serializer.data.get("new_password"))
+                self.object.save()
+                return Response(data={"message": "Password Updated."}, status=status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            for error in serializer.errors:
+                message = serializer.errors[error]
+
+                return Response(data={"message": message}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResetPassword(views.APIView):
@@ -153,7 +158,7 @@ class ResetPassword(views.APIView):
         user = CustomUser.objects.get(id=request)
         return user
 
-    def put(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         serializer = ResetPasswordSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -191,6 +196,7 @@ class UserAccountViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserAccountSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
 
     def get_queryset(self):
         queryset = CustomUser.objects.exclude(is_active=False)
@@ -222,13 +228,12 @@ class UserViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
 
     def get_queryset(self):
         queryset = CustomUser.objects.exclude(is_active=False)
-        user_id = self.request.query_params.get("user_id", None)
-
-        if user_id is not None:
-            queryset = queryset.filter(user_id=user_id).exclude(is_active=False)
+        if self.request.user.is_authenticated:
+            queryset = queryset.filter(id=self.request.user.pk).exclude(is_active=False)
 
             return queryset
 
@@ -237,6 +242,7 @@ class UserLogsViewSet(ModelViewSet):
     queryset = UserLogs.objects.all()
     serializer_class = UserLogsSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
 
     def get_queryset(self):
         queryset = UserLogs.objects.order_by("-id")
@@ -257,6 +263,7 @@ class ContentTypeViewSet(ModelViewSet):
     queryset = ContentType.objects.all()
     serializer_class = ContentTypeSerializer
     permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
 
     def get_queryset(self):
         queryset = ContentType.objects.all()

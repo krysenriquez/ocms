@@ -28,6 +28,8 @@ define([], function () {
         this.VERIFY_USERNAME = USERS_ROOT + 'checkusername/';
         this.VERIFY_EMAIL_ADDRESS = USERS_ROOT + 'checkemailaddress/';
         this.VERIFY_PASSWORD = USERS_ROOT + 'checkpassword/';
+        this.GET_USER = USERS_ROOT + 'getuser/';
+        this.CHANGE_PASSWORD = USERS_ROOT + 'changepassword/';
 
         this.GET_ACTIVITY_SUMMARY = ACTIVITIES_ROOT + 'getactivitysummaryinfo/';
         this.GET_WALLET_INFO = ACTIVITIES_ROOT + 'getwalletinfo/';

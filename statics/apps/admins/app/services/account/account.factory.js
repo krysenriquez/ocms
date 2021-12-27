@@ -22,11 +22,11 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             getTopEarners: getTopEarners,
         };
 
-        function getAccountGenealogy(accountId) {
+        function getAccountGenealogy(accountNumber) {
             return $http({
                 url: urlService.GENEALOGY,
                 method: 'GET',
-                params: { account_id: accountId },
+                params: { account_number: accountNumber },
             }).then(
                 function (response) {
                     var responseData = humpsFactory.camelizeKeys(response.data[0]);

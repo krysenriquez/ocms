@@ -1,0 +1,84 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="modal-title" translate="user_info"></h5>
+    <button type="button" class="close" aria-label="Close" ng-click="vm.cancel()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div>
+        <div class="form-row">
+            <div class="col-md-12 mb-2">
+                <label for="username" translate="username"></label>
+                <h6 translate="{{ vm.user.username}}"></h6>
+            </div>
+            <div class="col-md-12 mb-2">
+                <label for="email_address" translate="email_address"></label>
+                <h6 translate="{{ vm.user.emailAddress}}"></h6>
+            </div>
+        </div>
+    </div>
+    <form name="vm.form.passwordForm" ng-if="vm.editUserAccount">
+        <div class="form-row">
+            <div class="col-md-12 mb-2">
+                <label for="currentPassword" translate="current_password" translate-required="true"></label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="currentPassword"
+                    ng-model="vm.edit.currentPassword"
+                    placeholder="Password"
+                    input-validator="vm.edit.currentPassword"
+                    required
+                />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12 mb-2">
+                <label for="newPassword" translate="new_password" translate-required="true"></label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="newPassword"
+                    ng-model="vm.edit.newPassword"
+                    ng-change="vm.validateNewPassword()"
+                    ng-model-options="{ debounce: 1000 }"
+                    placeholder="New Password"
+                    input-validator="vm.edit.newPassword"
+                    required
+                />
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col-md-12 mb-2">
+                <label for="repeatPassword" translate="repeat_password" translate-required="true"></label>
+                <input
+                    type="password"
+                    class="form-control"
+                    id="repeatPassword"
+                    ng-model="vm.edit.repeatPassword"
+                    ng-change="vm.validateRepeatPassword()"
+                    ng-model-options="{ debounce: 1000 }"
+                    placeholder="Repeat Password"
+                    input-validator="vm.validation.repeatPassword"
+                    required
+                />
+                <message-validator validator="vm.validation.repeatPassword"></message-validator>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn mr-auto" ng-click="vm.cancel()">Cancel</button>
+    <button type="button" class="btn btn-primary" ng-click="vm.changePassword()" ng-if="!vm.editUserAccount">
+        Change Password
+    </button>
+    <button
+        type="button"
+        class="btn btn-primary"
+        ng-click="vm.savePassword()"
+        ng-if="vm.editUserAccount"
+        button-validator="vm.form.passwordForm.$valid"
+    >
+        Save Password
+    </button>
+</div>

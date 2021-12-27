@@ -4,7 +4,48 @@ from rest_framework.response import Response
 from .models import *
 from .enums import *
 from .services import *
+from .serializers import *
 from users.enums import UserType
+
+
+class SettingsViewSet(ModelViewSet):
+    queryset = Setting.objects.all()
+    serializer_class = SettingsSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        if self.request.user.user_type == UserType.ADMIN:
+            queryset = Setting.objects.all().order_by("-property")
+
+            return queryset
+
+
+class UpdateSettingsView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated and request.user.user_type == UserType.ADMIN:
+            settings = request.data
+            instances = []
+            for setting in settings:
+                obj = Setting.objects.get(property=setting["property"])
+                if obj:
+                    obj.property = setting["property"]
+                    obj.value = setting["value"]
+                    obj.save()
+                    instances.append(obj)
+
+            serializer = SettingsSerializer(instances, many=True)
+            if serializer:
+                return Response(
+                    data={"message": "System Settings Updated."}, status=status.HTTP_201_CREATED
+                )
+            else:
+                return Response(
+                    data={"message": "Unable to create Update System Settings."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
 
 
 class WalletMemberView(views.APIView):

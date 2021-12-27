@@ -1,77 +1,80 @@
-<div class="widget-content widget-content-area br-6">
-    <div class="row mb-4 mt-3">
-        <div class="col-sm-2 col-12">
-            <div
-                class="nav flex-column nav-pills mb-sm-0 mb-3"
-                id="v-pills-tab"
-                role="tablist"
-                aria-orientation="vertical"
-            >
-                <a
-                    class="nav-link mb-2"
-                    ng-class="{'active' : vm.currentWallet == wallet}"
-                    data-toggle="pill"
-                    role="tab"
-                    aria-selected="true"
-                    ng-repeat="wallet in vm.wallets"
-                    ng-click="vm.loadWalletTable(wallet)"
-                    translate="{{ wallet }}"
-                ></a>
+<div class="widget">
+    <div class="widget-content widget-content-area br-6">
+        <div class="row mb-4 mt-3">
+            <div class="col-sm-2 col-12">
+                <div
+                    class="nav flex-column nav-pills mb-sm-0 mb-3"
+                    id="v-pills-tab"
+                    role="tablist"
+                    aria-orientation="vertical"
+                >
+                    <a
+                        class="nav-link mb-2"
+                        ng-class="{'active' : vm.currentWallet == wallet}"
+                        data-toggle="pill"
+                        role="tab"
+                        aria-selected="true"
+                        ng-repeat="wallet in vm.wallets"
+                        ng-click="vm.loadWalletTable(wallet)"
+                        translate="{{ wallet }}"
+                    ></a>
+                </div>
             </div>
-        </div>
-        <div class="col-sm-10 col-12">
-            <div class="table-responsive mb-4 mt-4">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table
-                                class="table table-hover datatable"
-                                role="grid"
-                                ng-table="vm.walletTable"
-                                template-pagination="pagination.tpl.html"
-                            >
-                                <tr class="datatable-row" ng-repeat="entry in $data">
-                                    <td
-                                        class="datatable-cell datatable-cell-left text-left"
-                                        header-class="'text-left'"
-                                        data-title="'ACCOUNT'"
-                                        sortable="'accountName'"
-                                    >
-                                        {{ entry.accountNumber }} - {{ entry.accountName }}
-                                    </td>
-                                    <td
-                                        class="datatable-cell datatable-cell-left text-left"
-                                        header-class="'text-left'"
-                                        data-title="'ACTIVITY'"
-                                        sortable="'activityType'"
-                                        translate="{{entry.activityType}}"
-                                    ></td>
-                                    <td
-                                        class="datatable-cell datatable-cell-left text-left"
-                                        header-class="'text-left'"
-                                        data-title="'AMOUNT'"
-                                        sortable="'amount'"
-                                    >
-                                        {{ entry.amount | currency:'₱': 2}}
-                                    </td>
-                                    <td
-                                        class="datatable-cell datatable-cell-left text-left"
-                                        header-class="'text-left'"
-                                        data-title="'DETAILS'"
-                                        sortable="'activityDetails'"
-                                    >
-                                        {{ entry.activityDetails }}
-                                    </td>
-                                    <td
-                                        class="datatable-cell datatable-cell-left text-left"
-                                        header-class="'text-left'"
-                                        data-title="'DATE'"
-                                        sortable="'created'"
-                                    >
-                                        {{ entry.created | date : 'short' }}
-                                    </td>
-                                </tr>
-                            </table>
+            <div class="col-sm-10 col-12">
+                <table-search table="vm.walletTable"></table-search>
+                <div class="table-responsive mb-4 mt-4">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table
+                                    class="table table-hover datatable"
+                                    role="grid"
+                                    ng-table="vm.walletTable"
+                                    template-pagination="pagination.tpl.html"
+                                >
+                                    <tr class="datatable-row" ng-repeat="entry in $data">
+                                        <td
+                                            class="datatable-cell datatable-cell-left text-left"
+                                            header-class="'text-left'"
+                                            data-title="'ACCOUNT'"
+                                            sortable="'accountName'"
+                                        >
+                                            {{ entry.accountNumber }} - {{ entry.accountName }}
+                                        </td>
+                                        <td
+                                            class="datatable-cell datatable-cell-left text-left"
+                                            header-class="'text-left'"
+                                            data-title="'ACTIVITY'"
+                                            sortable="'activityType'"
+                                            translate="{{entry.activityType}}"
+                                        ></td>
+                                        <td
+                                            class="datatable-cell datatable-cell-left text-left"
+                                            header-class="'text-left'"
+                                            data-title="'AMOUNT'"
+                                            sortable="'amount'"
+                                        >
+                                            {{ entry.amount | currency:'₱': 2}}
+                                        </td>
+                                        <td
+                                            class="datatable-cell datatable-cell-left text-left"
+                                            header-class="'text-left'"
+                                            data-title="'DETAILS'"
+                                            sortable="'activityDetails'"
+                                        >
+                                            {{ entry.activityDetails }}
+                                        </td>
+                                        <td
+                                            class="datatable-cell datatable-cell-left text-left"
+                                            header-class="'text-left'"
+                                            data-title="'DATE'"
+                                            sortable="'created'"
+                                        >
+                                            {{ entry.created | date : 'short' }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

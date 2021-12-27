@@ -1,54 +1,59 @@
-<div class="widget-content widget-content-area br-6">
-    <div class="row">
-        <div class="col-12 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3">
-            <button type="button" class="btn btn-primary" ng-click="vm.generateCode()">Generate</button>
+<div class="widget">
+    <div class="widget-content widget-content-area br-6">
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-between mt-sm-0 mt-3">
+                <button type="button" class="btn btn-primary" ng-click="vm.generateCode()">Generate</button>
+                <table-search table="vm.activationCodesTable"></table-search>
+            </div>
         </div>
-    </div>
-    <div class="table-responsive mb-4 mt-4">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12">
-                    <table
-                        class="table table-hover datatable"
-                        role="grid"
-                        ng-table="vm.activationCodesTable"
-                        template-pagination="pagination.tpl.html"
-                    >
-                        <tr class="datatable-row" ng-repeat="code in $data">
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'REFERRAL CODE'"
-                                sortable="'code'"
+        <div>
+            <div class="table-responsive mb-4 mt-4">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table
+                                class="table table-hover datatable"
+                                role="grid"
+                                ng-table="vm.activationCodesTable"
+                                template-pagination="pagination.tpl.html"
                             >
-                                {{ code.code }}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'CODE TYPE'"
-                                sortable="'codeType'"
-                            >
-                                {{ code.codeType }}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'STATUS'"
-                                sortable="'status'"
-                            >
-                                {{ code.status }}
-                            </td>
-                            <td
-                                class="datatable-cell datatable-cell-left text-left"
-                                header-class="'text-left'"
-                                data-title="'EXPIRATION'"
-                                sortable="'expiration'"
-                            >
-                                {{ code.expiration }}
-                            </td>
-                        </tr>
-                    </table>
+                                <tr class="datatable-row" ng-repeat="code in $data">
+                                    <td
+                                        class="datatable-cell datatable-cell-left text-left"
+                                        header-class="'text-left'"
+                                        data-title="'REFERRAL CODE'"
+                                        sortable="'code'"
+                                    >
+                                        {{ code.code }}
+                                    </td>
+                                    <td
+                                        class="datatable-cell datatable-cell-left text-left"
+                                        header-class="'text-left'"
+                                        data-title="'CODE TYPE'"
+                                        sortable="'codeType'"
+                                    >
+                                        {{ code.codeType }}
+                                    </td>
+                                    <td
+                                        class="datatable-cell datatable-cell-left text-left"
+                                        header-class="'text-left'"
+                                        data-title="'STATUS'"
+                                        sortable="'status'"
+                                    >
+                                        {{ code.status }}
+                                    </td>
+                                    <td
+                                        class="datatable-cell datatable-cell-left text-left"
+                                        header-class="'text-left'"
+                                        data-title="'EXPIRATION'"
+                                        sortable="'expiration'"
+                                    >
+                                        {{ code.expiration }}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
