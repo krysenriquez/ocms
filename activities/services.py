@@ -172,3 +172,13 @@ def process_create_company_earning_activity(request, updated_cashout):
             object_id=updated_cashout.pk,
             user=request.user,
         )
+
+
+def create_watch_activity(request, account=None):
+    return create_activity(
+        account=account,
+        activity_type=ActivityType.WATCH_AND_EARN,
+        amount=settings.get(property=Property.WATCH_AND_EARN_AMOUNT).value,
+        wallet=WalletType.W_WALLET,
+        user=request.user,
+    )

@@ -11,6 +11,7 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             getWalletSummary: getWalletSummary,
             getActivitySummary: getActivitySummary,
             getRecentActivitySummary: getRecentActivitySummary,
+            createWatchAndEarn: createWatchAndEarn,
         };
 
         function getWalletInfo(accountId, wallet) {
@@ -85,6 +86,24 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
                     _.map(humpsFactory.camelizeKeys(response.data), function (activity) {
                         responseData.push(activity);
                     });
+                    return $q.resolve(responseData);
+                },
+                function (error) {
+                    return $q.reject(error);
+                }
+            );
+        }
+
+        function createWatchAndEarn(accountId) {
+            return $http({
+                url: urlService.WATCH_AND_EARN,
+                method: 'POST',
+                data: {
+                    account_id: accountId,
+                },
+            }).then(
+                function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response.data);
                     return $q.resolve(responseData);
                 },
                 function (error) {

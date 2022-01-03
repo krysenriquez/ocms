@@ -8,6 +8,7 @@ from .serializers import *
 from .models import *
 from .enums import *
 from .services import (
+    create_watch_activity,
     get_cashout_total_tax,
     process_create_cashout_activity,
     process_create_cashout_request,
@@ -553,3 +554,34 @@ class UpdatedCashoutStatusView(views.APIView):
                     data={"message": "Unable to update Cash Out."},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
+
+
+class CreateWatchActivityView(views.APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            account_id = request.data.get("account_id")
+            account = get_object_or_404(Account, account_id=account_id)
+            if account:
+                watch_activity = create_watch_activity(request, account)
+                if watch_activity:
+                    return Response(
+                        data={"message": "You earned ₱" + str(watch_activity.activity_amount)},
+                        status=status.HTTP_201_CREATED,
+                    )
+                else:
+                    return Response(
+                        data={"message": "Unable to create Watch Activity."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+            else:
+                return Response(
+                    data={"message": "Unable to create Watch Activity. Account does not exist."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+        else:
+            return Response(
+                data={"message": "Unauthorized access."},
+                status=status.HTTP_403_FORBIDDEN,
+            )

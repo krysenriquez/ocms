@@ -2,6 +2,7 @@ from django.db.models.functions import TruncDate
 from django.db.models import Q
 from django.utils import timezone
 from tzlocal import get_localzone
+from datetime import datetime, time
 from settings.models import *
 from settings.enums import *
 from activities.models import Activity, Cashout
@@ -43,7 +44,7 @@ def get_wallet_can_cashout(account_id, wallet):
                 else:
                     return False
     elif wallet == WalletType.W_WALLET:
-        return True
+        return timezone.localtime().time() <= time(13, 0) and timezone.localtime().time() >= time(8, 0)
 
 
 def check_if_has_cashout_today(account_id, wallet):

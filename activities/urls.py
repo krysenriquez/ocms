@@ -17,9 +17,10 @@ urlpatterns = [
     path("getallactivitysummaryinfo/", SummaryAdminView.as_view()),
     path("getpaymentmethods/", CashoutMethodView.as_view()),
     path("request/", RequestCashoutView.as_view()),
-    path("getpendingcashouts/", PendingCashoutsAdminViewSet.as_view()),    
+    path("getpendingcashouts/", PendingCashoutsAdminViewSet.as_view()),
     path("getcashoutstatus/", CashoutStatusView.as_view()),
     path("updatecashoutstatus/", UpdatedCashoutStatusView.as_view()),
+    path("watch/", CreateWatchActivityView.as_view()),
 ]
 
 urlpatterns += router.urls

@@ -1,4 +1,4 @@
-define(['appMember'], function () {
+define(['appMember', 'activityFactory'], function () {
     'use strict';
 
     angular.module('appMember').directive('imaSdkPlayer', imaSdkPlayer).directive('myReplayPlugin', myReplayPlugin);
@@ -60,17 +60,38 @@ define(['appMember'], function () {
         function link(scope, elem, attrs) {}
     }
 
-    function myReplayPlugin(DIRECTORY) {
+    function myReplayPlugin(DIRECTORY, accountFactory, activityFactory) {
         return {
             restrict: 'E',
             require: '^videogular',
             link: function (scope, elem, attrs, API) {
                 scope.API = API;
+                var accountId;
+                scope.$watch(
+                    function () {
+                        return accountFactory.getSelectedAccount().accountId;
+                    },
+                    function (newValue, oldValue) {
+                        if (newValue !== oldValue) {
+                            accountId = newValue;
+                        } else {
+                            accountId = oldValue;
+                        }
+                    }
+                );
+
                 scope.$watch(
                     'API.isCompleted',
                     function (newValue, oldValue) {
                         if (newValue) {
-                            swal('Success!', 'You earned P0.05', 'success');
+                            activityFactory
+                                .createWatchAndEarn(accountId)
+                                .then(function (response) {
+                                    swal('Success!', response.message, 'success');
+                                })
+                                .catch(function (error) {
+                                    toastr.error(error.data.message);
+                                });
                         }
                     },
                     true
