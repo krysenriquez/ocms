@@ -158,6 +158,7 @@ class RecentActivityViewSet(ModelViewSet):
             queryset = (
                 Activity.objects.filter(account__account_id=account_id)
                 .exclude(is_deleted=True)
+                .exclude(wallet=WalletType.C_WALLET)
                 .annotate(
                     amount=Case(
                         When(
@@ -320,14 +321,30 @@ class WalletAdminView(views.APIView):
                                 ~Q(activity_type=ActivityType.CASHOUT),
                                 then=Sum(F("activity_amount")),
                             ),
-                        )
+                        ),
+                        cashout_total=Case(
+                            When(
+                                Q(activity_type=ActivityType.CASHOUT),
+                                then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                            ),
+                        ),
                     )
                     .order_by("-activity_total")
                 )
                 wallet_total = activities.aggregate(total=Coalesce(Sum("activity_total"), 0)).get(
                     "total"
                 )
-                data.append({"wallet": wallet, "total": wallet_total, "details": activities})
+                wallet_total_cashout = activities.aggregate(total=Coalesce(Sum("cashout_total"), 0)).get(
+                    "total"
+                )
+                data.append(
+                    {
+                        "wallet": wallet,
+                        "total": wallet_total,
+                        "cashout": wallet_total_cashout,
+                        "details": activities,
+                    }
+                )
 
             return Response(
                 data=data,
@@ -363,14 +380,30 @@ class WalletMemberView(views.APIView):
                                     ~Q(activity_type=ActivityType.CASHOUT),
                                     then=Sum(F("activity_amount")),
                                 ),
-                            )
+                            ),
+                            cashout_total=Case(
+                                When(
+                                    Q(activity_type=ActivityType.CASHOUT),
+                                    then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                                ),
+                            ),
                         )
                         .order_by("-activity_total")
                     )
                     wallet_total = activities.aggregate(total=Coalesce(Sum("activity_total"), 0)).get(
                         "total"
                     )
-                    data.append({"wallet": wallet, "total": wallet_total, "details": activities})
+                    wallet_total_cashout = activities.aggregate(
+                        total=Coalesce(Sum("cashout_total"), 0)
+                    ).get("total")
+                    data.append(
+                        {
+                            "wallet": wallet,
+                            "total": wallet_total,
+                            "cashout": wallet_total_cashout,
+                            "details": activities,
+                        }
+                    )
 
             return Response(
                 data=data,

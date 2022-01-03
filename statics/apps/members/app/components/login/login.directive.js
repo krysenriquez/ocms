@@ -15,10 +15,11 @@ define(['authLoginService'], function () {
 
         return directive;
 
-        function loginController(authLoginService, $state, blockUI, toastr) {
+        function loginController(authLoginService, $state, $uibModal, blockUI, toastr) {
             var vm = this;
             vm.validate = validate;
             vm.shouldDisableLogin = shouldDisableLogin;
+            vm.viewTermsAndConditions = viewTermsAndConditions;
 
             init();
 
@@ -41,6 +42,32 @@ define(['authLoginService'], function () {
 
             function shouldDisableLogin() {
                 return !!!vm.agreeTerms;
+            }
+
+            function viewTermsAndConditions() {
+                $uibModal.open({
+                    animation: true,
+                    backdrop: false,
+                    templateUrl: DIRECTORY.COMPONENTS + '/login/termsAndConditions/termsAndConditions.tpl.html',
+                    size: 'lg',
+                    controller: 'TermsAndConditionsController',
+                    controllerAs: 'vm',
+                    bindToController: true,
+                    resolve: {
+                        loadController: function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'TermsAndConditionsController',
+                                    files: [
+                                        DIRECTORY.COMPONENTS +
+                                            '/login/termsAndConditions/termsAndConditions.controller.js',
+                                    ],
+                                },
+                            ]);
+                        },
+                    },
+                });
             }
         }
     }

@@ -12,6 +12,13 @@
                         {{ wallet.total | number: 2 }}
                     </h5>
                 </div>
+                <div class="wallet-cashout">
+                    <p translate="total_cashout"></p>
+                    <h5>
+                        <span class="wallet-currency" translate="currency"></span>
+                        {{ wallet.cashout | number: 2 }}
+                    </h5>
+                </div>
                 <div class="wallet-action">
                     <div class="">
                         <a ng-click="vm.openWalletSummaryModal(wallet)">

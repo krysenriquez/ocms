@@ -159,3 +159,45 @@ vertical-align: middle;
     animation: 0s none;
     -webkit-animation: 0s none;
 }
+
+/* ol.terms {
+    counter-reset: item;
+}
+
+ol.terms > li {
+    counter-increment: item;
+}
+
+ol.terms ol > li {
+    display: block;
+}
+
+ol.terms ol > li:before {
+    content: counters(item, ".") ". ";
+    margin-left: -20px;
+} */
+
+.terms ol {
+    counter-reset: item;
+}
+
+.terms ol > li {
+    counter-increment: item;
+}
+
+.terms ol ol > li {
+    display: block;
+}
+
+.terms ol ol > li:before {
+    content: counters(item, ".") ". ";
+}
+ol.lower-alpha {
+	counter-reset: item;
+}
+ol.lower-alpha > li:before { content: counter(item, lower-alpha) ". " !important; }
+ol.lower-alpha > li { list-style-type: lower-alpha !important; }
+
+/* ol.terms { counter-reset: item }
+ol.terms li { display: block;  }
+ol.terms li:before { content: counters(item, ".") " ";  counter-increment: item } */

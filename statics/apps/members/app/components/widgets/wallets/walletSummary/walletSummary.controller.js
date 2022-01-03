@@ -10,7 +10,6 @@ define(['activityFactory'], function () {
         init();
 
         function init() {
-            console.log(walletObject);
             loadWalletSummaryTable();
         }
 

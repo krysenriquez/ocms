@@ -1,16 +1,33 @@
 <div class="widget">
     <div class="widget-content widget-content-area br-6">
-        <div class="row">
-            <div class="col-12 d-flex align-content-end">
-                <div class="input-group">
-                    <input
-                        type="text"
-                        class="form-control"
-                        aria-label="Text input with segmented dropdown button"
-                        ng-model="vm.accountNumber"
-                    />
+        <div class="btn-toolbar justify-content-between mb-4">
+            <div class="btn-group mb-2" role="group" aria-label="First group">
+                <button
+                    type="button"
+                    class="btn btn-outline-info"
+                    ng-click="vm.previousAccount()"
+                    ng-disabled="vm.shouldDisablePrevious()"
+                >
+                    <i class="fa-duotone fa-arrow-left"></i>
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-outline-info"
+                    ng-click="vm.nextAccount()"
+                    ng-disabled="vm.shouldDisableNext()"
+                >
+                    <i class="fa-duotone fa-arrow-right"></i>
+                </button>
+            </div>
+            <div class="col-4">
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control" ng-model="vm.memberAccountNumber" />
                     <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-info" ng-click="vm.getGenealogy()">
+                        <button
+                            type="button"
+                            class="btn btn-outline-info"
+                            ng-click="vm.getGenealogy(vm.memberAccountNumber)"
+                        >
                             <i class="fa-duotone fa-magnifying-glass"></i>
                         </button>
                     </div>

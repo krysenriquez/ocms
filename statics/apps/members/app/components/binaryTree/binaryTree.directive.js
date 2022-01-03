@@ -21,7 +21,13 @@ define(['orgChart'], function () {
         function binaryTreeController($scope, $http, accountFactory, $uibModal, _, blockUI, toastr) {
             var vm = this;
             var jsonTree = [];
-
+            vm.history = [];
+            var current;
+            vm.getMemberGenealogy = getMemberGenealogy;
+            vm.previousAccount = previousAccount;
+            vm.shouldDisablePrevious = shouldDisablePrevious;
+            vm.nextAccount = nextAccount;
+            vm.shouldDisableNext = shouldDisableNext;
             init();
 
             function init() {
@@ -47,6 +53,8 @@ define(['orgChart'], function () {
                     .getAccountGenealogy(accountId)
                     .then(function (response) {
                         if (response) {
+                            vm.history.push(response.accountNumber);
+                            current = 0;
                             fourthGenJSON(response);
                             loadBinary(jsonTree);
                         }
@@ -55,6 +63,59 @@ define(['orgChart'], function () {
                         blockUI.stop();
                         toastr.error(error);
                     });
+            }
+
+            function getMemberGenealogy(memberAccountNumber, nav) {
+                blockUI.start('Generating Genealogy ...');
+                jsonTree = [];
+                accountFactory
+                    .getMemberAccountGenealogy(vm.accountId, memberAccountNumber)
+                    .then(function (response) {
+                        if (Object.keys(response).length > 0) {
+                            if (!nav) {
+                                if (current == vm.history.length - 1) {
+                                    vm.history.push(response.accountNumber);
+                                } else {
+                                    vm.history.splice(current + 1, vm.history.length, response.accountNumber);
+                                }
+                            }
+                            fourthGenJSON(response);
+                            loadBinary(jsonTree);
+                        } else {
+                            blockUI.stop();
+                            toastr.error('Unable to load Account Genealogy. ');
+                        }
+                    })
+                    .catch(function (error) {
+                        blockUI.stop();
+                        toastr.error(error);
+                    });
+            }
+
+            $scope.$watch(
+                'vm.history',
+                function (newTerm, oldTerm) {
+                    current = vm.history.length - 1;
+                },
+                true
+            );
+
+            function previousAccount() {
+                current--;
+                getMemberGenealogy(vm.history[current], true);
+            }
+
+            function shouldDisablePrevious() {
+                return current == 0;
+            }
+
+            function nextAccount() {
+                current++;
+                getMemberGenealogy(vm.history[current], true);
+            }
+
+            function shouldDisableNext() {
+                return current == vm.history.length - 1;
             }
 
             function fourthGenJSON(object) {

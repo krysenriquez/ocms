@@ -17,7 +17,6 @@ define(['activityFactory'], function () {
         init();
 
         function init() {
-            console.log(accountObject.account);
             loadReferralDetailsTable();
         }
 

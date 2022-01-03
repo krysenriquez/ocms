@@ -22,18 +22,30 @@ define(['orgChart'], function () {
             var vm = this;
             vm.getGenealogy = getGenealogy;
             var jsonTree = [];
-
+            vm.history = [];
+            var current;
+            vm.previousAccount = previousAccount;
+            vm.shouldDisablePrevious = shouldDisablePrevious;
+            vm.nextAccount = nextAccount;
+            vm.shouldDisableNext = shouldDisableNext;
             init();
 
             function init() {}
 
-            function getGenealogy() {
+            function getGenealogy(memberAccountNumber, nav) {
                 blockUI.start('Generating Genealogy ...');
                 jsonTree = [];
                 accountFactory
-                    .getAccountGenealogy(vm.accountNumber)
+                    .getAccountGenealogy(memberAccountNumber)
                     .then(function (response) {
                         if (response && response.accountId) {
+                            if (!nav) {
+                                if (current == vm.history.length - 1) {
+                                    vm.history.push(response.accountNumber);
+                                } else {
+                                    vm.history.splice(current + 1, vm.history.length, response.accountNumber);
+                                }
+                            }
                             fourthGenJSON(response);
                             loadBinary(jsonTree);
                         } else {
@@ -45,6 +57,32 @@ define(['orgChart'], function () {
                         blockUI.stop();
                         toastr.error(error);
                     });
+            }
+
+            $scope.$watch(
+                'vm.history',
+                function (newTerm, oldTerm) {
+                    current = vm.history.length - 1;
+                },
+                true
+            );
+
+            function previousAccount() {
+                current--;
+                getGenealogy(vm.history[current], true);
+            }
+
+            function shouldDisablePrevious() {
+                return current <= 0;
+            }
+
+            function nextAccount() {
+                current++;
+                getGenealogy(vm.history[current], true);
+            }
+
+            function shouldDisableNext() {
+                return current == vm.history.length - 1;
             }
 
             function fourthGenJSON(object) {

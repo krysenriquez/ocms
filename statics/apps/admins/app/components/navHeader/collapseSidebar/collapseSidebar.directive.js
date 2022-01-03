@@ -15,8 +15,13 @@ define(['appAdmin', 'humpsFactory'], function () {
                             angular.element('header').toggleClass('expand-header');
                             angular.element('#container').toggleClass('sidebar-closed sbar-open');
                         } else {
-                            angular.element('#container').toggleClass('sidebar-closed');
-                            angular.element('#container').toggleClass('sbar-open');
+                            if (angular.element('#container').hasClass('sidebar-closed')) {
+                                angular.element('#container').removeClass('sidebar-closed');
+                                angular.element('#container').addClass('sbar-open');
+                            } else {
+                                angular.element('#container').removeClass('sidebar-closed');
+                                angular.element('#container').addClass('sbar-open');
+                            }
                             angular.element('#overlay').toggleClass('show');
                         }
                     }
