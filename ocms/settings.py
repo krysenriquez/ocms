@@ -105,21 +105,33 @@ if DEBUG:
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# if DEBUG:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.postgresql_psycopg2",
+#             "NAME": "ocmsdb",
+#             "USER": "postgres",
+#             "PASSWORD": "P@ss1w0rd",
+#             "HOST": "localhost",
+#             "PORT": "5434",
+#         }
+#     }
 if DEBUG:
-    # DATABASES = {
-    #     "default": {
-    #         "ENGINE": "django.db.backends.postgresql_psycopg2",
-    #         "NAME": "ocmsdb",
-    #         "USER": "postgres",
-    #         "PASSWORD": "P@ss1w0rd",
-    #         "HOST": "localhost",
-    #         "PORT": "5434",
-    #     }
-    # }
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "ocmsdb",
+            "USER": "ocmdev",
+            "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
+            "HOST": "localhost",
+            "PORT": "5433",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "ocmsdb_prod",
             "USER": "ocmdev",
             "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
             "HOST": "localhost",
