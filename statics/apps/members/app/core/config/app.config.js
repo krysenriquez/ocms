@@ -79,6 +79,22 @@ define([
                             ]);
                         },
                     ],
+                    loadDirective: [
+                        '$ocLazyLoad',
+                        'DIRECTORY',
+                        function ($ocLazyLoad, DIRECTORY) {
+                            return $ocLazyLoad.load([
+                                {
+                                    serie: true,
+                                    name: 'Page Components',
+                                    files: [
+                                        DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
+                                        // '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
+                                    ],
+                                },
+                            ]);
+                        },
+                    ],
                 },
             })
             .state('simple.login', {
@@ -170,6 +186,7 @@ define([
                                         DIRECTORY.COMPONENTS + '/navMenu/navMenu.directive.js',
                                         DIRECTORY.COMPONENTS + '/navFooter/navFooter.directive.js',
                                         DIRECTORY.COMPONENTS + '/overlay/overlay.directive.js',
+                                        DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
                                         DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
                                         DIRECTORY.SHARED + '/translate/translate.directive.js',
                                         // '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',

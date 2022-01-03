@@ -5,7 +5,7 @@ define(['appMember'], function () {
 
     function googleAds($timeout) {
         return {
-            restrict: 'A',
+            restrict: 'E',
             link: function (scope, elem, attrs) {
                 return $timeout(function () {
                     var adsbygoogle, html, rand;
