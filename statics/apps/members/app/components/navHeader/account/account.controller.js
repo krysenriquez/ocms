@@ -32,7 +32,6 @@ define([
                 .getUser()
                 .then(function (response) {
                     vm.user = response;
-                    console.log(vm.user);
                 })
                 .catch(function (error) {
                     toastr.error(error.data.message);

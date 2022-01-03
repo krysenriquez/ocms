@@ -29,7 +29,6 @@ define(['appAdmin', 'accountFactory'], function () {
                 accountFactory
                     .getTopBinary(accountFactory.FLUSHED_OUT)
                     .then(function (response) {
-                        console.log(response);
                         vm.accounts = response;
                     })
                     .catch(function (error) {

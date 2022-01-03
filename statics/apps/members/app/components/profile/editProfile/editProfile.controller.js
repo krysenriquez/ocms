@@ -34,7 +34,6 @@ define([
 
         function init() {
             vm.edit = profileObject;
-            console.log(vm.edit);
         }
 
         function save() {

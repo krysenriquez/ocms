@@ -42,8 +42,6 @@ define(['appAdmin', 'settingsFactory', 'activityFactory', 'walletFactory'], func
                     .getAllWalletInfo()
                     .then(function (response) {
                         vm.wallets = response;
-
-                        console.log(vm.wallets);
                     })
                     .catch(function (error) {
                         toastr.error(error.data.message);

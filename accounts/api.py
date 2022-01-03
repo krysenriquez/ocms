@@ -181,7 +181,11 @@ class GenealogyAccountViewSet(ModelViewSet):
             account_id = self.request.query_params.get("account_id", None)
             account_number = self.request.query_params.get("account_number", None)
 
-            if account_number is not None and self.request.user.user_type == UserType.ADMIN:
+            if (
+                account_id is None
+                and account_number is not None
+                and self.request.user.user_type == UserType.ADMIN
+            ):
                 queryset = queryset.filter(id=account_number.lstrip("0"))
 
                 for member in queryset:
@@ -194,7 +198,25 @@ class GenealogyAccountViewSet(ModelViewSet):
 
                 return queryset
 
-            if account_id is not None:
+            elif account_id is not None and account_number is not None:
+                account = Account.objects.get(account_id=account_id)
+                children = account.get_all_children()
+                child = Account.objects.get(id=account_number.lstrip("0"))
+
+                if child in children or child == account:
+                    queryset = queryset.filter(id=account_number.lstrip("0"))
+
+                    for member in queryset:
+                        member.all_left_children_count = len(
+                            member.get_all_children_side(parent_side=ParentSide.LEFT)
+                        )
+                        member.all_right_children_count = len(
+                            member.get_all_children_side(parent_side=ParentSide.RIGHT)
+                        )
+
+                    return queryset
+
+            elif account_id is not None and account_number is None:
                 queryset = queryset.filter(account_id=account_id)
 
                 for member in queryset:

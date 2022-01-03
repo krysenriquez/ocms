@@ -145,13 +145,11 @@ define([
 
         function validateRepeatPassword() {
             if (vm.new.user.repeatPassword === vm.new.user.password) {
-                console.log('here');
                 vm.validation.repeatPassword = {
                     message: 'Passwords match.',
                     status: statusFactory.OK,
                 };
             } else {
-                console.log('here');
                 vm.validation.repeatPassword = {
                     message: 'Passwords do not match.',
                     status: statusFactory.BAD_REQUEST,
@@ -177,7 +175,6 @@ define([
         }
 
         function next() {
-            console.log(vm.form);
             vm.step = vm.step + 1;
         }
 

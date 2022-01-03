@@ -32,7 +32,6 @@ define(['appAdmin', 'statusFactory'], (function () {
                             }
                         }
                     } else if (oldValue) {
-                        console.log(oldValue);
                         elem.removeClass('is-valid');
                         elem.addClass('is-invalid');
                     }

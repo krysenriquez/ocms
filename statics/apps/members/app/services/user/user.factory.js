@@ -12,7 +12,6 @@ define(['urlService', 'humpsFactory'], function () {
         };
 
         function changePassword(data) {
-            console.log(data);
             return $http({
                 url: urlService.CHANGE_PASSWORD,
                 method: 'POST',

@@ -36,7 +36,6 @@ define(['appAdmin', 'ngTable', 'accountFactory'], function () {
                             return accountFactory
                                 .getMembers()
                                 .then(function (response) {
-                                    console.log(response);
                                     var filteredData = params.filter()
                                         ? $filter('filter')(response, params.filter())
                                         : response;

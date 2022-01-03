@@ -29,7 +29,6 @@ define(['appAdmin', 'accountFactory'], function () {
                 accountFactory
                     .getTopBinary(accountFactory.SALES_MATCH)
                     .then(function (response) {
-                        console.log(response);
                         vm.accounts = response;
                     })
                     .catch(function (error) {

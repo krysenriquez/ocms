@@ -12,6 +12,7 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             getSelectedAccount: getSelectedAccount,
             setSelectedAccount: setSelectedAccount,
             getAccountGenealogy: getAccountGenealogy,
+            getMemberAccountGenealogy: getMemberAccountGenealogy,
             getAccountCodes: getAccountCodes,
             createAccount: createAccount,
             getProfile: getProfile,
@@ -40,6 +41,22 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
                 url: urlService.GENEALOGY,
                 method: 'GET',
                 params: { account_id: accountId },
+            }).then(
+                function (response) {
+                    var responseData = humpsFactory.camelizeKeys(response.data[0]);
+                    return $q.resolve(responseData);
+                },
+                function (error) {
+                    return $q.reject(error);
+                }
+            );
+        }
+
+        function getMemberAccountGenealogy(accountId, memberAccountNumber) {
+            return $http({
+                url: urlService.GENEALOGY,
+                method: 'GET',
+                params: { account_id: accountId, account_number: memberAccountNumber },
             }).then(
                 function (response) {
                     var responseData = humpsFactory.camelizeKeys(response.data[0]);

@@ -33,7 +33,6 @@ define(['appMember', 'statusFactory'], (function () {
                     }
                 } else {
                     if (angular.isDefined(oldValue) && newValue != oldValue) {
-                        console.log('here');
                         if (oldValue.status) {
                             if (statusFactory.isValidStatus(oldValue.status)) {
                                 elem.removeClass('is-invalid');
@@ -44,7 +43,6 @@ define(['appMember', 'statusFactory'], (function () {
                             }
                             ctrl.$setValidity('status', statusFactory.isValidStatus(oldValue.status));
                         } else {
-                            console.log('here');
                             if (oldValue != null) {
                                 elem.removeClass('is-invalid');
                                 elem.addClass('is-valid');
