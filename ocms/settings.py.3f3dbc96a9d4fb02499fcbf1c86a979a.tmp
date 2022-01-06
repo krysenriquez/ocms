@@ -116,28 +116,28 @@ if DEBUG:
 #             "PORT": "5434",
 #         }
 #     }
-# if DEBUG:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": "ocmsdb",
-#             "USER": "ocmdev",
-#             "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
-#             "HOST": "localhost",
-#             "PORT": "5433",
-#         }
-#     }
-# else:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": "ocmsdb_prod",
-#             "USER": "ocmdev",
-#             "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
-#             "HOST": "localhost",
-#             "PORT": "5433",
-#         }
-#     }
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "ocmsdb",
+            "USER": "ocmdev",
+            "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
+            "HOST": "localhost",
+            "PORT": "5433",
+        }
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "ocmsdb_prod",
+            "USER": "ocmdev",
+            "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
+            "HOST": "localhost",
+            "PORT": "5433",
+        }
+    }
 
 
 # Password validation
