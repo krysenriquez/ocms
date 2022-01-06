@@ -12,6 +12,5 @@ define(['ngRoute'], function () {
         'toastr',
         'oitozero.ngSweetAlert',
         'ngTable',
-        'vjs.video',
     ]);
 });

@@ -17,12 +17,14 @@ define(['appMember', 'activityFactory'], function () {
 
         return directive;
 
-        function imaSdkPlayerController($scope, $sce, IMA, LOGO, DIRECTORY, accountFactory, activityFactory, toastr) {
+        function imaSdkPlayerController($scope, $state, $sce, LOGO, IMA, accountFactory, activityFactory, toastr) {
             var vm = this;
             var accountId;
+            var player;
             init();
 
             function init() {
+                vm.poster = LOGO.IMALOGO;
                 $scope.$watch(
                     function () {
                         return accountFactory.getSelectedAccount().accountId;
@@ -35,56 +37,60 @@ define(['appMember', 'activityFactory'], function () {
                         }
                     }
                 );
-
-                vm.mp4 = $sce.trustAsResourceUrl(IMA.MP4);
-                vm.media = {
-                    sources: [
-                        // {
-                        //     src: $sce.trustAsResourceUrl(IMA.MP4),
-                        //     type: 'video/mp4',
-                        // },
-                        // {
-                        //     src: $sce.trustAsResourceUrl(IMA.WEBM),
-                        //     type: 'video/webm',
-                        // },
-                    ],
-                    poster: LOGO.IMALOGO,
-                };
-
-                vm.setup = {
-                    aspectRatio: '16:9',
-                    controlBar: { progressControl: true },
-                    plugins: {
-                        vastClient: {
-                            adTagUrl:
-                                'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
-                            adsCancelTimeout: 3000,
-                            adsEnabled: true,
-                            preferredTech: 'html5',
+                const watch = document.getElementById('watch-and-earn');
+                if (watch) {
+                    player = videojs(watch, {
+                        sources: [
+                            {
+                                src: 'https://storage.googleapis.com/gvabox/media/samples/android.mp4',
+                                type: 'video/mp4',
+                            },
+                        ],
+                        aspectRatio: '16:9',
+                        controlBar: {
+                            playToggle: false,
+                            captionsButton: false,
+                            chaptersButton: false,
+                            subtitlesButton: false,
+                            remainingTimeDisplay: false,
+                            progressControl: {
+                                seekBar: false,
+                            },
+                            fullscreenToggle: false,
+                            playbackRateMenuButton: false,
+                            pictureInPictureToggle: false,
                         },
-                    },
-                };
-            }
-
-            // $scope.$on('vjsVideoReady', function (e, data) {
-            //     data.player.plugins = {
-            //         ads: {},
-            //         vast: {
-            //             url: 'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
-            //         },
-            //     };
-            // });
-
-            $scope.$on('vjsVideoEnded', function (e, data) {
-                activityFactory
-                    .createWatchAndEarn(accountId)
-                    .then(function (response) {
-                        swal('Success!', response.message, 'success');
-                    })
-                    .catch(function (error) {
-                        toastr.error(error.data.message);
+                        controls: true,
+                        poster: LOGO.IMALOGO,
                     });
-            });
+
+                    var options = {
+                        adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
+                    };
+
+                    player.ima(options);
+
+                    player.on('adend', function (response) {
+                        activityFactory
+                            .createWatchAndEarn(accountId)
+                            .then(function (response) {
+                                swal('Success!', response.message, 'success').then(function (response) {
+                                    $state.reload();
+                                });
+                            })
+                            .catch(function (error) {
+                                toastr.error(error.data.message);
+                            });
+                    });
+
+                    player.on('adtimeout ', function (response) {
+                        toastr.error('No Ads loaded.');
+                        swal('Error!', 'No Ads Loaded. Refreshing Player.', 'error').then(function (response) {
+                            $state.reload();
+                        });
+                    });
+                }
+            }
         }
 
         function link(scope, elem, attrs) {}

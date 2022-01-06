@@ -34,14 +34,9 @@ require.config({
         sweetalert: libs + 'sweetalert/sweetalert.min',
         orgChart: libs + 'orgChart/orgChart',
         // Video JS
-        videojs: libs + 'videojs/video',
-        videojsVideo: libs + 'vjs-video/vjs-video',
-        // Video JS Vast Vpaid
-        videoJsVastVpaid: libs + 'videojs-vast-vpaid/videojs.vast.vpaid.min',
-        // Video JS Vast
-        videoJsAds: libs + 'videojs-vast/videojs.ads',
-        videoJsVast: libs + 'videojs-vast/videojs.vast',
-        vastClient: libs + 'videojs-vast/vast-client',
+        videojs: libs + 'videojs/video.min',
+        videojsAds: libs + 'videojs/videojs.ads.min',
+        videojsIma: libs + 'videojs/videojs.ima.min',
         // Custom Scripts
         appMember: appRoot + 'app.module',
         // Core
@@ -119,20 +114,11 @@ require.config({
         ngSweetalert: {
             deps: ['angular', 'sweetalert'],
         },
-        // videoJsAds: {
-        //     deps: ['add-video-js-in-global-scope'],
-        // },
-        // videoJsVast: {
-        //     deps: ['add-video-js-in-global-scope', 'add-vast-client-in-global-scope'],
-        // },
-        // videojsVideo: {
-        //     deps: ['videojs', 'videoJsAds', 'videoJsVast', 'vastClient'],
-        // },
-		videoJsVastVpaid: {
+        videojsAds: {
             deps: ['add-video-js-in-global-scope'],
         },
-        videojsVideo: {
-            deps: ['videojs', 'videoJsVastVpaid'],
+        videojsIma: {
+            deps: ['add-video-js-in-global-scope'],
         },
         appMember: {
             deps: [
@@ -150,7 +136,6 @@ require.config({
                 'ngToastr',
                 'ngSweetalert',
                 'ngTable',
-                'videojsVideo',
             ],
         },
         appConfig: {
@@ -162,15 +147,19 @@ require.config({
     },
 });
 
+define('global/window', [], function () {
+    return window;
+});
+
+define('global/document', [], function () {
+    return window.document;
+});
+
 define('add-video-js-in-global-scope', ['videojs'], function (videojs) {
     window.videojs = videojs;
 });
 
-// define('add-vast-client-in-global-scope', ['vastClient'], function (DMVAST) {
-//     window.DMVAST = DMVAST;
-// });
-
-require(['jquery', 'popper', 'moment', 'bootstrap'], function () {});
+require(['jquery', 'popper', 'moment', 'bootstrap', 'videojs', 'videojsAds', 'videojsIma'], function () {});
 
 require(['appMember', 'appConfig', 'appRun', 'appConstant'], function () {
     angular.bootstrap(document, ['appMember']);

@@ -319,7 +319,11 @@ define([
                                 {
                                     serie: true,
                                     name: 'VideoJs CSS',
-                                    files: [DIRECTORY.LIBS + '/videojs/video-js.css'],
+                                    files: [
+                                        DIRECTORY.LIBS + '/videojs/video.min.css',
+                                        DIRECTORY.LIBS + '/videojs/videojs.ads.min.css',
+                                        DIRECTORY.LIBS + '/videojs/videojs.ima.min.css',
+                                    ],
                                 },
                             ]);
                         },
