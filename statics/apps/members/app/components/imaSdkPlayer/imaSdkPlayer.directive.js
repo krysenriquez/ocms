@@ -1,7 +1,7 @@
 define(['appMember', 'activityFactory'], function () {
     'use strict';
 
-    angular.module('appMember').directive('imaSdkPlayer', imaSdkPlayer).directive('myReplayPlugin', myReplayPlugin);
+    angular.module('appMember').directive('imaSdkPlayer', imaSdkPlayer);
 
     function imaSdkPlayer(DIRECTORY) {
         var directive = {
@@ -17,57 +17,13 @@ define(['appMember', 'activityFactory'], function () {
 
         return directive;
 
-        function imaSdkPlayerController($sce, IMA, LOGO, DIRECTORY) {
+        function imaSdkPlayerController($scope, $sce, IMA, LOGO, DIRECTORY, accountFactory, activityFactory, toastr) {
             var vm = this;
-
+            var accountId;
             init();
 
             function init() {
-                vm.mp4 = $sce.trustAsResourceUrl(IMA.MP4);
-                vm.webm = $sce.trustAsResourceUrl(IMA.WEBM);
-            }
-
-            vm.config = {
-                sources: [
-                    {
-                        src: $sce.trustAsResourceUrl(IMA.MP4),
-                        type: 'video/mp4',
-                    },
-                    {
-                        src: $sce.trustAsResourceUrl(IMA.WEBM),
-                        type: 'video/webm',
-                    },
-                ],
-                theme: {
-                    url: DIRECTORY.CSS + '/components/videogular-theme.css',
-                },
-                plugins: {
-                    poster: LOGO.IMALOGO,
-                    ads: {
-                        companion: 'companionAd',
-                        companionSize: [728, 90],
-                        network: '6062',
-                        unitPath: 'iab_vast_samples',
-                        adTagUrl: $sce.trustAsResourceUrl(
-                            'http://ad3.liverail.com/?LR_PUBLISHER_ID=1331&LR_CAMPAIGN_ID=229&LR_SCHEMA=vast2'
-                        ),
-                        skipButton: "<div class='skipButton'>skip ad</div>",
-                    },
-                },
-            };
-        }
-
-        function link(scope, elem, attrs) {}
-    }
-
-    function myReplayPlugin(DIRECTORY, accountFactory, activityFactory) {
-        return {
-            restrict: 'E',
-            require: '^videogular',
-            link: function (scope, elem, attrs, API) {
-                scope.API = API;
-                var accountId;
-                scope.$watch(
+                $scope.$watch(
                     function () {
                         return accountFactory.getSelectedAccount().accountId;
                     },
@@ -80,23 +36,57 @@ define(['appMember', 'activityFactory'], function () {
                     }
                 );
 
-                scope.$watch(
-                    'API.isCompleted',
-                    function (newValue, oldValue) {
-                        if (newValue) {
-                            activityFactory
-                                .createWatchAndEarn(accountId)
-                                .then(function (response) {
-                                    swal('Success!', response.message, 'success');
-                                })
-                                .catch(function (error) {
-                                    toastr.error(error.data.message);
-                                });
-                        }
+                vm.mp4 = $sce.trustAsResourceUrl(IMA.MP4);
+                vm.media = {
+                    sources: [
+                        // {
+                        //     src: $sce.trustAsResourceUrl(IMA.MP4),
+                        //     type: 'video/mp4',
+                        // },
+                        // {
+                        //     src: $sce.trustAsResourceUrl(IMA.WEBM),
+                        //     type: 'video/webm',
+                        // },
+                    ],
+                    poster: LOGO.IMALOGO,
+                };
+
+                vm.setup = {
+                    aspectRatio: '16:9',
+                    controlBar: { progressControl: true },
+                    plugins: {
+                        vastClient: {
+                            adTagUrl:
+                                'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
+                            adsCancelTimeout: 3000,
+                            adsEnabled: true,
+                            preferredTech: 'html5',
+                        },
                     },
-                    true
-                );
-            },
-        };
+                };
+            }
+
+            // $scope.$on('vjsVideoReady', function (e, data) {
+            //     data.player.plugins = {
+            //         ads: {},
+            //         vast: {
+            //             url: 'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
+            //         },
+            //     };
+            // });
+
+            $scope.$on('vjsVideoEnded', function (e, data) {
+                activityFactory
+                    .createWatchAndEarn(accountId)
+                    .then(function (response) {
+                        swal('Success!', response.message, 'success');
+                    })
+                    .catch(function (error) {
+                        toastr.error(error.data.message);
+                    });
+            });
+        }
+
+        function link(scope, elem, attrs) {}
     }
 });

@@ -33,12 +33,15 @@ require.config({
         ngSweetalert: libs + 'sweetalert/SweetAlert',
         sweetalert: libs + 'sweetalert/sweetalert.min',
         orgChart: libs + 'orgChart/orgChart',
-        // Videogular
-        vgModule: libs + 'videogular/videogular',
-        vgControls: libs + 'videogular/controls/vg-controls',
-        vgOverlayPlay: libs + 'videogular/overlay-play/vg-overlay-play',
-        vgPoster: libs + 'videogular/poster/vg-poster',
-        vgImaAds: libs + 'videogular/ima-ads/vg-ima-ads',
+        // Video JS
+        videojs: libs + 'videojs/video',
+        videojsVideo: libs + 'vjs-video/vjs-video',
+        // Video JS Vast Vpaid
+        videoJsVastVpaid: libs + 'videojs-vast-vpaid/videojs.vast.vpaid.min',
+        // Video JS Vast
+        videoJsAds: libs + 'videojs-vast/videojs.ads',
+        videoJsVast: libs + 'videojs-vast/videojs.vast',
+        vastClient: libs + 'videojs-vast/vast-client',
         // Custom Scripts
         appMember: appRoot + 'app.module',
         // Core
@@ -116,20 +119,20 @@ require.config({
         ngSweetalert: {
             deps: ['angular', 'sweetalert'],
         },
-        vgModule: {
-            deps: ['angular'],
+        // videoJsAds: {
+        //     deps: ['add-video-js-in-global-scope'],
+        // },
+        // videoJsVast: {
+        //     deps: ['add-video-js-in-global-scope', 'add-vast-client-in-global-scope'],
+        // },
+        // videojsVideo: {
+        //     deps: ['videojs', 'videoJsAds', 'videoJsVast', 'vastClient'],
+        // },
+		videoJsVastVpaid: {
+            deps: ['add-video-js-in-global-scope'],
         },
-        vgControls: {
-            deps: ['angular'],
-        },
-        vgOverlayPlay: {
-            deps: ['angular'],
-        },
-        vgPoster: {
-            deps: ['angular'],
-        },
-        vgImaAds: {
-            deps: ['angular'],
+        videojsVideo: {
+            deps: ['videojs', 'videoJsVastVpaid'],
         },
         appMember: {
             deps: [
@@ -147,11 +150,7 @@ require.config({
                 'ngToastr',
                 'ngSweetalert',
                 'ngTable',
-                'vgModule',
-                'vgControls',
-                'vgOverlayPlay',
-                'vgPoster',
-                'vgImaAds',
+                'videojsVideo',
             ],
         },
         appConfig: {
@@ -162,6 +161,14 @@ require.config({
         },
     },
 });
+
+define('add-video-js-in-global-scope', ['videojs'], function (videojs) {
+    window.videojs = videojs;
+});
+
+// define('add-vast-client-in-global-scope', ['vastClient'], function (DMVAST) {
+//     window.DMVAST = DMVAST;
+// });
 
 require(['jquery', 'popper', 'moment', 'bootstrap'], function () {});
 

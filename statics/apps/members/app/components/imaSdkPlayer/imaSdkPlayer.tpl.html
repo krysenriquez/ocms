@@ -1,26 +1,11 @@
 <div class="widget-content widget-content-area br-6">
-    <div class="videogular-container">
-        <videogular vg-theme="vm.config.theme.url">
-            <vg-media vg-src="vm.config.sources"></vg-media>
-            <vg-controls>
-                <vg-volume>
-                    <vg-mute-button></vg-mute-button>
-                    <vg-volume-bar></vg-volume-bar>
-                </vg-volume>
-            </vg-controls>
-
-            <!-- <vg-ima-ads
-                vg-network="ima.config.plugins.ads.network"
-                vg-unit-path="ima.config.plugins.ads.unitPath"
-                vg-companion="ima.config.plugins.ads.companion"
-                vg-companion-size="ima.config.plugins.ads.companionSize"
-                vg-ad-tag-url="ima.config.plugins.ads.adTagUrl"
-                vg-skip-button="ima.config.plugins.ads.skipButton"
-            ></vg-ima-ads> -->
-            <my-replay-plugin></my-replay-plugin>
-            <vg-overlay-play></vg-overlay-play>
-            <vg-poster vg-url="vm.config.plugins.poster"></vg-poster>
-        </videogular>
-        <div id="companionAd"></div>
-    </div>
+    <video
+        id="my_video_1"
+        class="video-js vjs-default-skin"
+        controls
+        preload="none"
+        vjs-video
+        vjs-setup="vm.setup"
+        vjs-media="vm.media"
+    ></video>
 </div>
