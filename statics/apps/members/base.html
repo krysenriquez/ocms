@@ -20,7 +20,7 @@
             data-main="{%static 'apps/members/require.app' %}"
             src="{%static 'apps/members/assets/libs/require/require.js'%}"
         ></script>
-        <script>
+        <!-- <script>
             (function (s, u, z, p) {
                 (s.src = u), s.setAttribute('data-zone', z), p.appendChild(s);
             })(
@@ -29,6 +29,23 @@
                 4773381,
                 document.body || document.documentElement
             );
+        </script> -->
+        <script type="text/javascript">
+            var googletag = googletag || {};
+            googletag.cmd = googletag.cmd || [];
+            (function () {
+                var gads = document.createElement('script');
+                gads.async = true;
+                gads.type = 'text/javascript';
+                gads.src = 'https://www.googletagservices.com/tag/js/gpt.js';
+                var node = document.getElementsByTagName('script')[0];
+                node.parentNode.insertBefore(gads, node);
+            })();
         </script>
+        <!-- <script
+            src="https://imasdk.googleapis.com/js/sdkloader/ima3.js"
+            type="text/javascript"
+            referrerpolicy="same-origin"
+        ></script> -->
     </body>
 </html>

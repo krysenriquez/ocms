@@ -163,7 +163,13 @@ require.config({
     },
 });
 
-require(['jquery', 'popper', 'moment', 'bootstrap'], function () {});
+require([
+    'jquery',
+    'popper',
+    'moment',
+    'bootstrap',
+    'https://imasdk.googleapis.com/js/sdkloader/ima3.js',
+], function () {});
 
 require(['appMember', 'appConfig', 'appRun', 'appConstant'], function () {
     angular.bootstrap(document, ['appMember']);

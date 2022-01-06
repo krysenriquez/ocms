@@ -49,7 +49,7 @@ define(['appMember', 'activityFactory'], function () {
                         network: '6062',
                         unitPath: 'iab_vast_samples',
                         adTagUrl: $sce.trustAsResourceUrl(
-                            'http://ad3.liverail.com/?LR_PUBLISHER_ID=1331&LR_CAMPAIGN_ID=229&LR_SCHEMA=vast2'
+                            'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802'
                         ),
                         skipButton: "<div class='skipButton'>skip ad</div>",
                     },
