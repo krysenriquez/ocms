@@ -32,6 +32,8 @@ define(['appMember', 'activityFactory'], function () {
         ) {
             const watch = document.getElementById('watch-and-earn');
             var vm = this;
+            vm.shouldDisableClaim = true;
+            vm.claim = claim;
             var accountId;
             var player;
 
@@ -48,6 +50,7 @@ define(['appMember', 'activityFactory'], function () {
 
             function init() {
                 vm.poster = LOGO.IMALOGO;
+                vm.clickCounter = 0;
                 $scope.$watch(
                     function () {
                         return accountFactory.getSelectedAccount().accountId;
@@ -103,13 +106,14 @@ define(['appMember', 'activityFactory'], function () {
 
             player.on('adserror', function (response) {
                 toastr.error('No Ads loaded.');
-                swal('Error!', 'No Ads Loaded. Refreshing Player.', 'error').then(function (response) {
+                swal('Error!', 'No Ads Loaded. Refresh the player?', 'error').then(function (response) {
                     $state.reload();
                 });
             });
 
             function initialize() {
                 player.ima.initializeAdDisplayContainer();
+                console.log('intialize');
                 watch.removeEventListener(startEvent, initialize);
             }
 
@@ -133,12 +137,36 @@ define(['appMember', 'activityFactory'], function () {
             }
 
             function adEvent(event) {
+                if (event.type == 'click') {
+                    incrementCounter();
+                }
                 if (event.type == 'allAdsCompleted' || event.type == 'complete') {
-                    createWatchActivity();
+                    validateClaimButton();
+                }
+            }
+
+            function incrementCounter() {
+                $scope.$apply(function () {
+                    vm.clickCounter += 1;
+                });
+            }
+
+            function validateClaimButton() {
+                if (vm.clickCounter >= 3) {
+                    $scope.$apply(function () {
+                        vm.shouldDisableClaim = false;
+                    });
+                } else {
+                    swal('Error!', 'Number of Clicks not Reached. Refresh the player?', 'error').then(function (
+                        response
+                    ) {
+                        $state.reload();
+                    });
                 }
             }
 
             function createWatchActivity() {
+                vm.shouldDisableClaim = true;
                 activityFactory
                     .createWatchAndEarn(accountId)
                     .then(function (response) {
@@ -149,6 +177,12 @@ define(['appMember', 'activityFactory'], function () {
                     .catch(function (error) {
                         toastr.error(error.data.message);
                     });
+            }
+
+            function claim() {
+                if (Boolean(vm.shouldDisableClaim) == false && vm.clickCounter >= 3) {
+                    createWatchActivity();
+                }
             }
         }
 

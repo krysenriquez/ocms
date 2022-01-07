@@ -1,3 +1,40 @@
 <div class="widget-content widget-content-area br-6">
+    <div class="watch-header mb-3">
+        <div class="w-info">
+            <h6 class="value">
+                Click Counter:
+                <span>{{ vm.clickCounter }}</span>
+            </h6>
+        </div>
+        <div class="task-action">
+            <button class="btn btn-primary mb-2" ng-click="vm.claim()" ng-disabled="vm.shouldDisableClaim">
+                Claim
+            </button>
+        </div>
+    </div>
     <video id="watch-and-earn" class="video-js vjs-default-skin vjs-big-play-centered"></video>
+    <div class="mt-3">
+        <p>HOW TO EARN:</p>
+        <ol>
+            <li>Members must click the play button after the ad is loaded.</li>
+            <li>While the ad is playing, members must click the Ad Window or Player to gain Click Counter.</li>
+            <li>
+                If the Click Counter reaches 3 and above, the members must wait for the ad to finish for the Claim
+                Button to be enabled.
+            </li>
+            <li>Click the Claim Button to gain your earnings.</li>
+            <li>Wait for the page to referesh then start earning!</li>
+        </ol>
+        <p>NOTES:</p>
+        <ul>
+            <li>
+                If the ad finishes while Click Counter is below 3, you will need to refresh your page to reload the ads.
+            </li>
+            <li>
+                If you encounter multiple errors with Ads not loading, email or contact us at support@onecreations.ph,
+                together with a screenshot of the error. You may also reach us via your Upline to inform us about the
+                issue.
+            </li>
+        </ul>
+    </div>
 </div>
