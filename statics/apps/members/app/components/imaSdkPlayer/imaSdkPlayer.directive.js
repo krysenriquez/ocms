@@ -17,10 +17,33 @@ define(['appMember', 'activityFactory'], function () {
 
         return directive;
 
-        function imaSdkPlayerController($scope, $state, $sce, LOGO, IMA, accountFactory, activityFactory, toastr) {
+        function imaSdkPlayerController(
+            $scope,
+            $state,
+            $window,
+            $http,
+            $sce,
+            LOGO,
+            VAST,
+            DIRECTORY,
+            accountFactory,
+            activityFactory,
+            toastr
+        ) {
+            const watch = document.getElementById('watch-and-earn');
             var vm = this;
             var accountId;
             var player;
+
+            var startEvent = 'click';
+            if (
+                navigator.userAgent.match(/iPhone/i) ||
+                navigator.userAgent.match(/iPad/i) ||
+                navigator.userAgent.match(/Android/i)
+            ) {
+                var startEvent = 'touchend';
+            }
+
             init();
 
             function init() {
@@ -37,7 +60,6 @@ define(['appMember', 'activityFactory'], function () {
                         }
                     }
                 );
-                const watch = document.getElementById('watch-and-earn');
                 if (watch) {
                     player = videojs(watch, {
                         sources: [
@@ -65,31 +87,68 @@ define(['appMember', 'activityFactory'], function () {
                     });
 
                     var options = {
+                        // adTagUrl: $window.location.origin + VAST.XML,
                         adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
+                        adsManagerLoadedCallback: adsManager,
                     };
 
                     player.ima(options);
+                    watch.addEventListener(startEvent, initialize);
+                }
+            }
 
-                    player.on('adend', function (response) {
-                        activityFactory
-                            .createWatchAndEarn(accountId)
-                            .then(function (response) {
-                                swal('Success!', response.message, 'success').then(function (response) {
-                                    $state.reload();
-                                });
-                            })
-                            .catch(function (error) {
-                                toastr.error(error.data.message);
-                            });
-                    });
+            player.on('adsready', function (response) {
+                toastr.success('Ads Loaded.');
+            });
 
-                    player.on('adtimeout ', function (response) {
-                        toastr.error('No Ads loaded.');
-                        swal('Error!', 'No Ads Loaded. Refreshing Player.', 'error').then(function (response) {
+            player.on('adserror', function (response) {
+                toastr.error('No Ads loaded.');
+                swal('Error!', 'No Ads Loaded. Refreshing Player.', 'error').then(function (response) {
+                    $state.reload();
+                });
+            });
+
+            function initialize() {
+                player.ima.initializeAdDisplayContainer();
+                watch.removeEventListener(startEvent, initialize);
+            }
+
+            function adsManager() {
+                var events = [
+                    google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+                    google.ima.AdEvent.Type.CLICK,
+                    google.ima.AdEvent.Type.COMPLETE,
+                    google.ima.AdEvent.Type.FIRST_QUARTILE,
+                    google.ima.AdEvent.Type.LOADED,
+                    google.ima.AdEvent.Type.MIDPOINT,
+                    google.ima.AdEvent.Type.PAUSED,
+                    google.ima.AdEvent.Type.RESUMED,
+                    google.ima.AdEvent.Type.STARTED,
+                    google.ima.AdEvent.Type.THIRD_QUARTILE,
+                ];
+
+                for (var index = 0; index < events.length; index++) {
+                    player.ima.addEventListener(events[index], adEvent);
+                }
+            }
+
+            function adEvent(event) {
+                if (event.type == 'allAdsCompleted' || event.type == 'complete') {
+                    createWatchActivity();
+                }
+            }
+
+            function createWatchActivity() {
+                activityFactory
+                    .createWatchAndEarn(accountId)
+                    .then(function (response) {
+                        swal('Success!', response.message, 'success').then(function (response) {
                             $state.reload();
                         });
+                    })
+                    .catch(function (error) {
+                        toastr.error(error.data.message);
                     });
-                }
             }
         }
 
