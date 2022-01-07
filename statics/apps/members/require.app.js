@@ -33,12 +33,10 @@ require.config({
         ngSweetalert: libs + 'sweetalert/SweetAlert',
         sweetalert: libs + 'sweetalert/sweetalert.min',
         orgChart: libs + 'orgChart/orgChart',
-        // Videogular
-        vgModule: libs + 'videogular/videogular',
-        vgControls: libs + 'videogular/controls/vg-controls',
-        vgOverlayPlay: libs + 'videogular/overlay-play/vg-overlay-play',
-        vgPoster: libs + 'videogular/poster/vg-poster',
-        vgImaAds: libs + 'videogular/ima-ads/vg-ima-ads',
+        // Video JS
+        videojs: libs + 'videojs/video.min',
+        videojsAds: libs + 'videojs/videojs.ads.min',
+        videojsIma: libs + 'videojs/videojs.ima.min',
         // Custom Scripts
         appMember: appRoot + 'app.module',
         // Core
@@ -116,20 +114,11 @@ require.config({
         ngSweetalert: {
             deps: ['angular', 'sweetalert'],
         },
-        vgModule: {
-            deps: ['angular'],
+        videojsAds: {
+            deps: ['add-video-js-in-global-scope'],
         },
-        vgControls: {
-            deps: ['angular'],
-        },
-        vgOverlayPlay: {
-            deps: ['angular'],
-        },
-        vgPoster: {
-            deps: ['angular'],
-        },
-        vgImaAds: {
-            deps: ['angular'],
+        videojsIma: {
+            deps: ['add-video-js-in-global-scope'],
         },
         appMember: {
             deps: [
@@ -147,11 +136,6 @@ require.config({
                 'ngToastr',
                 'ngSweetalert',
                 'ngTable',
-                'vgModule',
-                'vgControls',
-                'vgOverlayPlay',
-                'vgPoster',
-                'vgImaAds',
             ],
         },
         appConfig: {
@@ -163,7 +147,19 @@ require.config({
     },
 });
 
-require(['jquery', 'popper', 'moment', 'bootstrap'], function () {});
+define('global/window', [], function () {
+    return window;
+});
+
+define('global/document', [], function () {
+    return window.document;
+});
+
+define('add-video-js-in-global-scope', ['videojs'], function (videojs) {
+    window.videojs = videojs;
+});
+
+require(['jquery', 'popper', 'moment', 'bootstrap', 'videojs', 'videojsAds', 'videojsIma'], function () {});
 
 require(['appMember', 'appConfig', 'appRun', 'appConstant'], function () {
     angular.bootstrap(document, ['appMember']);

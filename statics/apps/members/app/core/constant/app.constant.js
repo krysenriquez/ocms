@@ -26,6 +26,9 @@ define(['appMember'], function () {
             MEDIA: '/statics/media',
             STRINGS: root + '/app/strings',
         })
+        .constant('VAST', {
+            XML: root + '/app/components/imaSdkPlayer/adsterra/vast.xml',
+        })
         .constant('IMA', {
             MP4: 'https://storage.googleapis.com/interactive-media-ads/media/android.mp4',
             WEBM: 'https://storage.googleapis.com/interactive-media-ads/media/android.webm',

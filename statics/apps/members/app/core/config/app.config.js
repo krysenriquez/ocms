@@ -318,8 +318,12 @@ define([
                                 },
                                 {
                                     serie: true,
-                                    name: 'Videogular CSS',
-                                    files: [DIRECTORY.CSS + '/components/videogular.css'],
+                                    name: 'VideoJs CSS',
+                                    files: [
+                                        DIRECTORY.LIBS + '/videojs/video.min.css',
+                                        DIRECTORY.LIBS + '/videojs/videojs.ads.min.css',
+                                        DIRECTORY.LIBS + '/videojs/videojs.ima.min.css',
+                                    ],
                                 },
                             ]);
                         },

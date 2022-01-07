@@ -1,7 +1,7 @@
 define(['appMember', 'activityFactory'], function () {
     'use strict';
 
-    angular.module('appMember').directive('imaSdkPlayer', imaSdkPlayer).directive('myReplayPlugin', myReplayPlugin);
+    angular.module('appMember').directive('imaSdkPlayer', imaSdkPlayer);
 
     function imaSdkPlayer(DIRECTORY) {
         var directive = {
@@ -17,57 +17,41 @@ define(['appMember', 'activityFactory'], function () {
 
         return directive;
 
-        function imaSdkPlayerController($sce, IMA, LOGO, DIRECTORY) {
+        function imaSdkPlayerController(
+            $scope,
+            $state,
+            $window,
+            $http,
+            $sce,
+            LOGO,
+            VAST,
+            DIRECTORY,
+            accountFactory,
+            activityFactory,
+            toastr
+        ) {
+            const watch = document.getElementById('watch-and-earn');
             var vm = this;
+            vm.shouldDisableClaim = true;
+            vm.claim = claim;
+            var accountId;
+            var player;
+
+            var startEvent = 'click';
+            if (
+                navigator.userAgent.match(/iPhone/i) ||
+                navigator.userAgent.match(/iPad/i) ||
+                navigator.userAgent.match(/Android/i)
+            ) {
+                var startEvent = 'touchend';
+            }
 
             init();
 
             function init() {
-                vm.mp4 = $sce.trustAsResourceUrl(IMA.MP4);
-                vm.webm = $sce.trustAsResourceUrl(IMA.WEBM);
-            }
-
-            vm.config = {
-                sources: [
-                    {
-                        src: $sce.trustAsResourceUrl(IMA.MP4),
-                        type: 'video/mp4',
-                    },
-                    {
-                        src: $sce.trustAsResourceUrl(IMA.WEBM),
-                        type: 'video/webm',
-                    },
-                ],
-                theme: {
-                    url: DIRECTORY.CSS + '/components/videogular-theme.css',
-                },
-                plugins: {
-                    poster: LOGO.IMALOGO,
-                    ads: {
-                        companion: 'companionAd',
-                        companionSize: [728, 90],
-                        network: '6062',
-                        unitPath: 'iab_vast_samples',
-                        adTagUrl: $sce.trustAsResourceUrl(
-                            'http://ad3.liverail.com/?LR_PUBLISHER_ID=1331&LR_CAMPAIGN_ID=229&LR_SCHEMA=vast2'
-                        ),
-                        skipButton: "<div class='skipButton'>skip ad</div>",
-                    },
-                },
-            };
-        }
-
-        function link(scope, elem, attrs) {}
-    }
-
-    function myReplayPlugin(DIRECTORY, accountFactory, activityFactory) {
-        return {
-            restrict: 'E',
-            require: '^videogular',
-            link: function (scope, elem, attrs, API) {
-                scope.API = API;
-                var accountId;
-                scope.$watch(
+                vm.poster = LOGO.IMALOGO;
+                vm.clickCounter = 0;
+                $scope.$watch(
                     function () {
                         return accountFactory.getSelectedAccount().accountId;
                     },
@@ -79,24 +63,129 @@ define(['appMember', 'activityFactory'], function () {
                         }
                     }
                 );
+                if (watch) {
+                    player = videojs(watch, {
+                        sources: [
+                            {
+                                src: 'https://storage.googleapis.com/gvabox/media/samples/android.mp4',
+                                type: 'video/mp4',
+                            },
+                        ],
+                        aspectRatio: '16:9',
+                        controlBar: {
+                            playToggle: false,
+                            captionsButton: false,
+                            chaptersButton: false,
+                            subtitlesButton: false,
+                            remainingTimeDisplay: false,
+                            progressControl: {
+                                seekBar: false,
+                            },
+                            fullscreenToggle: false,
+                            playbackRateMenuButton: false,
+                            pictureInPictureToggle: false,
+                        },
+                        controls: true,
+                        poster: LOGO.IMALOGO,
+                    });
 
-                scope.$watch(
-                    'API.isCompleted',
-                    function (newValue, oldValue) {
-                        if (newValue) {
-                            activityFactory
-                                .createWatchAndEarn(accountId)
-                                .then(function (response) {
-                                    swal('Success!', response.message, 'success');
-                                })
-                                .catch(function (error) {
-                                    toastr.error(error.data.message);
-                                });
-                        }
-                    },
-                    true
-                );
-            },
-        };
+                    var options = {
+                        // adTagUrl: $window.location.origin + VAST.XML,
+                        adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
+                        adsManagerLoadedCallback: adsManager,
+                    };
+
+                    player.ima(options);
+                    watch.addEventListener(startEvent, initialize);
+                }
+            }
+
+            player.on('adsready', function (response) {
+                toastr.success('Ads Loaded.');
+            });
+
+            player.on('adserror', function (response) {
+                toastr.error('No Ads loaded.');
+                swal('Error!', 'No Ads Loaded. Refresh the player?', 'error').then(function (response) {
+                    $state.reload();
+                });
+            });
+
+            function initialize() {
+                player.ima.initializeAdDisplayContainer();
+                console.log('intialize');
+                watch.removeEventListener(startEvent, initialize);
+            }
+
+            function adsManager() {
+                var events = [
+                    google.ima.AdEvent.Type.ALL_ADS_COMPLETED,
+                    google.ima.AdEvent.Type.CLICK,
+                    google.ima.AdEvent.Type.COMPLETE,
+                    google.ima.AdEvent.Type.FIRST_QUARTILE,
+                    google.ima.AdEvent.Type.LOADED,
+                    google.ima.AdEvent.Type.MIDPOINT,
+                    google.ima.AdEvent.Type.PAUSED,
+                    google.ima.AdEvent.Type.RESUMED,
+                    google.ima.AdEvent.Type.STARTED,
+                    google.ima.AdEvent.Type.THIRD_QUARTILE,
+                ];
+
+                for (var index = 0; index < events.length; index++) {
+                    player.ima.addEventListener(events[index], adEvent);
+                }
+            }
+
+            function adEvent(event) {
+                if (event.type == 'click') {
+                    incrementCounter();
+                }
+                if (event.type == 'allAdsCompleted' || event.type == 'complete') {
+                    validateClaimButton();
+                }
+            }
+
+            function incrementCounter() {
+                $scope.$apply(function () {
+                    vm.clickCounter += 1;
+                });
+            }
+
+            function validateClaimButton() {
+                if (vm.clickCounter >= 3) {
+                    $scope.$apply(function () {
+                        vm.shouldDisableClaim = false;
+                    });
+                } else {
+                    swal('Error!', 'Number of Clicks not Reached. Refresh the player?', 'error').then(function (
+                        response
+                    ) {
+                        $state.reload();
+                    });
+                }
+            }
+
+            function createWatchActivity() {
+                vm.shouldDisableClaim = true;
+                activityFactory
+                    .createWatchAndEarn(accountId)
+                    .then(function (response) {
+                        swal('Success!', response.message, 'success').then(function (response) {
+                            $state.reload();
+                        });
+                    })
+                    .catch(function (error) {
+                        toastr.error(error.data.message);
+                    });
+            }
+
+            function claim() {
+                if (Boolean(vm.shouldDisableClaim) == false && vm.clickCounter >= 3) {
+                    createWatchActivity();
+                }
+            }
+        }
+
+        function link(scope, elem, attrs) {}
     }
 });
