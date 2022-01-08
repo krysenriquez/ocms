@@ -26,7 +26,10 @@ CRYPTO_KEY = "ocms"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+if DEBUG:
+    ALLOWED_HOSTS = ["*"]
+else:
+    ALLOWED_HOSTS = ["onecreations.ph", "www.onecreations.ph"]
 
 
 # Application definition
@@ -105,33 +108,22 @@ if DEBUG:
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# if DEBUG:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql_psycopg2",
-#             "NAME": "ocmsdb",
-#             "USER": "postgres",
-#             "PASSWORD": "P@ss1w0rd",
-#             "HOST": "localhost",
-#             "PORT": "5434",
-#         }
-#     }
 if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": "ocmsdb",
+            "USER": "postgres",
+            "PASSWORD": "P@ss1w0rd",
+            "HOST": "localhost",
+            "PORT": "5434",
+        }
+    }
+else: 
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
             "NAME": "ocmsdb",
-            "USER": "ocmdev",
-            "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
-            "HOST": "localhost",
-            "PORT": "5433",
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "ocmsdb_prod",
             "USER": "ocmdev",
             "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
             "HOST": "localhost",

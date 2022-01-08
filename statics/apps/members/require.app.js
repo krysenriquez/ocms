@@ -15,16 +15,16 @@ require.config({
         popper: libs + 'bootstrap/js/popper.min',
         moment: libs + 'moment/moment',
         bootstrap: libs + 'bootstrap/js/bootstrap.bundle.min',
-        lodash: libs + 'lodash/lodash',
+        lodash: libs + 'lodash/lodash.min',
         angular: libs + 'angular/angular.min',
         ocLazyLoad: libs + 'ocLazyLoad/ocLazyLoad.require.min',
         ngIdle: libs + 'angular/angular-idle',
-        ngRoute: libs + 'angular/angular-ui-router',
+        ngRoute: libs + 'angular/angular-ui-router.min',
         ngSanitize: libs + 'angular/angular-sanitize.min',
         ngLodash: libs + 'angular/angular-lodash',
         // UI Libs
         ngAnimate: libs + 'angular/angular-animate.min',
-        ngBootstrap: libs + 'angular/angular-ui-bootstrap-tpls.min',
+        ngBootstrap: libs + 'angular/angular-ui-bootstrap.min',
         ngBreadcrumb: libs + 'ngBreadcrumb/angular-breadcrumb.min',
         ngLoadingbar: libs + 'angular/angular-loading-bar.min',
         ngTable: libs + 'ngTable/ng-table',
@@ -159,7 +159,7 @@ define('add-video-js-in-global-scope', ['videojs'], function (videojs) {
     window.videojs = videojs;
 });
 
-require(['jquery', 'popper', 'moment', 'bootstrap', 'videojs', 'videojsAds', 'videojsIma'], function () {});
+require(['jquery', 'popper', 'moment', 'bootstrap'], function () {});
 
 require(['appMember', 'appConfig', 'appRun', 'appConstant'], function () {
     angular.bootstrap(document, ['appMember']);

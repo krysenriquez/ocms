@@ -49,22 +49,20 @@ define([
                                 {
                                     serie: true,
                                     name: 'Bootstrap CSS',
-                                    files: [DIRECTORY.CSS + '/bootstrap.css'],
+                                    files: [DIRECTORY.CSS + '/bootstrap.min.css'],
                                 },
                                 {
                                     serie: true,
                                     name: 'Bundle CSS',
-                                    files: [DIRECTORY.CSS + '/bundle.css'],
+                                    files: [
+                                        DIRECTORY.CSS + '/custom.min.css',
+                                        DIRECTORY.CSS + '/forms/theme-checkbox-radio.min.css',
+                                    ],
                                 },
                                 {
                                     serie: true,
                                     name: 'Simple CSS',
-                                    files: [DIRECTORY.CSS + '/simple.css'],
-                                },
-                                {
-                                    serie: true,
-                                    name: 'Font Awesome CSS',
-                                    files: [DIRECTORY.FONTS + '/font-awesome/css/fontawesome-all.css'],
+                                    files: [DIRECTORY.CSS + '/simple.min.css'],
                                 },
                                 {
                                     serie: true,
@@ -138,17 +136,16 @@ define([
                                 {
                                     serie: true,
                                     name: 'Bootstrap CSS',
-                                    files: [DIRECTORY.CSS + '/bootstrap.css'],
+                                    files: [DIRECTORY.CSS + '/bootstrap.min.css'],
                                 },
                                 {
                                     serie: true,
                                     name: 'Bundle CSS',
-                                    files: [DIRECTORY.CSS + '/bundle.css'],
-                                },
-                                {
-                                    serie: true,
-                                    name: 'Font Awesome JS',
-                                    files: [DIRECTORY.PLUGINS + '/fontawesome/all.js'],
+                                    files: [
+                                        DIRECTORY.CSS + '/main.min.css',
+                                        DIRECTORY.CSS + '/structure.min.css',
+                                        DIRECTORY.CSS + '/custom.min.css',
+                                    ],
                                 },
                                 {
                                     serie: true,
@@ -163,12 +160,17 @@ define([
                                 {
                                     serie: true,
                                     name: 'Breadcrumb CSS',
-                                    files: [DIRECTORY.CSS + '/components/breadcrumb.css'],
+                                    files: [DIRECTORY.CSS + '/components/breadcrumb.min.css'],
                                 },
                                 {
                                     serie: true,
                                     name: 'ngTable CSS',
                                     files: [DIRECTORY.LIBS + '/ngTable/ng-table.min.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Font Awesome JS',
+                                    files: [DIRECTORY.FONTS + '/font-awesome/css/all.min.css', DIRECTORY.LIBS + '/fontawesome/duotone.min.js', DIRECTORY.LIBS + '/fontawesome/fontawesome.min.js'],
                                 },
                             ]);
                         },
@@ -189,7 +191,6 @@ define([
                                         DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
                                         DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
                                         DIRECTORY.SHARED + '/translate/translate.directive.js',
-                                        // '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
                                     ],
                                 },
                             ]);

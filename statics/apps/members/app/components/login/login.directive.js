@@ -13,8 +13,6 @@ define(['authLoginService'], function () {
             scope: {},
         };
 
-        return directive;
-
         function loginController(authLoginService, $state, $uibModal, blockUI, toastr) {
             var vm = this;
             vm.validate = validate;
@@ -70,5 +68,9 @@ define(['authLoginService'], function () {
                 });
             }
         }
+
+        // loginController.$inject = ['authLoginService', '$state', '$uibModal', 'blockUI', 'toastr'];
+
+        return directive;
     }
 });

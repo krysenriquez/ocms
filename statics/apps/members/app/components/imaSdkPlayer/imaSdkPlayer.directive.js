@@ -1,4 +1,4 @@
-define(['appMember', 'activityFactory'], function () {
+define(['appMember', 'activityFactory', 'videojs', 'videojsAds', 'videojsIma'], function () {
     'use strict';
 
     angular.module('appMember').directive('imaSdkPlayer', imaSdkPlayer);
@@ -23,6 +23,7 @@ define(['appMember', 'activityFactory'], function () {
             $window,
             $http,
             $sce,
+			$q,
             LOGO,
             VAST,
             DIRECTORY,
@@ -90,8 +91,8 @@ define(['appMember', 'activityFactory'], function () {
                     });
 
                     var options = {
-                        // adTagUrl: $window.location.origin + VAST.XML,
-                        adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
+                        adTagUrl: $window.location.origin + VAST.XML,
+                        // adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
                         adsManagerLoadedCallback: adsManager,
                     };
 

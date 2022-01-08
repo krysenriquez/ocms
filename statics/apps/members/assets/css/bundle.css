@@ -1,6 +1,6 @@
-@import url('main.css');
-@import url('structure.css');
-@import url('custom.css');
+@import url('main.min.css');
+@import url('structure.min.css');
+@import url('custom.min.css');
 @import url('forms/theme-checkbox-radio.css');
 @import url('forms/switches.css');
 @import url('../fonts/font-awesome/css/fontawesome-all.css');
