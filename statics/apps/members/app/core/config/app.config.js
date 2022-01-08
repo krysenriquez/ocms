@@ -46,10 +46,20 @@ define([
                         'DIRECTORY',
                         function ($ocLazyLoad, DIRECTORY) {
                             return $ocLazyLoad.load([
+								{
+                                    serie: true,
+                                    name: 'Fonts CSS',
+                                    files: [DIRECTORY.CSS + '/fonts.min.css'],
+                                },
                                 {
                                     serie: true,
                                     name: 'Bootstrap CSS',
                                     files: [DIRECTORY.CSS + '/bootstrap.min.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Simple CSS',
+                                    files: [DIRECTORY.CSS + '/simple.min.css'],
                                 },
                                 {
                                     serie: true,
@@ -61,11 +71,6 @@ define([
                                 },
                                 {
                                     serie: true,
-                                    name: 'Simple CSS',
-                                    files: [DIRECTORY.CSS + '/simple.min.css'],
-                                },
-                                {
-                                    serie: true,
                                     name: 'ngBlock CSS',
                                     files: [DIRECTORY.LIBS + '/ngBlock/angular-block-ui.css'],
                                 },
@@ -73,6 +78,11 @@ define([
                                     serie: true,
                                     name: 'Toastr CSS',
                                     files: [DIRECTORY.LIBS + '/toastr/dist/css/angular-toastr.min.css'],
+                                },
+								{
+                                    serie: true,
+                                    name: 'Font Awesome JS',
+                                    files: [DIRECTORY.FONTS + '/font-awesome/css/all.min.css', DIRECTORY.LIBS + '/fontawesome/duotone.min.js', DIRECTORY.LIBS + '/fontawesome/fontawesome.min.js'],
                                 },
                             ]);
                         },
@@ -133,17 +143,28 @@ define([
                         'DIRECTORY',
                         function ($ocLazyLoad, DIRECTORY) {
                             return $ocLazyLoad.load([
+								{
+                                    serie: true,
+                                    name: 'Fonts CSS',
+                                    files: [DIRECTORY.CSS + '/fonts.min.css'],
+                                },
                                 {
                                     serie: true,
                                     name: 'Bootstrap CSS',
                                     files: [DIRECTORY.CSS + '/bootstrap.min.css'],
                                 },
+								{
+                                    serie: true,
+                                    name: 'Main CSS',
+                                    files: [
+                                        DIRECTORY.CSS + '/main.min.css',
+                                        DIRECTORY.CSS + '/structure.min.css',
+									],
+                                },
                                 {
                                     serie: true,
                                     name: 'Bundle CSS',
                                     files: [
-                                        DIRECTORY.CSS + '/main.min.css',
-                                        DIRECTORY.CSS + '/structure.min.css',
                                         DIRECTORY.CSS + '/custom.min.css',
                                     ],
                                 },

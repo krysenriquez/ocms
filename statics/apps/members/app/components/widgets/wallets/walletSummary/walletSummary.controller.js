@@ -1,4 +1,4 @@
-define(['activityFactory'], function () {
+define(['activityFactory','ngTable'], function () {
     'use strict';
 
     angular.module('appMember').controller('WalletSummaryController', WalletSummaryController);

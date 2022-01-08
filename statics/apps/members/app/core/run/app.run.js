@@ -13,7 +13,8 @@ define(['authLoginService'], function () {
         statusFactory,
         toastr,
         $templateCache,
-        DIRECTORY
+        DIRECTORY,
+		blockUI,
     ) {
         $http.defaults.xsrfHeaderName = 'X-CSRFToken';
         $http.defaults.xsrfCookieName = 'csrftoken';
@@ -28,6 +29,14 @@ define(['authLoginService'], function () {
             .catch(function (error) {
                 toastr.error('Unable to load Pagination Template');
             });
+
+		$transitions.onStart({}, function(transition) {
+			blockUI.start('Loading ...');
+		})
+
+		$transitions.onStart({}, function(transition) {
+			blockUI.stop();
+		})
 
         $transitions.onBefore({}, function (transition) {
             if (transition.to().secure) {
