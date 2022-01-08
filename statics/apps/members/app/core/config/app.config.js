@@ -82,7 +82,7 @@ define([
 								{
                                     serie: true,
                                     name: 'Font Awesome JS',
-                                    files: [DIRECTORY.FONTS + '/font-awesome/css/all.min.css', DIRECTORY.LIBS + '/fontawesome/duotone.min.js', DIRECTORY.LIBS + '/fontawesome/fontawesome.min.js'],
+                                    files: [DIRECTORY.FONTS + '/font-awesome/css/duotone.min.css', DIRECTORY.LIBS + '/fontawesome/duotone.min.js', DIRECTORY.LIBS + '/fontawesome/fontawesome.min.js'],
                                 },
                             ]);
                         },

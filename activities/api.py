@@ -2,6 +2,7 @@ from django.db.models.deletion import CASCADE
 from rest_framework import status, views, permissions
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from django.http import HttpResponse
 from django.db.models import Sum, F, Q, Case, When
 from django.db.models.functions import Coalesce
 from .serializers import *
@@ -17,6 +18,7 @@ from .services import (
     process_create_payout_activity,
     process_save_cashout_status,
     get_setting_value,
+    get_vast_xml,
 )
 from users.enums import UserType
 from accounts.models import Account, Binary
@@ -498,7 +500,6 @@ class RequestCashoutView(views.APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
         else:
-            print(serializer.errors)
             return Response(
                 data={"message": "Unable to create Cash Out."},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -549,7 +550,6 @@ class UpdatedCashoutStatusView(views.APIView):
                             status=status.HTTP_400_BAD_REQUEST,
                         )
             else:
-                print(serializer.errors)
                 return Response(
                     data={"message": "Unable to update Cash Out."},
                     status=status.HTTP_400_BAD_REQUEST,
@@ -585,3 +585,9 @@ class CreateWatchActivityView(views.APIView):
                 data={"message": "Unauthorized access."},
                 status=status.HTTP_403_FORBIDDEN,
             )
+
+
+class GetVastXmlView(views.APIView):
+    def get(self, request, *args, **kwargs):
+        xml = get_vast_xml()
+        return HttpResponse(xml, content_type="text/xml")

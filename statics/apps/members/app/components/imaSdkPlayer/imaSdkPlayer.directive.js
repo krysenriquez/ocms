@@ -29,6 +29,7 @@ define(['appMember', 'activityFactory', 'videojs', 'videojsAds', 'videojsIma'], 
             DIRECTORY,
             accountFactory,
             activityFactory,
+			urlService,
             toastr
         ) {
             const watch = document.getElementById('watch-and-earn');
@@ -91,8 +92,8 @@ define(['appMember', 'activityFactory', 'videojs', 'videojsAds', 'videojsIma'], 
                     });
 
                     var options = {
-                        adTagUrl: $window.location.origin + VAST.XML,
-                        // adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
+                        // adTagUrl: $window.location.origin + VAST.XML,
+						adTagUrl: $window.location.origin + urlService.GET_VAST_XML,
                         adsManagerLoadedCallback: adsManager,
                     };
 
