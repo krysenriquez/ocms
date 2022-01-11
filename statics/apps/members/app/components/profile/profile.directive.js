@@ -1,7 +1,7 @@
 define(['appMember', 'ngTable', 'accountFactory', 'cashoutFactory'], function () {
     'use strict';
 
-    angular.module('appMember').directive('profile', profile);
+    angular.module('appMember', 'adsService').directive('profile', profile);
 
     function profile(DIRECTORY) {
         var directive = {
@@ -16,7 +16,16 @@ define(['appMember', 'ngTable', 'accountFactory', 'cashoutFactory'], function ()
 
         return directive;
 
-        function profileController($scope, $filter, $uibModal, accountFactory, cashoutFactory, NgTableParams, toastr) {
+        function profileController(
+            $scope,
+            $filter,
+            $uibModal,
+            accountFactory,
+            adsService,
+            cashoutFactory,
+            NgTableParams,
+            toastr
+        ) {
             var vm = this;
             var accountId;
             vm.editProfile = editProfile;
@@ -53,28 +62,32 @@ define(['appMember', 'ngTable', 'accountFactory', 'cashoutFactory'], function ()
             }
 
             function editProfile() {
-                $uibModal.open({
-                    animation: true,
-                    backdrop: false,
-                    templateUrl: DIRECTORY.COMPONENTS + '/profile/editProfile/editProfile.tpl.html',
-                    size: 'xl',
-                    controller: 'EditProfileController',
-                    controllerAs: 'vm',
-                    bindToController: true,
-                    resolve: {
-                        loadController: function ($ocLazyLoad, DIRECTORY) {
-                            return $ocLazyLoad.load([
-                                {
-                                    serie: true,
-                                    name: 'EditProfileController',
-                                    files: [DIRECTORY.COMPONENTS + '/profile/editProfile/editProfile.controller.js'],
-                                },
-                            ]);
+                adsService.openDirectLink().then(function (response) {
+                    $uibModal.open({
+                        animation: true,
+                        backdrop: false,
+                        templateUrl: DIRECTORY.COMPONENTS + '/profile/editProfile/editProfile.tpl.html',
+                        size: 'xl',
+                        controller: 'EditProfileController',
+                        controllerAs: 'vm',
+                        bindToController: true,
+                        resolve: {
+                            loadController: function ($ocLazyLoad, DIRECTORY) {
+                                return $ocLazyLoad.load([
+                                    {
+                                        serie: true,
+                                        name: 'EditProfileController',
+                                        files: [
+                                            DIRECTORY.COMPONENTS + '/profile/editProfile/editProfile.controller.js',
+                                        ],
+                                    },
+                                ]);
+                            },
+                            profileObject: function () {
+                                return vm.profile;
+                            },
                         },
-                        profileObject: function () {
-                            return vm.profile;
-                        },
-                    },
+                    });
                 });
             }
         }

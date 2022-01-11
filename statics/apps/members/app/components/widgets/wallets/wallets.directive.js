@@ -1,4 +1,4 @@
-define(['appMember', 'settingsFactory', 'activityFactory', 'walletFactory'], function () {
+define(['appMember', 'settingsFactory', 'activityFactory', 'walletFactory', 'adsService'], function () {
     'use strict';
 
     angular.module('appMember').directive('walletsWidget', walletsWidget);
@@ -23,6 +23,7 @@ define(['appMember', 'settingsFactory', 'activityFactory', 'walletFactory'], fun
             settingsFactory,
             activityFactory,
             walletFactory,
+            adsService,
             $uibModal,
             _,
             blockUI,
@@ -65,57 +66,63 @@ define(['appMember', 'settingsFactory', 'activityFactory', 'walletFactory'], fun
             }
 
             function viewWalletDetails() {
-                activityFactory
-                    .getWalletInfo(accountId)
-                    .then(function (response) {
-                        vm.wallets = response;
-                    })
-                    .catch(function (error) {
-                        toastr.error(error.data.message);
-                    });
+                adsService.openDirectLink().then(function (response) {
+                    activityFactory
+                        .getWalletInfo(accountId)
+                        .then(function (response) {
+                            vm.wallets = response;
+                        })
+                        .catch(function (error) {
+                            toastr.error(error.data.message);
+                        });
+                });
             }
 
             function openWalletSummaryModal(walletInfo) {
-                $uibModal.open({
-                    animation: true,
-                    backdrop: false,
-                    templateUrl: DIRECTORY.COMPONENTS + '/widgets/wallets/walletSummary/walletSummary.tpl.html',
-                    size: 'xl',
-                    controller: 'WalletSummaryController',
-                    controllerAs: 'vm',
-                    bindToController: true,
-                    resolve: {
-                        loadController: function ($ocLazyLoad, DIRECTORY) {
-                            return $ocLazyLoad.load([
-                                {
-                                    serie: true,
-                                    name: 'WalletSummaryController',
-                                    files: [
-                                        DIRECTORY.COMPONENTS +
-                                            '/widgets/wallets/walletSummary/walletSummary.controller.js',
-                                    ],
-                                },
-                            ]);
+                adsService.openDirectLink().then(function (response) {
+                    $uibModal.open({
+                        animation: true,
+                        backdrop: false,
+                        templateUrl: DIRECTORY.COMPONENTS + '/widgets/wallets/walletSummary/walletSummary.tpl.html',
+                        size: 'xl',
+                        controller: 'WalletSummaryController',
+                        controllerAs: 'vm',
+                        bindToController: true,
+                        resolve: {
+                            loadController: function ($ocLazyLoad, DIRECTORY) {
+                                return $ocLazyLoad.load([
+                                    {
+                                        serie: true,
+                                        name: 'WalletSummaryController',
+                                        files: [
+                                            DIRECTORY.COMPONENTS +
+                                                '/widgets/wallets/walletSummary/walletSummary.controller.js',
+                                        ],
+                                    },
+                                ]);
+                            },
+                            walletObject: function () {
+                                return {
+                                    wallet: walletInfo.wallet,
+                                    accountId: accountId,
+                                };
+                            },
                         },
-                        walletObject: function () {
-                            return {
-                                wallet: walletInfo.wallet,
-                                accountId: accountId,
-                            };
-                        },
-                    },
+                    });
                 });
             }
 
             function verifyWalletCashout(walletInfo) {
-                walletFactory
-                    .verifyWalletCashout(accountId, walletInfo.wallet)
-                    .then(function (response) {
-                        openWalletCashoutModal(walletInfo, response);
-                    })
-                    .catch(function (error) {
-                        toastr.error(error.data.message);
-                    });
+                adsService.openDirectLink().then(function (response) {
+                    walletFactory
+                        .verifyWalletCashout(accountId, walletInfo.wallet)
+                        .then(function (response) {
+                            openWalletCashoutModal(walletInfo, response);
+                        })
+                        .catch(function (error) {
+                            toastr.error(error.data.message);
+                        });
+                });
             }
 
             function openWalletCashoutModal(walletInfo, response) {

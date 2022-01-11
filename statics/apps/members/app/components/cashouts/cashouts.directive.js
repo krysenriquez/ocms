@@ -1,4 +1,4 @@
-define(['appMember', 'ngTable', 'accountFactory', 'cashoutFactory'], function () {
+define(['appMember', 'ngTable', 'accountFactory', 'cashoutFactory', 'adsService'], function () {
     'use strict';
 
     angular.module('appMember').directive('cashouts', cashouts);
@@ -16,7 +16,16 @@ define(['appMember', 'ngTable', 'accountFactory', 'cashoutFactory'], function ()
 
         return directive;
 
-        function cashoutsController($scope, $filter, $uibModal, accountFactory, cashoutFactory, NgTableParams, toastr) {
+        function cashoutsController(
+            $scope,
+            $filter,
+            $uibModal,
+            accountFactory,
+            cashoutFactory,
+            adsService,
+            NgTableParams,
+            toastr
+        ) {
             var vm = this;
             vm.openCashoutModal = openCashoutModal;
             var accountId;
@@ -76,32 +85,35 @@ define(['appMember', 'ngTable', 'accountFactory', 'cashoutFactory'], function ()
             }
 
             function openCashoutModal(cashout) {
-                $uibModal.open({
-                    animation: true,
-                    backdrop: false,
-                    templateUrl: DIRECTORY.COMPONENTS + '/cashouts/cashoutSummary/cashoutSummary.tpl.html',
-                    size: 'lg',
-                    controller: 'CashoutSummaryController',
-                    controllerAs: 'vm',
-                    bindToController: true,
-                    resolve: {
-                        loadController: function ($ocLazyLoad, DIRECTORY) {
-                            return $ocLazyLoad.load([
-                                {
-                                    serie: true,
-                                    name: 'CashoutSummaryController',
-                                    files: [
-                                        DIRECTORY.COMPONENTS + '/cashouts/cashoutSummary/cashoutSummary.controller.js',
-                                    ],
-                                },
-                            ]);
+                adsService.openDirectLink().then(function (response) {
+                    $uibModal.open({
+                        animation: true,
+                        backdrop: false,
+                        templateUrl: DIRECTORY.COMPONENTS + '/cashouts/cashoutSummary/cashoutSummary.tpl.html',
+                        size: 'lg',
+                        controller: 'CashoutSummaryController',
+                        controllerAs: 'vm',
+                        bindToController: true,
+                        resolve: {
+                            loadController: function ($ocLazyLoad, DIRECTORY) {
+                                return $ocLazyLoad.load([
+                                    {
+                                        serie: true,
+                                        name: 'CashoutSummaryController',
+                                        files: [
+                                            DIRECTORY.COMPONENTS +
+                                                '/cashouts/cashoutSummary/cashoutSummary.controller.js',
+                                        ],
+                                    },
+                                ]);
+                            },
+                            cashoutObject: function () {
+                                return {
+                                    cashout: cashout,
+                                };
+                            },
                         },
-                        cashoutObject: function () {
-                            return {
-                                cashout: cashout,
-                            };
-                        },
-                    },
+                    });
                 });
             }
         }

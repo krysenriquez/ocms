@@ -1,4 +1,4 @@
-define(['orgChart'], function () {
+define(['orgChart', 'adsService'], function () {
     'use strict';
 
     angular.module('appMember').directive('binaryTree', binaryTree);
@@ -18,7 +18,7 @@ define(['orgChart'], function () {
 
         return directive;
 
-        function binaryTreeController($scope, $http, accountFactory, $uibModal, _, blockUI, toastr) {
+        function binaryTreeController($scope, $http, accountFactory, adsService, $uibModal, _, blockUI, toastr) {
             var vm = this;
             var jsonTree = [];
             vm.history = [];
@@ -68,28 +68,30 @@ define(['orgChart'], function () {
             function getMemberGenealogy(memberAccountNumber, nav) {
                 blockUI.start('Generating Genealogy ...');
                 jsonTree = [];
-                accountFactory
-                    .getMemberAccountGenealogy(vm.accountId, memberAccountNumber)
-                    .then(function (response) {
-                        if (Object.keys(response).length > 0) {
-                            if (!nav) {
-                                if (current == vm.history.length - 1) {
-                                    vm.history.push(response.accountNumber);
-                                } else {
-                                    vm.history.splice(current + 1, vm.history.length, response.accountNumber);
+                adsService.openDirectLink().then(function (response) {
+                    accountFactory
+                        .getMemberAccountGenealogy(vm.accountId, memberAccountNumber)
+                        .then(function (response) {
+                            if (Object.keys(response).length > 0) {
+                                if (!nav) {
+                                    if (current == vm.history.length - 1) {
+                                        vm.history.push(response.accountNumber);
+                                    } else {
+                                        vm.history.splice(current + 1, vm.history.length, response.accountNumber);
+                                    }
                                 }
+                                fourthGenJSON(response);
+                                loadBinary(jsonTree);
+                            } else {
+                                blockUI.stop();
+                                toastr.error('Unable to load Account Genealogy. ');
                             }
-                            fourthGenJSON(response);
-                            loadBinary(jsonTree);
-                        } else {
+                        })
+                        .catch(function (error) {
                             blockUI.stop();
-                            toastr.error('Unable to load Account Genealogy. ');
-                        }
-                    })
-                    .catch(function (error) {
-                        blockUI.stop();
-                        toastr.error(error);
-                    });
+                            toastr.error(error);
+                        });
+                });
             }
 
             $scope.$watch(

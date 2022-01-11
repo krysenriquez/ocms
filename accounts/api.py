@@ -5,12 +5,11 @@ from django.db.models import Q, Prefetch, F, Value as V, query, Count, Sum, Case
 from django.db.models.functions import Concat, Coalesce
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
-
-from settings.models import Wallet
 from .serializers import *
 from .models import *
 from .enums import *
 from users.enums import UserType
+from .services import *
 
 
 class AccountProfileViewSet(ModelViewSet):

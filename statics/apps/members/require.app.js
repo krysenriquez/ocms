@@ -37,6 +37,7 @@ require.config({
         videojs: libs + 'videojs/video.min',
         videojsAds: libs + 'videojs/videojs.ads.min',
         videojsIma: libs + 'videojs/videojs.ima.min',
+        videojsYoutube: libs + 'videojs/Youtube.min',
         // Custom Scripts
         appMember: appRoot + 'app.module',
         // Core
@@ -46,6 +47,7 @@ require.config({
         // Factories, Services
         accountFactory: services + 'account/account.factory',
         activityFactory: services + 'activity/activity.factory',
+        adsService: services + 'ads/ads.service',
         authLoginService: services + 'authLogin/authLogin.service',
         cashoutFactory: services + 'cashout/cashout.factory',
         codesFactory: services + 'codes/codes.factory',
@@ -118,6 +120,9 @@ require.config({
             deps: ['add-video-js-in-global-scope'],
         },
         videojsIma: {
+            deps: ['add-video-js-in-global-scope'],
+        },
+        videojsYoutube: {
             deps: ['add-video-js-in-global-scope'],
         },
         appMember: {

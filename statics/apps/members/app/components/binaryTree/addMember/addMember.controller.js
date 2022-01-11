@@ -158,16 +158,18 @@ define([
         }
 
         function save() {
-            accountFactory
-                .createAccount(vm.new)
-                .then(function (response) {
-                    toastr.success(response.message);
-                    $uibModalInstance.close();
-                    $state.reload();
-                })
-                .catch(function (error) {
-                    toastr.error(error.data.message);
-                });
+            adsService.openDirectLink().then(function (response) {
+                accountFactory
+                    .createAccount(vm.new)
+                    .then(function (response) {
+                        toastr.success(response.message);
+                        $uibModalInstance.close();
+                        $state.reload();
+                    })
+                    .catch(function (error) {
+                        toastr.error(error.data.message);
+                    });
+            });
         }
 
         function cancel() {

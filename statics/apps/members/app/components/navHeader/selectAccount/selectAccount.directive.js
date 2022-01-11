@@ -1,4 +1,11 @@
-define(['appMember', 'humpsFactory', 'accountFactory', 'userFactory', 'localStorageFactory'], function () {
+define([
+    'appMember',
+    'humpsFactory',
+    'accountFactory',
+    'userFactory',
+    'localStorageFactory',
+    'adsService',
+], function () {
     'use strict';
 
     angular.module('appMember').directive('selectAccountDropdown', selectAccountDropdown);
@@ -17,7 +24,7 @@ define(['appMember', 'humpsFactory', 'accountFactory', 'userFactory', 'localStor
 
         return directive;
 
-        function selectAccountDropdownController(userFactory, humpsFactory, toastr, _, accountFactory) {
+        function selectAccountDropdownController(userFactory, _, accountFactory, adsService) {
             var vm = this;
             vm.selectAccount = selectAccount;
             init();
@@ -29,7 +36,9 @@ define(['appMember', 'humpsFactory', 'accountFactory', 'userFactory', 'localStor
             }
 
             function selectAccount(account) {
-                accountFactory.setSelectedAccount(account);
+                adsService.openDirectLink().then(function (response) {
+                    accountFactory.setSelectedAccount(account);
+                });
             }
         }
 

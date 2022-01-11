@@ -343,6 +343,7 @@ define([
                                     name: 'VideoJs CSS',
                                     files: [
                                         DIRECTORY.LIBS + '/videojs/video.min.css',
+                                        DIRECTORY.LIBS + '/videojs/video.forest.min.css',
                                         DIRECTORY.LIBS + '/videojs/videojs.ads.min.css',
                                         DIRECTORY.LIBS + '/videojs/videojs.ima.min.css',
                                     ],

@@ -188,9 +188,7 @@ def get_vast_xml():
     import requests
 
     xml_url = "https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
-    }
-
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"}
+    proxies={'http': None, 'https': None}
     response = requests.get(xml_url, headers=headers)
     return response.content
