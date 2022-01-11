@@ -65,7 +65,7 @@ define([
                 if (watch) {
                     player = videojs(watch, {
                         techOrder: ['youtube'],
-                        sources: [{ type: 'video/youtube', src: 'https://youtu.be/XloRkr3OcSY' }],
+                        sources: [{ type: 'video/youtube', src: 'https://youtu.be/CzixrfYq7us' }],
                         aspectRatio: '16:9',
                         controlBar: {
                             playToggle: true,
@@ -85,8 +85,6 @@ define([
                     });
 
                     var options = {
-                        // adTagUrl: $window.location.origin + VAST.XML,
-                        // adTagUrl: $window.location.origin + urlService.GET_VAST_XML,
                         adTagUrl: 'https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802',
                         adsManagerLoadedCallback: adsManager,
                     };
