@@ -7,6 +7,7 @@ define([
     'minLengthValidator',
     'userFactory',
     'verifyFactory',
+    'adsService',
 ], function () {
     'use strict';
 
@@ -21,6 +22,7 @@ define([
         userFactory,
         accountFactory,
         verifyFactory,
+        adsService,
         statusFactory
     ) {
         var vm = this;
