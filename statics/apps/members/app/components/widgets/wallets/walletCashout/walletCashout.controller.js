@@ -1,4 +1,11 @@
-define(['cashoutFactory', 'messageValidator', 'inputValidator', 'formValidator', 'statusFactory'], function () {
+define([
+    'cashoutFactory',
+    'messageValidator',
+    'inputValidator',
+    'formValidator',
+    'statusFactory',
+    'adsService',
+], function () {
     'use strict';
 
     angular.module('appMember').controller('WalletCashoutController', WalletCashoutController);
@@ -9,6 +16,7 @@ define(['cashoutFactory', 'messageValidator', 'inputValidator', 'formValidator',
         walletObject,
         cashoutFactory,
         statusFactory,
+        adsService,
         _,
         toastr
     ) {
