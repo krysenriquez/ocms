@@ -225,6 +225,7 @@ define([
                                     name: 'Widgets Directives',
                                     files: [
                                         // DIRECTORY.COMPONENTS + '/widgets/activities/activities.directive.js',
+                                        DIRECTORY.COMPONENTS + '/widgets/top/watchers/watchers.directive.js',
                                         DIRECTORY.COMPONENTS + '/widgets/top/earners/earners.directive.js',
                                         DIRECTORY.COMPONENTS + '/widgets/top/flushout/flushout.directive.js',
                                         DIRECTORY.COMPONENTS + '/widgets/top/salesMatch/salesMatch.directive.js',

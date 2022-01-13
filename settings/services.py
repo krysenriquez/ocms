@@ -44,7 +44,8 @@ def get_wallet_can_cashout(account_id, wallet):
                 else:
                     return False
     elif wallet == WalletType.W_WALLET:
-        return timezone.localtime().time() <= time(13, 0) and timezone.localtime().time() >= time(8, 0)
+        return True
+        # return timezone.localtime().time() <= time(13, 0) and timezone.localtime().time() >= time(8, 0)
 
 
 def check_if_has_cashout_today(account_id, wallet):

@@ -20,6 +20,7 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
             generateCode: generateCode,
             getTopBinary: getTopBinary,
             getTopEarners: getTopEarners,
+            getTopWatchers: getTopWatchers,
         };
 
         function getAccountGenealogy(accountNumber) {
@@ -144,6 +145,27 @@ define(['localStorageFactory', 'urlService', 'humpsFactory'], function () {
         function getTopEarners() {
             return $http({
                 url: urlService.GET_TOP_EARNERS,
+                method: 'GET',
+            }).then(
+                function (response) {
+                    var responseData = [];
+                    _.map(
+                        _.orderBy(humpsFactory.camelizeKeys(response.data), ['referrals'], ['desc']),
+                        function (binary) {
+                            responseData.push(binary);
+                        }
+                    );
+                    return $q.resolve(responseData);
+                },
+                function (error) {
+                    return $q.reject(error);
+                }
+            );
+        }
+
+        function getTopWatchers() {
+            return $http({
+                url: urlService.GET_TOP_WATCHERS,
                 method: 'GET',
             }).then(
                 function (response) {

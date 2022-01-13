@@ -130,6 +130,39 @@ class AccountWalletViewSet(ModelViewSet):
             return Account.objects.none()
 
 
+class AccountWatchWalletViewSet(ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountWalletSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+    http_method_names = ["get"]
+
+    def get_queryset(self):
+        if self.request.user.user_type == UserType.ADMIN:
+            queryset = (
+                Account.objects.exclude(is_deleted=True)
+                .annotate(
+                    wallet_amount=Coalesce(
+                        Sum(
+                            Case(
+                                When(
+                                    ~Q(activity__activity_type=ActivityType.CASHOUT)
+                                    & Q(activity__wallet=WalletType.W_WALLET),
+                                    then=F("activity__activity_amount"),
+                                ),
+                            )
+                        ),
+                        0,
+                    )
+                )
+                .all()
+                .order_by("-wallet_amount")[:5]
+            )
+            if queryset.exists():
+                return queryset
+        else:
+            return Account.objects.none()
+
+
 class GenealogyAccountViewSet(ModelViewSet):
     queryset = Account.objects.all()
     serializer_class = GenealogyAccountSerializer

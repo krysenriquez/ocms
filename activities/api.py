@@ -11,6 +11,7 @@ from .enums import *
 from .services import (
     create_watch_activity,
     get_cashout_total_tax,
+    get_leadership_bonus,
     process_create_cashout_activity,
     process_create_cashout_request,
     process_create_company_earning_activity,
@@ -305,6 +306,8 @@ class WalletAdminView(views.APIView):
     def post(self, request, *args, **kwargs):
         if request.user.user_type == UserType.ADMIN:
             data = []
+            total_tax = get_cashout_total_tax()
+            leadership_bonus = get_leadership_bonus()
             for wallet in WalletType:
                 activities = (
                     Activity.objects.filter(wallet=wallet)
@@ -316,7 +319,12 @@ class WalletAdminView(views.APIView):
                                 then=0 - (Sum(F("activity_amount"))),
                             ),
                             When(
-                                ~Q(activity_type=ActivityType.CASHOUT),
+                                Q(activity_type=ActivityType.PAYOUT),
+                                then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                            ),
+                            When(
+                                ~Q(activity_type=ActivityType.CASHOUT)
+                                & ~Q(activity_type=ActivityType.PAYOUT),
                                 then=Sum(F("activity_amount")),
                             ),
                         ),
@@ -324,6 +332,10 @@ class WalletAdminView(views.APIView):
                             When(
                                 Q(activity_type=ActivityType.CASHOUT),
                                 then=0 - (Sum(F("activity_amount"))),
+                            ),
+                            When(
+                                Q(activity_type=ActivityType.PAYOUT),
+                                then=0 - (Sum(F("activity_amount") + (100 * leadership_bonus))),
                             ),
                         ),
                     )

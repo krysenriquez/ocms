@@ -30,6 +30,7 @@ define(['appAdmin', 'settingsFactory', 'activityFactory', 'walletFactory'], func
         ) {
             var vm = this;
             vm.viewWalletDetails = viewWalletDetails;
+            vm.isNotCompanyWallet = isNotCompanyWallet;
 
             init();
 
@@ -46,6 +47,10 @@ define(['appAdmin', 'settingsFactory', 'activityFactory', 'walletFactory'], func
                     .catch(function (error) {
                         toastr.error(error.data.message);
                     });
+            }
+
+            function isNotCompanyWallet(wallet) {
+                return wallet != 'C_WALLET';
             }
         }
 

@@ -26,6 +26,7 @@ define([], function () {
         this.GENERATE_CODE = ACCOUNTS_ROOT + 'generatecode/';
         this.GET_TOP_BINARY = ACCOUNTS_ROOT + 'gettopbinarysummary/';
         this.GET_TOP_EARNERS = ACCOUNTS_ROOT + 'gettopearners/';
+        this.GET_TOP_WATCHERS = ACCOUNTS_ROOT + 'gettopwatchers/';
 
         this.GET_ALL_WALLET_INFO = ACTIVITIES_ROOT + 'getallwalletinfo/';
         this.GET_ALL_ACTIVITY_SUMMARY = ACTIVITIES_ROOT + 'getallactivitysummaryinfo/';

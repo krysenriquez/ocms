@@ -64,6 +64,8 @@ def process_create_cashout_request(request):
 
         return data
 
+def get_leadership_bonus():
+    return get_setting_value(Property.LEADERSHIP_BONUS)
 
 def get_cashout_total_tax():
     leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)

@@ -12,8 +12,15 @@
                         {{ wallet.total | number: 2 }}
                     </h5>
                 </div>
-                <div class="wallet-cashout">
+                <div class="wallet-cashout" ng-if="vm.isNotCompanyWallet(wallet.wallet)">
                     <p translate="total_cashout"></p>
+                    <h5>
+                        <span class="wallet-currency" translate="currency"></span>
+                        {{ wallet.cashout | number: 2 }}
+                    </h5>
+                </div>
+                <div class="wallet-cashout" ng-if="!vm.isNotCompanyWallet(wallet.wallet)">
+                    <p translate="total_payout"></p>
                     <h5>
                         <span class="wallet-currency" translate="currency"></span>
                         {{ wallet.cashout | number: 2 }}
