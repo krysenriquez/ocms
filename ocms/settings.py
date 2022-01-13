@@ -25,6 +25,7 @@ CRYPTO_KEY = "ocms"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+LIVE = False
 
 if DEBUG:
     ALLOWED_HOSTS = ["*"]
@@ -108,7 +109,30 @@ if DEBUG:
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if DEBUG:
+if LIVE:
+    if DEBUG:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql_psycopg2",
+                "NAME": "ocmsdb",
+                "USER": "ocmdev",
+                "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
+                "HOST": "localhost",
+                "PORT": "5433",
+            }
+        }
+    else:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": "ocmsdb",
+                "USER": "ocmdev",
+                "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
+                "HOST": "localhost",
+                "PORT": "5433",
+            }
+        }
+else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -119,18 +143,6 @@ if DEBUG:
             "PORT": "5434",
         }
     }
-else: 
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": "ocmsdb",
-            "USER": "ocmdev",
-            "PASSWORD": "On3Cr3@ti0nsP@ss1w0rd",
-            "HOST": "localhost",
-            "PORT": "5433",
-        }
-    }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
