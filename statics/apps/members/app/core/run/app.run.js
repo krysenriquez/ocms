@@ -1,4 +1,4 @@
-define(['authLoginService'], function () {
+define(['authLoginService', 'adsService'], function () {
     'use strict';
 
     angular.module('appMember').run(run);
@@ -11,9 +11,11 @@ define(['authLoginService'], function () {
         $state,
         authLoginService,
         statusFactory,
+        adsService,
         toastr,
         $templateCache,
-        DIRECTORY
+        DIRECTORY,
+        blockUI
     ) {
         $http.defaults.xsrfHeaderName = 'X-CSRFToken';
         $http.defaults.xsrfCookieName = 'csrftoken';
@@ -28,6 +30,14 @@ define(['authLoginService'], function () {
             .catch(function (error) {
                 toastr.error('Unable to load Pagination Template');
             });
+
+        $transitions.onStart({}, function (transition) {
+            blockUI.start('Loading ...');
+        });
+
+        $transitions.onFinish({}, function (transition) {
+            blockUI.stop();
+        });
 
         $transitions.onBefore({}, function (transition) {
             if (transition.to().secure) {

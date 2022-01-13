@@ -39,6 +39,7 @@ define([], function () {
         this.GET_CASHOUTS = ACTIVITIES_ROOT + 'getcashouts/';
         this.REQUEST_CASHOUT = ACTIVITIES_ROOT + 'request/';
         this.WATCH_AND_EARN = ACTIVITIES_ROOT + 'watch/';
+		this.GET_VAST_XML = ACTIVITIES_ROOT + 'getxml/'
 
         this.GET_WALLETS = SETTINGS_ROOT + 'getmemberwallets/';
         this.GET_CASHOUT_TAX = SETTINGS_ROOT + 'getcashouttax/';

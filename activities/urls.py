@@ -21,6 +21,7 @@ urlpatterns = [
     path("getcashoutstatus/", CashoutStatusView.as_view()),
     path("updatecashoutstatus/", UpdatedCashoutStatusView.as_view()),
     path("watch/", CreateWatchActivityView.as_view()),
+    path("getxml/", GetVastXmlView.as_view()),
 ]
 
 urlpatterns += router.urls

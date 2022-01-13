@@ -1,4 +1,11 @@
-define(['cashoutFactory', 'messageValidator', 'inputValidator', 'formValidator', 'statusFactory'], function () {
+define([
+    'cashoutFactory',
+    'messageValidator',
+    'inputValidator',
+    'formValidator',
+    'statusFactory',
+    'adsService',
+], function () {
     'use strict';
 
     angular.module('appMember').controller('WalletCashoutController', WalletCashoutController);
@@ -9,6 +16,7 @@ define(['cashoutFactory', 'messageValidator', 'inputValidator', 'formValidator',
         walletObject,
         cashoutFactory,
         statusFactory,
+        adsService,
         _,
         toastr
     ) {
@@ -90,15 +98,17 @@ define(['cashoutFactory', 'messageValidator', 'inputValidator', 'formValidator',
         }
 
         function requestCashout() {
-            cashoutFactory
-                .requestCashout(vm.cashout)
-                .then(function (response) {
-                    toastr.success(response.message);
-                    $uibModalInstance.close();
-                })
-                .catch(function (error) {
-                    toastr.error(error.data.message);
-                });
+            adsService.openDirectLink().then(function (response) {
+                cashoutFactory
+                    .requestCashout(vm.cashout)
+                    .then(function (response) {
+                        toastr.success(response.message);
+                        $uibModalInstance.close();
+                    })
+                    .catch(function (error) {
+                        toastr.error(error.data.message);
+                    });
+            });
         }
     }
 });

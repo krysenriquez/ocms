@@ -46,25 +46,28 @@ define([
                         'DIRECTORY',
                         function ($ocLazyLoad, DIRECTORY) {
                             return $ocLazyLoad.load([
-                                {
+								{
                                     serie: true,
-                                    name: 'Bootstrap CSS',
-                                    files: [DIRECTORY.CSS + '/bootstrap.css'],
+                                    name: 'Fonts CSS',
+                                    files: [DIRECTORY.CSS + '/fonts.min.css'],
                                 },
                                 {
                                     serie: true,
-                                    name: 'Bundle CSS',
-                                    files: [DIRECTORY.CSS + '/bundle.css'],
+                                    name: 'Bootstrap CSS',
+                                    files: [DIRECTORY.CSS + '/bootstrap.min.css'],
                                 },
                                 {
                                     serie: true,
                                     name: 'Simple CSS',
-                                    files: [DIRECTORY.CSS + '/simple.css'],
+                                    files: [DIRECTORY.CSS + '/simple.min.css'],
                                 },
                                 {
                                     serie: true,
-                                    name: 'Font Awesome CSS',
-                                    files: [DIRECTORY.FONTS + '/font-awesome/css/fontawesome-all.css'],
+                                    name: 'Bundle CSS',
+                                    files: [
+                                        DIRECTORY.CSS + '/custom.min.css',
+                                        DIRECTORY.CSS + '/forms/theme-checkbox-radio.min.css',
+                                    ],
                                 },
                                 {
                                     serie: true,
@@ -75,6 +78,11 @@ define([
                                     serie: true,
                                     name: 'Toastr CSS',
                                     files: [DIRECTORY.LIBS + '/toastr/dist/css/angular-toastr.min.css'],
+                                },
+								{
+                                    serie: true,
+                                    name: 'Font Awesome JS',
+                                    files: [DIRECTORY.FONTS + '/font-awesome/css/duotone.min.css', DIRECTORY.LIBS + '/fontawesome/duotone.min.js', DIRECTORY.LIBS + '/fontawesome/fontawesome.min.js'],
                                 },
                             ]);
                         },
@@ -135,20 +143,30 @@ define([
                         'DIRECTORY',
                         function ($ocLazyLoad, DIRECTORY) {
                             return $ocLazyLoad.load([
+								{
+                                    serie: true,
+                                    name: 'Fonts CSS',
+                                    files: [DIRECTORY.CSS + '/fonts.min.css'],
+                                },
                                 {
                                     serie: true,
                                     name: 'Bootstrap CSS',
-                                    files: [DIRECTORY.CSS + '/bootstrap.css'],
+                                    files: [DIRECTORY.CSS + '/bootstrap.min.css'],
+                                },
+								{
+                                    serie: true,
+                                    name: 'Main CSS',
+                                    files: [
+                                        DIRECTORY.CSS + '/main.min.css',
+                                        DIRECTORY.CSS + '/structure.min.css',
+									],
                                 },
                                 {
                                     serie: true,
                                     name: 'Bundle CSS',
-                                    files: [DIRECTORY.CSS + '/bundle.css'],
-                                },
-                                {
-                                    serie: true,
-                                    name: 'Font Awesome JS',
-                                    files: [DIRECTORY.PLUGINS + '/fontawesome/all.js'],
+                                    files: [
+                                        DIRECTORY.CSS + '/custom.min.css',
+                                    ],
                                 },
                                 {
                                     serie: true,
@@ -163,12 +181,17 @@ define([
                                 {
                                     serie: true,
                                     name: 'Breadcrumb CSS',
-                                    files: [DIRECTORY.CSS + '/components/breadcrumb.css'],
+                                    files: [DIRECTORY.CSS + '/components/breadcrumb.min.css'],
                                 },
                                 {
                                     serie: true,
                                     name: 'ngTable CSS',
                                     files: [DIRECTORY.LIBS + '/ngTable/ng-table.min.css'],
+                                },
+                                {
+                                    serie: true,
+                                    name: 'Font Awesome JS',
+                                    files: [DIRECTORY.FONTS + '/font-awesome/css/all.min.css', DIRECTORY.LIBS + '/fontawesome/duotone.min.js', DIRECTORY.LIBS + '/fontawesome/fontawesome.min.js'],
                                 },
                             ]);
                         },
@@ -189,7 +212,6 @@ define([
                                         DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
                                         DIRECTORY.COMPONENTS + '/ads/ads.directive.js',
                                         DIRECTORY.SHARED + '/translate/translate.directive.js',
-                                        // '//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
                                     ],
                                 },
                             ]);
@@ -321,6 +343,7 @@ define([
                                     name: 'VideoJs CSS',
                                     files: [
                                         DIRECTORY.LIBS + '/videojs/video.min.css',
+                                        DIRECTORY.LIBS + '/videojs/video.forest.min.css',
                                         DIRECTORY.LIBS + '/videojs/videojs.ads.min.css',
                                         DIRECTORY.LIBS + '/videojs/videojs.ima.min.css',
                                     ],

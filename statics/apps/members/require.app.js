@@ -13,21 +13,21 @@ require.config({
         jquery: libs + 'jquery/jquery.min',
         crypto: libs + 'crypto/crypto',
         popper: libs + 'bootstrap/js/popper.min',
-        moment: libs + 'moment/moment',
+        moment: libs + 'moment/moment.min',
         bootstrap: libs + 'bootstrap/js/bootstrap.bundle.min',
-        lodash: libs + 'lodash/lodash',
+        lodash: libs + 'lodash/lodash.min',
         angular: libs + 'angular/angular.min',
         ocLazyLoad: libs + 'ocLazyLoad/ocLazyLoad.require.min',
         ngIdle: libs + 'angular/angular-idle',
-        ngRoute: libs + 'angular/angular-ui-router',
+        ngRoute: libs + 'angular/angular-ui-router.min',
         ngSanitize: libs + 'angular/angular-sanitize.min',
         ngLodash: libs + 'angular/angular-lodash',
         // UI Libs
         ngAnimate: libs + 'angular/angular-animate.min',
-        ngBootstrap: libs + 'angular/angular-ui-bootstrap-tpls.min',
+        ngBootstrap: libs + 'angular/angular-ui-bootstrap.min',
         ngBreadcrumb: libs + 'ngBreadcrumb/angular-breadcrumb.min',
         ngLoadingbar: libs + 'angular/angular-loading-bar.min',
-        ngTable: libs + 'ngTable/ng-table',
+        ngTable: libs + 'ngTable/ng-table.min',
         ngBlock: libs + 'ngBlock/angular-block-ui.min',
         ngToastr: libs + 'toastr/dist/js/angular-toastr.tpls.min',
         ngSweetalert: libs + 'sweetalert/SweetAlert',
@@ -37,6 +37,7 @@ require.config({
         videojs: libs + 'videojs/video.min',
         videojsAds: libs + 'videojs/videojs.ads.min',
         videojsIma: libs + 'videojs/videojs.ima.min',
+        videojsYoutube: libs + 'videojs/Youtube.min',
         // Custom Scripts
         appMember: appRoot + 'app.module',
         // Core
@@ -46,6 +47,7 @@ require.config({
         // Factories, Services
         accountFactory: services + 'account/account.factory',
         activityFactory: services + 'activity/activity.factory',
+        adsService: services + 'ads/ads.service',
         authLoginService: services + 'authLogin/authLogin.service',
         cashoutFactory: services + 'cashout/cashout.factory',
         codesFactory: services + 'codes/codes.factory',
@@ -120,6 +122,9 @@ require.config({
         videojsIma: {
             deps: ['add-video-js-in-global-scope'],
         },
+        videojsYoutube: {
+            deps: ['add-video-js-in-global-scope'],
+        },
         appMember: {
             deps: [
                 'jquery',
@@ -159,7 +164,7 @@ define('add-video-js-in-global-scope', ['videojs'], function (videojs) {
     window.videojs = videojs;
 });
 
-require(['jquery', 'popper', 'moment', 'bootstrap', 'videojs', 'videojsAds', 'videojsIma'], function () {});
+require(['jquery', 'popper', 'moment', 'bootstrap'], function () {});
 
 require(['appMember', 'appConfig', 'appRun', 'appConstant'], function () {
     angular.bootstrap(document, ['appMember']);

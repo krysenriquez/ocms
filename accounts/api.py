@@ -5,12 +5,11 @@ from django.db.models import Q, Prefetch, F, Value as V, query, Count, Sum, Case
 from django.db.models.functions import Concat, Coalesce
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
-
-from settings.models import Wallet
 from .serializers import *
 from .models import *
 from .enums import *
 from users.enums import UserType
+from .services import *
 
 
 class AccountProfileViewSet(ModelViewSet):
@@ -484,28 +483,4 @@ class VerifySponsorCodeView(views.APIView):
                     "message": code_type.title() + " Code could only be used on Direct Downlines.",
                 },
                 status=status.HTTP_403_FORBIDDEN,
-            )
-
-
-# NOTE REMOVED THIS TEST API
-# Test
-from .services import *
-from django.shortcuts import get_object_or_404
-
-
-class TestView(views.APIView):
-    def post(self, request, *args, **kwargs):
-        account = request.data.get("account", None)
-        if account is not None:
-            new_member = get_object_or_404(Account, id=account)
-            comp_plan(request, new_member)
-            # create_referral_activity(request, new_member.referrer, new_member)
-            return Response(
-                data={"response": status.HTTP_200_OK},
-                status=status.HTTP_200_OK,
-            )
-        else:
-            return Response(
-                data={"response_id": status.HTTP_404_NOT_FOUND},
-                status=status.HTTP_404_NOT_FOUND,
             )
