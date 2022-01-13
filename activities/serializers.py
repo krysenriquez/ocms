@@ -37,7 +37,7 @@ class CashoutDetailsSerializer(ModelSerializer):
         read_only_fields = ("cashout",)
 
 
-class CreatCashoutSerializer(ModelSerializer):
+class CreateCashoutSerializer(ModelSerializer):
     id = serializers.IntegerField(required=False)
     details = CashoutDetailsSerializer(many=True, required=False)
     account_name = serializers.CharField(source="account.get_account_name", required=False)

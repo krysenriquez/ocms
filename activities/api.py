@@ -42,14 +42,13 @@ class ActivityMemberWalletViewSet(ModelViewSet):
                     account = Account.objects.get(account_id=account_id)
                     user_accounts = self.request.user.get_all_user_accounts()
                     if account in user_accounts:
-                        total_tax = get_cashout_total_tax()
                         return (
                             queryset.filter(account__account_id=account_id, wallet=wallet)
                             .annotate(
                                 amount=Case(
                                     When(
                                         Q(activity_type=ActivityType.CASHOUT),
-                                        then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                                        then=0 - (Sum(F("activity_amount"))),
                                     ),
                                     When(
                                         ~Q(activity_type=ActivityType.CASHOUT),
@@ -72,7 +71,6 @@ class ActivityAdminWalletViewSet(ModelViewSet):
         if user_type is not None and self.request.user.is_authenticated:
             queryset = Activity.objects.exclude(is_deleted=True)
             wallet = self.request.query_params.get("wallet", None)
-            total_tax = get_cashout_total_tax()
             if wallet is not None:
                 account_id = self.request.query_params.get("account_id", None)
                 if account_id is not None:
@@ -83,7 +81,7 @@ class ActivityAdminWalletViewSet(ModelViewSet):
                                 amount=Case(
                                     When(
                                         Q(activity_type=ActivityType.CASHOUT),
-                                        then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                                        then=0 - (Sum(F("activity_amount"))),
                                     ),
                                     When(
                                         ~Q(activity_type=ActivityType.CASHOUT),
@@ -124,7 +122,6 @@ class ActivityViewSet(ModelViewSet):
             activity_type = self.request.query_params.get("activity_type", None)
             account_id = self.request.query_params.get("account_id", None)
             if activity_type is not None:
-                total_tax = get_cashout_total_tax()
                 queryset = (
                     Activity.objects.exclude(is_deleted=True)
                     .filter(activity_type=activity_type)
@@ -132,7 +129,7 @@ class ActivityViewSet(ModelViewSet):
                         amount=Case(
                             When(
                                 Q(activity_type=ActivityType.CASHOUT),
-                                then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                                then=0 - (Sum(F("activity_amount"))),
                             ),
                             When(
                                 ~Q(activity_type=ActivityType.CASHOUT),
@@ -157,7 +154,6 @@ class RecentActivityViewSet(ModelViewSet):
     def get_queryset(self):
         if self.request.user.is_authenticated:
             account_id = self.request.query_params.get("account_id", None)
-            total_tax = get_cashout_total_tax()
             queryset = (
                 Activity.objects.filter(account__account_id=account_id)
                 .exclude(is_deleted=True)
@@ -166,7 +162,7 @@ class RecentActivityViewSet(ModelViewSet):
                     amount=Case(
                         When(
                             Q(activity_type=ActivityType.CASHOUT),
-                            then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                            then=0 - (Sum(F("activity_amount"))),
                         ),
                         When(
                             ~Q(activity_type=ActivityType.CASHOUT),
@@ -308,7 +304,6 @@ class WalletAdminView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         if request.user.user_type == UserType.ADMIN:
-            total_tax = get_cashout_total_tax()
             data = []
             for wallet in WalletType:
                 activities = (
@@ -318,7 +313,7 @@ class WalletAdminView(views.APIView):
                         activity_total=Case(
                             When(
                                 Q(activity_type=ActivityType.CASHOUT),
-                                then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                                then=0 - (Sum(F("activity_amount"))),
                             ),
                             When(
                                 ~Q(activity_type=ActivityType.CASHOUT),
@@ -328,7 +323,7 @@ class WalletAdminView(views.APIView):
                         cashout_total=Case(
                             When(
                                 Q(activity_type=ActivityType.CASHOUT),
-                                then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                                then=0 - (Sum(F("activity_amount"))),
                             ),
                         ),
                     )
@@ -366,7 +361,6 @@ class WalletMemberView(views.APIView):
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             account_id = request.data.get("account_id")
-            total_tax = get_cashout_total_tax()
             data = []
             for wallet in WalletType:
                 if wallet != WalletType.C_WALLET:
@@ -377,7 +371,7 @@ class WalletMemberView(views.APIView):
                             activity_total=Case(
                                 When(
                                     Q(activity_type=ActivityType.CASHOUT),
-                                    then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                                    then=0 - (Sum(F("activity_amount"))),
                                 ),
                                 When(
                                     ~Q(activity_type=ActivityType.CASHOUT),
@@ -387,7 +381,7 @@ class WalletMemberView(views.APIView):
                             cashout_total=Case(
                                 When(
                                     Q(activity_type=ActivityType.CASHOUT),
-                                    then=0 - (Sum(F("activity_amount") / (1 - total_tax))),
+                                    then=0 - (Sum(F("activity_amount"))),
                                 ),
                             ),
                         )
@@ -486,7 +480,7 @@ class RequestCashoutView(views.APIView):
 
     def post(self, request, *args, **kwargs):
         processed_request = process_create_cashout_request(request)
-        serializer = CreatCashoutSerializer(data=processed_request)
+        serializer = CreateCashoutSerializer(data=processed_request)
 
         if serializer.is_valid():
             cashout = serializer.save()
@@ -512,8 +506,7 @@ class UpdatedCashoutStatusView(views.APIView):
     def post(self, request, *args, **kwargs):
         if request.user.user_type == UserType.ADMIN:
             cashout, processed_request = process_save_cashout_status(request)
-            serializer = CreatCashoutSerializer(cashout, data=processed_request)
-
+            serializer = CreateCashoutSerializer(cashout, data=processed_request)
             if serializer.is_valid():
                 updated_cashout = serializer.save()
                 if updated_cashout.status == CashoutStatus.RELEASED:
@@ -549,6 +542,11 @@ class UpdatedCashoutStatusView(views.APIView):
                             data={"message": "Unable to generate Cashout Activity."},
                             status=status.HTTP_400_BAD_REQUEST,
                         )
+                else:
+                    return Response(
+                        data={"message": "Cash Out updated."},
+                        status=status.HTTP_201_CREATED,
+                    )
             else:
                 return Response(
                     data={"message": "Unable to update Cash Out."},

@@ -51,6 +51,7 @@ def process_create_cashout_request(request):
         data = {
             "account": account.pk,
             "amount": request.data["amount"],
+            "wallet": request.data["wallet"],
             "details": [
                 {
                     "name": request.data["details"]["name"],
@@ -73,13 +74,12 @@ def get_cashout_total_tax():
 def process_create_cashout_activity(request, cashout):
     if cashout:
         content_type = ContentType.objects.get(model="cashout")
-        total_tax = get_cashout_total_tax()
 
         return create_activity(
             account=cashout.account,
             activity_type=ActivityType.CASHOUT,
-            amount=cashout.amount * Decimal(1 - total_tax),
-            wallet=request.data["wallet"],
+            amount=cashout.amount,
+            wallet=cashout.wallet,
             content_type=content_type,
             object_id=cashout.pk,
             user=request.user,
@@ -188,7 +188,9 @@ def get_vast_xml():
     import requests
 
     xml_url = "https://www.videosprofitnetwork.com/watch.xml?key=064f4d07d4665c3b132231eaabb98802"
-    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"}
-    proxies={'http': None, 'https': None}
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"
+    }
+    proxies = {"http": None, "https": None}
     response = requests.get(xml_url, headers=headers)
     return response.content
