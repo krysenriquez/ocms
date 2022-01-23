@@ -11,6 +11,7 @@ from .enums import *
 from .services import (
     create_watch_activity,
     get_cashout_total_tax,
+    get_latest_watch_activity,
     get_leadership_bonus,
     process_create_cashout_activity,
     process_create_cashout_request,
@@ -574,17 +575,24 @@ class CreateWatchActivityView(views.APIView):
             account_id = request.data.get("account_id")
             account = get_object_or_404(Account, account_id=account_id)
             if account:
-                watch_activity = create_watch_activity(request, account)
-                if watch_activity:
+                latest_watch_activity = get_latest_watch_activity(request, account)
+                if latest_watch_activity:
                     return Response(
-                        data={"message": "You earned ₱" + str(watch_activity.activity_amount)},
-                        status=status.HTTP_201_CREATED,
+                        data={"message": "Consecutive Watch from Single Account Forbidden"},
+                        status=status.HTTP_403_FORBIDDEN,
                     )
                 else:
-                    return Response(
-                        data={"message": "Unable to create Watch Activity."},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
+                    watch_activity = create_watch_activity(request, account)
+                    if watch_activity:
+                        return Response(
+                            data={"message": "You earned ₱" + str(watch_activity.activity_amount)},
+                            status=status.HTTP_201_CREATED,
+                        )
+                    else:
+                        return Response(
+                            data={"message": "Unable to create Watch Activity."},
+                            status=status.HTTP_400_BAD_REQUEST,
+                        )
             else:
                 return Response(
                     data={"message": "Unable to create Watch Activity. Account does not exist."},

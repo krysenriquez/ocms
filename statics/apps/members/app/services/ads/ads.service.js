@@ -8,12 +8,7 @@ define([], function () {
 
         function openDirectLink() {
             var deferred = $q.defer();
-            deferred.resolve(
-                $window.open(
-                    'https://presumptuousfunnelinsight.com/gq730f2qk?key=61d8b9f4f6bf85d4f7c25d62edf5655d',
-                    '_blank'
-                )
-            );
+            deferred.resolve($window.open('//dooloust.net/4/4814462', '_blank'));
             return deferred.promise;
         }
     }

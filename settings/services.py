@@ -7,7 +7,7 @@ from settings.models import *
 from settings.enums import *
 from activities.models import Activity, Cashout
 from activities.enums import ActivityType, CashoutStatus
-import activities.services as ActivityService
+from activities.services import get_cashouts
 
 
 def get_settings():
@@ -67,7 +67,7 @@ def check_if_has_pending_cashout(account_id, wallet):
 
 def construct_cashout_amount(account_id, wallet):
     if wallet != WalletType.W_WALLET and wallet != WalletType.C_WALLET:
-        cashout_count = len(ActivityService.get_cashouts(account_id, wallet))
+        cashout_count = len(get_cashouts(account_id, wallet))
         if cashout_count < 1:
             return get_wallet_first_cashout(wallet)
         else:

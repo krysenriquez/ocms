@@ -4,6 +4,10 @@ from .enums import *
 from django.utils import timezone
 from settings.enums import *
 from settings.models import Setting
+from django.db.models.functions import Trunc
+from tzlocal import get_localzone
+from datetime import time
+from django.db import models
 
 
 def get_settings():
@@ -64,8 +68,10 @@ def process_create_cashout_request(request):
 
         return data
 
+
 def get_leadership_bonus():
     return get_setting_value(Property.LEADERSHIP_BONUS)
+
 
 def get_cashout_total_tax():
     leadership_bonus = get_setting_value(Property.LEADERSHIP_BONUS)
@@ -174,6 +180,22 @@ def process_create_company_earning_activity(request, updated_cashout):
             object_id=updated_cashout.pk,
             user=request.user,
         )
+
+
+def get_latest_watch_activity(request, account=None):
+    local_tz = get_localzone()
+    latest_watch_activity = (
+        Activity.objects.filter(account=account)
+        .annotate(
+            modified_local_tz=Trunc(
+                "modified", kind="minute", output_field=models.DateTimeField(), tzinfo=local_tz
+            )
+        )
+        .last()
+    )
+    return timezone.localtime().strftime(
+        "%Y-%m-%d %H:%M"
+    ) == latest_watch_activity.modified_local_tz.strftime("%Y-%m-%d %H:%M")
 
 
 def create_watch_activity(request, account=None):

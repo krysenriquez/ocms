@@ -7,7 +7,7 @@ from .models import Account, Binary, Code
 from .enums import *
 from activities.enums import *
 from settings.enums import *
-import activities.services as ActivityService
+from activities.services import create_activity
 import settings.services as SettingsService
 import logging
 import string, random
@@ -194,7 +194,7 @@ def create_binary(parent=None, child=None, child_side=None):
 def create_entry_activity(request, account=None):
     content_type = ContentType.objects.get(model="account")
 
-    ActivityService.create_activity(
+    create_activity(
         account=account,
         activity_type=ActivityType.ENTRY,
         amount=settings.get(property=Property.ENTRY_AMOUNT).value,
@@ -208,7 +208,7 @@ def create_entry_activity(request, account=None):
 def create_pairing_activity(request, account=None, binary=None):
     content_type = ContentType.objects.get(model="binary")
 
-    ActivityService.create_activity(
+    create_activity(
         account=account,
         activity_type=ActivityType.PAIRING,
         amount=settings.get(property=Property.PAIRING_BONUS_AMOUNT).value,
@@ -222,7 +222,7 @@ def create_pairing_activity(request, account=None, binary=None):
 def create_referral_activity(request, sponsor=None, account=None):
     content_type = ContentType.objects.get(model="account")
 
-    referral = ActivityService.create_activity(
+    referral = create_activity(
         account=sponsor,
         activity_type=ActivityType.DIRECT_REFERRAL,
         amount=settings.get(property=Property.DIRECT_REFERRAL_AMOUNT).value,
@@ -241,7 +241,7 @@ def create_unli_ten_activity(request, sponsor=None):
     unli_ten_count = get_setting_value(Property.UNLI_TEN_COUNT)
 
     if referral_count % unli_ten_count == 0:
-        ActivityService.create_activity(
+        create_activity(
             account=sponsor,
             activity_type=ActivityType.UNLI_TEN,
             amount=settings.get(property=Property.UNLI_TEN_BONUS).value,
@@ -258,7 +258,7 @@ def create_unilevel_activity(
 ):
     content_type = ContentType.objects.get(model="account")
 
-    ActivityService.create_activity(
+    create_activity(
         account=parent,
         activity_type=ActivityType.UNILEVEL,
         amount=settings.get(property=property).value,
@@ -271,7 +271,7 @@ def create_unilevel_activity(
 
 def create_watch_activity(request, account=None):
     # TODO Must send Token in order to limit Watch and Earn Creation
-    return ActivityService.create_activity(
+    return create_activity(
         account=account,
         activity_type=ActivityType.WATCH_AND_EARN,
         amount=settings.get(property=Property.WATCH_AND_EARN_AMOUNT).value,
